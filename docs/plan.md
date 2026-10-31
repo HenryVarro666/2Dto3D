@@ -1,6 +1,6 @@
 # 让野外光伏设备照片变成可理解的三维场景
 
-日期：2026-10-30，America/Chicago。版本：v0.1 讨论稿。状态：研究与设计，**未创建脚手架、安装依赖、下载权重、运行模型或训练；没有项目实测精度和时延结果**。下文接口、目录、门槛和工期均为建议，供讨论后实施。
+日期：2026-10-30，America/Chicago。版本：v0.2 讨论稿，已纳入用户确认的一期范围、后续设备扩展方向及现有硬件。状态：研究与设计，**未创建脚手架、安装依赖、下载权重、运行模型或训练；没有项目实测精度和时延结果**。下文接口、目录、门槛和工期均为建议，供讨论后实施。
 
 建议首版采用**快速检测分割 → 参数化结构示意场景 → 后台生成几何细化**：让用户先看懂组成，再等待更接近实物的外形和纹理。用户已确认单张照片优先、必要时提示补拍，提交后 10 秒内显示初步三维，并接受简化箱体／杆件／底座组成的示意模型；**10 秒是尚未验证能达到的验收目标**。首屏也必须是与照片组件对应、可旋转和点选的独立网格场景，二维标签和无对应关系的占位不算达标。建议浏览器提供类似 Blender 的查看操作，导出 GLB＋JSON，供 Blender 后续编辑。全部方案、代码和数据统一放在 `/Users/caochao/Documents/2Dto3D/`，并整理成 GitHub 仓库；代码脚手架和模型运行留待后续实施。
 
@@ -8,15 +8,15 @@
 
 | 需求状态 | 当前约定 |
 |---|---|
-| 用户已确认 | 单张优先、必要时补拍；初步三维 ≤10 秒，接受简化结构示意、先看结构组成、后台细化；最终根目录与 GitHub 仓库整理。 |
+| 用户已确认 | 一期限定组串式逆变器及外部安装结构，之后扩展箱变、变压器等设备；单张优先、必要时补拍；初步三维 ≤10 秒，接受简化结构示意与后台细化；已有 NVIDIA RTX 5080，备选 M4 Pro MacBook Pro；最终根目录与私有 GitHub 仓库。 |
 | 本稿建议 | 每次选定一个设备或局部装配体；浏览器查看、粗组件人工纠正、GLB＋JSON 导出；暂不以尺寸测量或制造 CAD 为验收目标。 |
-| 仍待确认 | 一期设备范围与组件细分程度、细化等待预算、GPU 资源及部署条件、高级编辑需求。 |
+| 仍待确认 | 一期必需组件的细分程度、细化等待预算、5080 机器的系统／驱动与实际可用显存、Mac 内存及部署条件、高级编辑需求。 |
 
 操作路径为：**本地选照片／框选设备 → 点击提交并上传 → 自动掩码与名称候选 → 初步可旋转三维 → 用户纠正组件 → 后台细化与导出**。自动首屏不能依赖等待人工确认；纠正后另建版本与任务，耗时单列。原图始终保留，组件区域与三维节点相互高亮。界面提供组件树、选中、隐藏、隔离、恢复原始布局和展示性爆炸图；爆炸只是显示位移，不代表真实拆卸路径。首版不承担完整网格雕刻、参数化 CAD 编辑和工程装配约束，Blender 用于导出后的进一步编辑。
 
 本稿建议的最低纠正能力为修改组件名称／类别、纠正掩码，以及调整示意组件的相对尺寸和位姿；这些是助手提出的实现范围。高级几何编辑另行讨论，示意参数调整不转化为尺寸测量。
 
-本轮检查的两张本地候选图为 `/Users/caochao/Documents/2Dto3D/photos/string_inverters/candidate_cn2019.jpg` 和 `/Users/caochao/Documents/2Dto3D/photos/string_inverters/candidate_energetica_sg250hx.png`：可见光伏阵列下的白色逆变器箱体，以及部分安装件、立柱、线缆。因此可暂把首个验证场景收窄为**组串式逆变器及外部安装结构**；这是助手基于样图的判断，精确型号未核实，也不是用户指定的最终设备范围。两图是否同一实物未知，不能拼成多视图真值；数量不足评测，来源和再分发许可未核实，照片仅本地保留，不入 Git。
+本轮检查的两张本地候选图为 `/Users/caochao/Documents/2Dto3D/photos/string_inverters/candidate_cn2019.jpg` 和 `/Users/caochao/Documents/2Dto3D/photos/string_inverters/candidate_energetica_sg250hx.png`：可见光伏阵列下的白色逆变器箱体，以及部分安装件、立柱、线缆。**用户已确认一期就以组串式逆变器及外部安装结构为范围，做好后再拓展。** 精确型号未核实；两图是否同一实物未知，不能拼成多视图真值。数量不足评测，来源和再分发许可未核实，照片仅本地保留，不入 Git。
 
 首批组件例子为主机外壳、可见安装支架、支撑立柱（可选场景参照）、线缆束（先按组）及未知；不据此固定整个光伏领域标签集。一个视觉组件可能包含多件实际零件，同一零件也会因遮挡分成多个区域。前盖分缝、孔、槽、折弯和加强筋优先挂在父组件下，不直接计件。内部器件、隐藏连接、背面和真实 BOM 保留未知。CAD 数据本身区分组件、实例、实体、孔与连接，首版借鉴这种分层，不把掩码数当工程件数。([Fusion 360 Gallery 装配格式](https://github.com/AutodeskAILab/Fusion360GalleryDataset/blob/master/docs/assembly.md))
 
@@ -31,7 +31,9 @@
 
 快路径先运行低分辨率检测／实例分割，将已支持类别映射为少量参数化基本体。由掩码包围框、主轴和可见遮挡关系估计相对长宽、朝向与前后位置；单图无法确定的深度和厚度使用明确标记的先验值，并允许用户调整。每个组件保留照片区域、稳定 ID、独立 mesh 和共享场景坐标，生成组件树；线缆束先用一组示意曲线，不虚构每根连接。**这是真正的结构示意场景，但不是实测几何或制造 CAD**。无需先建厂商 CAD 库，也不把任意立方体当照片分析结果。
 
-后台只对比两个几何模型。**SAM 3D Objects** 原生接收图像与目标掩码，可预测形状和布局，但官方多对象示例导出 posed Gaussian PLY，不能据此认定每组件 posed mesh→GLB 已成立。**TRELLIS.2** 提供单图到带材质 mesh、GLB 示例，作为资产质量／延迟基线；论文明确尚不显式编码高层语义结构，整物网格不等于真实零件分解。它们都不承担首屏 10 秒承诺。([SAM 接口](https://github.com/facebookresearch/sam-3d-objects/blob/main/notebook/inference.py)、[多对象示例](https://github.com/facebookresearch/sam-3d-objects/blob/main/notebook/demo_multi_object.ipynb)、[TRELLIS.2 示例](https://github.com/microsoft/TRELLIS.2/blob/main/example.py)、[结构限制](https://arxiv.org/html/2512.14692v1))
+根据已确认的 5080 硬件，后台先测试一个低显存候选：**Hunyuan3D-2 仅形状生成**，官方仓库报告形状约需 6GB、形状与纹理合计约需 16GB。先验证一个 checkpoint 的网格价值、显存和兼容性，不把所有版本或并发都视为已满足条件；必要时再用官方要求至少 16GB 的原版 TRELLIS 作对照。逐组件裁剪生成若缺少可靠位姿，须在示意场景坐标中估计对齐并标记，不能认定生成模型恢复了真实装配。([Hunyuan3D-2](https://github.com/Tencent-Hunyuan/Hunyuan3D-2#models-zoo)、[原版 TRELLIS](https://github.com/microsoft/TRELLIS#prerequisites))
+
+原计划的 **SAM 3D Objects／TRELLIS.2** 调整为更高显存条件下的比较对象，不是现有 5080 的默认本地路径。SAM 原生接收图像与目标掩码，可预测形状和布局，但官方多对象示例导出 posed Gaussian PLY，不能据此认定每组件 posed mesh→GLB 已成立；TRELLIS.2 提供单图到带材质 mesh、GLB 示例，但尚不显式编码高层语义结构。任何生成候选都不承担首屏 10 秒承诺，整物网格也不等于真实零件分解。([SAM 接口](https://github.com/facebookresearch/sam-3d-objects/blob/main/notebook/inference.py)、[多对象示例](https://github.com/facebookresearch/sam-3d-objects/blob/main/notebook/demo_multi_object.ipynb)、[TRELLIS.2 示例](https://github.com/microsoft/TRELLIS.2/blob/main/example.py)、[结构限制](https://arxiv.org/html/2512.14692v1))
 
 **首个门槛是示意组件对应与十秒成景，第二个门槛才是细化网格链路。** 后台用人工确认掩码诊断能否生成各组件网格、变换到共同坐标并投影回原图。局部裁剪生成的网格缺少位姿时须标估计并允许校正，不能给整物表面着色就宣布独立零件。若后台仅有整物网格，标“未分解细化”，继续保留可点选示意场景；整物细化不提供虚假的组件爆炸，示意爆炸只展开其实际独立节点。
 
@@ -45,7 +47,11 @@ CAD 对齐与隐藏内部重建留到有额外证据时：已知三维点、二�
 
 建议架构为 `浏览器 → FastAPI → 检测分割／示意构建 → 初步场景`，并行分支为 `SQLite 任务／文件 → 单个后台 GPU worker → 细化场景`。React＋TypeScript＋Three.js 实现二维标注与三维查看，R3F 可选；Python FastAPI＋Pydantic 管理契约，OpenCV 处理图像及投影，Trimesh 保留场景并导出 GLB，Open3D 后续按需加入。PyTorch 模型适配器分别锁定 Linux、CUDA、依赖与权重版本，不强行合并环境。([FastAPI](https://fastapi.tiangolo.com/features/)、[Pydantic](https://docs.pydantic.dev/latest/)、[Trimesh 场景导出](https://trimesh.org/trimesh.exchange.gltf.html)、[Three.js GLTFLoader](https://threejs.org/docs/pages/GLTFLoader.html))
 
-Web／API 可在 Mac 或普通机器运行，重模型放远端或自有 Linux NVIDIA worker。后台 SAM 官方要求至少 32GB 显存，TRELLIS.2 至少 24GB；同卡顺序比较可评估 48GB 资源，不保证所有配置均够用，也不是快路径的统一显存门槛。快路径检测分割应常驻并实测资源，与后台长任务隔离；单 GPU 时要预留资源并测争用，若后台推理会阻塞首屏则分机或限制后台运行，不能靠排队优先级假装可即时抢占。分机通过接口及受控文件传输交换任务，不跨主机共享 SQLite。([SAM 安装](https://github.com/facebookresearch/sam-3d-objects/blob/main/doc/setup.md)、[TRELLIS.2 环境](https://github.com/microsoft/TRELLIS.2#prerequisites))
+用户已有 **RTX 5080，备选 M4 Pro MacBook Pro**。按 NVIDIA 标准 5080 的 **16GB** 规划，优先在该机器上验证快路径及单个低显存后台候选；其操作系统、驱动和实际可用显存实施时再确认。Mac 承担开发、浏览及组件纠正，并单独验证 CPU／MPS 备用路径。SAM 3D 官方要求至少 32GB，TRELLIS.2 至少 24GB，均列为有相应资源后再测的候选，首版不默认新增或租用硬件。([NVIDIA 规格](https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5080/)、[SAM 安装](https://github.com/facebookresearch/sam-3d-objects/blob/main/doc/setup.md)、[TRELLIS.2 环境](https://github.com/microsoft/TRELLIS.2#prerequisites))
+
+5080 环境选用支持 Blackwell 且与模型扩展兼容的 PyTorch／CUDA 组合；PyTorch 2.7＋CUDA 12.8 是已有官方支持依据，不直接把该历史版本固定为最终环境。自定义稀疏卷积、注意力、光栅化扩展仍须分别验证。M4 Pro 的 MPS 不是 CUDA 扩展的直接替代，自动流程和十秒目标另测。完整部署顺序见 [硬件方案](hardware.md)。([PyTorch Blackwell 公告](https://pytorch.org/blog/pytorch-2-7/)、[MPS 文档](https://docs.pytorch.org/docs/2.7/notes/mps.html))
+
+快路径检测分割应常驻并实测资源，与后台长任务隔离；5080 单卡运行时要记录前台常驻、后台模型及工作区的总占用，并测争用。若后台推理会阻塞首屏，先关闭并发或分时细化，明确十秒目标适用的运行条件，不能靠队列优先级假装可即时抢占。API、SQLite 和文件优先放在同一运行主机，Mac 通过浏览器访问；独立备用模式使用本机数据库，不跨主机共享 SQLite 文件。
 
 初期用 SQLite 任务表、文件目录和一个有租约及心跳的受限 worker。持久化 `attempt/stage/heartbeat/error`，过期任务可恢复或重试；按输入、掩码、模型和配置哈希复用成果，输出临时写入后原子提交。Huey 可作实现选择，暂不需要 Redis、Celery 或 Kubernetes。状态为 `queued/running/partial/succeeded/failed/cancelled`，另存当前阶段；部分网格就绪可进入 `partial`，后续失败仍保留已有产物和错误原因。改名保留几何，修改掩码则失效相关组件几何与依赖布局，形成新版本，旧结果仍可追溯。([FastAPI 重任务说明](https://fastapi.tiangolo.com/tutorial/background-tasks/)、[SqliteHuey](https://huey.readthedocs.io/en/latest/api.html#SqliteHuey))
 
@@ -53,12 +59,13 @@ Web／API 可在 Mac 或普通机器运行，重模型放远端或自有 Linux N
 
 ```text
 /Users/caochao/Documents/2Dto3D/
-  README.md, docs/plan.md, .gitignore
+  README.md, docs/plan.md, docs/roadmap.md, docs/hardware.md, .gitignore
   apps/web/               上传、组件树、掩码与三维查看
   services/api/           契约、快路径、修订与下载
-  workers/adapters/       perception、sam3d、trellis2
+  workers/adapters/       perception、低显存形状生成；高显存适配器后续增加
   packages/contracts/     API 与结果 schema
   configs/                模型、环境、基本体与推理配置
+    equipment_profiles/   各设备类别的词表、组件层级和几何映射
   photos/, data/          原图、掩码、SQLite、场景产物；不入Git
   eval/                   标注规范／评测脚本入Git，样例与结果不入Git
 ```
@@ -77,7 +84,7 @@ POST  /jobs/{id}/cancel                阶段边界响应取消
 GET   /jobs/{id}/export?format=glb|json 下载对应版本
 ```
 
-结果至少记录：原图及采集 ID／哈希、目标和掩码版本；稳定 `component_id`、名称候选及父级；mesh 资产／版本、对应场景节点、原始变换；模型 checkpoint／配置；字段级证据和用户修订。名称可已确认，而同组件背面仍是生成，不能用一个 VLM 分数给整个组件盖“可信”章。字段状态区分 `observed/estimated/generated/user_confirmed/unknown`，并指向照片区域、目录或测量依据。几何来源区分 `placeholder/structural_schematic/generated_mesh/template_fit`，示意与生成结果分别记录就绪时间。
+结果至少记录：原图及采集 ID／哈希、目标和掩码版本；`equipment_type` 与类别配置版本；稳定 `component_id`、名称候选及父级；mesh 资产／版本、对应场景节点、原始变换；模型 checkpoint／配置；字段级证据和用户修订。名称可已确认，而同组件背面仍是生成，不能用一个 VLM 分数给整个组件盖“可信”章。字段状态区分 `observed/estimated/generated/user_confirmed/unknown`，并指向照片区域、目录或测量依据。几何来源区分 `placeholder/structural_schematic/generated_mesh/template_fit`，示意与生成结果分别记录就绪时间。
 
 坐标统一为右手系、Y 向上，每个适配器声明源坐标及 `source_to_scene` 变换；OpenCV 相机的 Y 向下、Z 向前须显式转换，不能凭经验翻转模型。GLB 节点以 `extras.component_id` 和 JSON 关联，名称只供显示。保留 `original_transform`，爆炸另存 `display_offset`，导出默认原始布局。glTF 名义线性单位为米；实际尺度状态独立记 `relative/known/measured/unknown`，未知尺度时归一化显示，尺寸为 null，禁用毫米读数。已知参照只能提供尺度依据，不证明所有形状准确。([glTF 坐标、单位与节点规范](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html))
 
@@ -93,7 +100,7 @@ GET   /jobs/{id}/export?format=glb|json 下载对应版本
 
 为使首轮测试可复现，本稿先提出一个可调整的运行条件：单用户、一次一张图和一台设备、3–8 个粗组件；浏览器在提交后将图像缩至最长边不超过 2048 像素、上传文件不超过 2 MB，压缩也计入总时间。默认服务已完成暖机，测试时记录实际网络和 GPU；冷启动另报。这个条件尚待硬件实测和用户确认，不能据此宣称任何网络或并发下都在十秒内完成。条件之外的请求仍应明确给出状态和耗时，不能静默改成二维完成。
 
-Gate 0 先围绕候选逆变器场景固定组件规则，再补充 **10–12 个独立真实设备／装配样例**，覆盖主体清楚、杂乱遮挡、反光、细支撑及重复结构；现有两张只用于演示和错误讨论。单图评测仅输入一张主图，额外实拍角度只作验证；同设备的照片、裁剪和增强归同一分组，留出样例不参与调优。人工掩码与自动流程分别跑，以定位分割与示意布局错误；后台比较再单列 SAM 原图＋mask 和统一裁剪输入。首轮不从头训练、不微调。
+Gate 0 先围绕已确认的逆变器场景固定组件规则，再补充 **10–12 个独立真实设备／装配样例**，覆盖主体清楚、杂乱遮挡、反光、细支撑及重复结构；现有两张只用于演示和错误讨论。单图评测仅输入一张主图，额外实拍角度只作验证；同设备的照片、裁剪和增强归同一分组，留出样例不参与调优。人工掩码与自动流程分别跑，以定位分割与示意布局错误；后台先测一个低显存候选，若后续比较 SAM 则另报其原图＋mask 的原生输入路径。首轮不从头训练、不微调。
 
 新增真实样本和补充视角能否取得仍待用户确认。若暂时只有现有两图，可先做流程与首屏时延试验，不能将其写成跨设备评测通过，也不能验证隐藏面的真实性。
 
@@ -109,16 +116,22 @@ Gate 0 先围绕候选逆变器场景固定组件规则，再补充 **10–12 �
 
 | 阶段 | 可 review 的产物与通过条件 | 条件性投入估算 |
 |---|---|---|
-| M0 快路径可行性 | 候选样图建立组件规范，自动分割→独立示意 mesh→GLB，测含上传的十秒目标及冷／暖机，形成错误表。 | 3–5 个工程日；样图使用及基础算力到位后。 |
+| M0 快路径可行性 | 确认 5080 系统与环境兼容，用现有样图建立组件规范，自动分割→独立示意 mesh→GLB，测含上传的十秒目标及冷／暖机，形成错误表。 | 3–5 个工程日；样图使用及基础算力到位后。 |
 | M1 端到端切片 | 一例真实照片自动示意首屏、纠正、组件查看、GLB＋JSON 导出；声明条件下 ≤10 秒，修订可追溯。 | 5–8 个工程日；Gate 0 通过后。 |
-| M2 后台细化与评测 | 两模型小对照先过 posed mesh→GLB 门槛，再接异步替换；全样例检查首屏十秒、结构质量、争用、失效与恢复。 | 5–10 个工程日；后台 GPU／权重到位，不含采集等待。 |
+| M2 后台细化与评测 | 5080 先测一个低显存仅形状候选，检查组件对齐与 mesh→GLB，再决定是否增加一个对照；检查首屏十秒、结构质量、显存争用与恢复，独立验证 Mac 备用范围。 | 5–10 个工程日；环境及权重到位，不含采集等待或未解决的扩展移植。 |
 | M3 可选增强 | 根据已定位失败，只选多视角、CAD 模板或定向适配之一。 | 范围确认后另估。 |
 
 以上按熟悉 Python／Web 的一名工程师估算工作量，不是交付日期保证。安装兼容、模型访问、采集和组件布局失败都可能改变范围；未通过前一门槛，不进入更大系统或训练。
 
-## 5. 下一轮讨论决定输入条件和完成标准
+## 5. 从逆变器扩展到多类设备
 
-下一轮需收敛五项决策：是否以组串式逆变器外部结构作为一期及必需组件范围；后台完整细化的等待预算；已有／可租算力、预算、部署位置及暖机条件；能否取得独立实物样本和验证视角；是否需要超出基础示意纠正的高级编辑。**单图优先、必要补拍、十秒内简化结构示意和后台细化均已确认**，无需再次讨论是否接受简化首屏。
+用户要求文档保留多类别的后续计划。建议扩展顺序为：**一期组串式逆变器及外部安装结构 → 二期箱变／预装式变电站 → 三期独立变压器 → 配电柜、汇流箱等更多设备**。单设备能力稳定后再考虑多设备场景；各阶段暂无交付日期。
+
+每类增加独立词表、组件层级、几何基本体映射与标注规则，共用 API、字段级证据、组件 ID 和查看器。箱变的外部分缝不能自动证明内部分舱，变压器外观也不证明内部绕组与连接。新增类别须单独采样、留出评测，并回归一期数据；不能只改提示词就宣布支持新设备。具体工作与阶段通过条件见 [扩展路线图](roadmap.md)。
+
+## 6. 下一轮讨论决定完成标准
+
+下一轮需收敛：一期必需组件与可接受布局误差、后台完整细化等待预算、5080 机器的系统／驱动和 Mac 内存及暖机条件、独立实物样本和验证视角的来源，以及高级编辑需求。**一期范围、扩展到多类设备的方向、现有 5080 与 M4 Pro 备用、单图优先及十秒简化首屏均已确认**，无需再次询问是否有 GPU 或是否接受该首屏方式。
 
 技术上最有价值的下一步，是用真实样例验证**组件对应、可导出网格与约定首屏 10 秒能否同时成立**。该证据决定后续脚手架围绕哪一个模型及哪一层粒度搭建；不能以通用演示替代目标设备验证。
 
