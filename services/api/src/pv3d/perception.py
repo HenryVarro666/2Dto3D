@@ -27,7 +27,40 @@ PROMPT = (
     "a solar inverter. an electrical cabinet. a metal mounting bracket. a concrete pole. a bundle of cables."
 )
 LABELS = {"cabinet": "主机外壳", "bracket": "安装支架", "pole": "支撑立柱", "cables": "线缆束"}
+CLASS_WORDS = {
+    "inverter": ("inverter",),
+    "cabinet": ("cabinet",),
+    "bracket": ("bracket",),
+    "pole": ("pole",),
+    "cables": ("bundle", "cables"),
+}
+FILTER_POLICY = "prompt_nouns_and_equipment_anchors_v1"
 log = logging.getLogger(__name__)
+
+
+def prompt_class_scores(probabilities, offsets) -> list[dict[str, float]]:
+    """Use prompt noun spans, not decoded fragments or high-scoring determiners.
+
+    All wordpieces of a noun must support it. A lone '##verter' must not turn a
+    person into an inverter. 'bundle' can recover the cable query, but remains
+    subject to equipment-context filtering.
+    """
+    word_indices = {}
+    for words in CLASS_WORDS.values():
+        for word in words:
+            start = PROMPT.index(word)
+            stop = start + len(word)
+            word_indices[word] = [i for i, (a, b) in enumerate(offsets) if b > a >= start and b <= stop]
+    return [
+        {
+            kind: max(
+                (min(float(query[i]) for i in word_indices[word]) if word_indices[word] else 0.0)
+                for word in words
+            )
+            for kind, words in CLASS_WORDS.items()
+        }
+        for query in probabilities
+    ]
 
 
 def _category(phrase: str) -> str | None:
@@ -38,7 +71,7 @@ def _category(phrase: str) -> str | None:
         return "bracket"
     if any(word in phrase for word in ("pole", "post", "column")):
         return "pole"
-    if any(word in phrase for word in ("cable", "wire")):
+    if any(word in phrase for word in ("cable", "wire", "bundle")):
         return "cables"
     return None
 
@@ -50,12 +83,26 @@ def _iou(a: list[float], b: list[float]) -> float:
     return intersection / max(area_a + area_b - intersection, 1e-12)
 
 
-def normalize_predictions(boxes, scores, phrases, image_size, scene_mode="single") -> list[dict]:
+def normalize_predictions(
+    boxes, scores, phrases, image_size, scene_mode="single", *, class_scores=None, diagnostics=None
+) -> list[dict]:
     """Keep finite, supported predictions and remove duplicate same-class boxes."""
     width, height = image_size
     candidates = []
-    for raw_box, raw_score, phrase in zip(boxes, scores, phrases):
-        category = _category(str(phrase))
+    if class_scores is not None and len(class_scores) != len(boxes):
+        raise ValueError("Prompt class evidence must align with detector boxes")
+    for index, (raw_box, raw_score, phrase) in enumerate(zip(boxes, scores, phrases)):
+        phrase = str(phrase).lower()
+        evidence = class_scores[index] if class_scores is not None else None
+        if evidence is not None:
+            kind = max(evidence, key=evidence.get, default=None)
+            category = ("cabinet" if kind == "inverter" else kind) if kind else None
+            if kind is not None and evidence[kind] <= 0.22:
+                category = None
+            specific_inverter = evidence.get("inverter", 0) > 0.22
+        else:
+            category = _category(phrase)
+            specific_inverter = "inverter" in phrase
         score = float(raw_score)
         box = [float(value) for value in raw_box]
         if category is None or len(box) != 4 or not all(math.isfinite(v) for v in [*box, score]):
@@ -74,25 +121,80 @@ def normalize_predictions(boxes, scores, phrases, image_size, scene_mode="single
                 "bbox": [x1, y1, x2, y2],
                 "score": round(score, 5),
                 "source": "grounding_dino",
+                "_inverter": specific_inverter,
+                "_ambiguous_bundle": category == "cables"
+                and "bundle" in phrase
+                and not any(word in phrase for word in ("cable", "wire")),
             }
         )
     kept = []
-    for candidate in sorted(candidates, key=lambda item: -item["score"]):
+    # Prefer specific device evidence over an overlapping generic cabinet query.
+    for candidate in sorted(
+        candidates,
+        key=lambda item: (item["category"] == "cabinet" and item["_inverter"], item["score"]),
+        reverse=True,
+    ):
         if any(
             candidate["category"] == prev["category"] and _iou(candidate["bbox"], prev["bbox"]) > 0.55
             for prev in kept
         ):
             continue
         kept.append(candidate)
+    kept.sort(key=lambda item: -item["score"])
+    post_nms_count = len(kept)
+
+    def area(item):
+        x1, y1, x2, y2 = item["bbox"]
+        return (x2 - x1) * (y2 - y1)
+
+    specific = [
+        item for item in kept if item["category"] == "cabinet" and item["_inverter"] and area(item) >= 0.01
+    ]
+    context_rejected = 0
+    bounded = []
+    for item in kept:
+        envelope = False
+        if item["category"] == "cabinet" and not item["_inverter"]:
+            envelope = area(item) > 0.65
+            for device in specific:
+                a, b = item["bbox"], device["bbox"]
+                overlap = max(0, min(a[2], b[2]) - max(a[0], b[0])) * max(
+                    0, min(a[3], b[3]) - max(a[1], b[1])
+                )
+                if overlap >= 0.9 * area(device) and area(item) > 1.8 * area(device):
+                    envelope = True
+        if envelope:
+            context_rejected += 1
+        else:
+            bounded.append(item)
+    kept = bounded
+    # Tiny corner boxes cannot establish a whole equipment or its relative scale.
+    anchors = [item for item in kept if item["category"] == "cabinet" and area(item) >= 0.01]
+    if not anchors:
+        kept = [item for item in kept if item["category"] != "cabinet"]
+
+    def near_equipment(item, device):
+        x1, y1, x2, y2 = device["bbox"]
+        width, height = x2 - x1, y2 - y1
+        cx, cy = (item["bbox"][0] + item["bbox"][2]) / 2, (item["bbox"][1] + item["bbox"][3]) / 2
+        return x1 - width * 0.5 <= cx <= x2 + width * 0.5 and y1 - height <= cy <= y2 + height
+
+    ambiguous_rejected = sum(
+        item["_ambiguous_bundle"] and not any(near_equipment(item, device) for device in anchors)
+        for item in kept
+    )
+    kept = [
+        item
+        for item in kept
+        if not item["_ambiguous_bundle"] or any(near_equipment(item, device) for device in anchors)
+    ]
     cabinets = [item for item in kept if item["category"] == "cabinet"]
+    primary = None
     if cabinets and scene_mode == "single":
         # The first release handles one selected equipment, not a whole station.
         primary = max(
-            cabinets,
-            key=lambda item: (
-                item["score"]
-                * math.sqrt((item["bbox"][2] - item["bbox"][0]) * (item["bbox"][3] - item["bbox"][1]))
-            ),
+            anchors,
+            key=lambda item: (item["_inverter"], item["score"]),
         )
         x1, y1, x2, y2 = primary["bbox"]
         width, height = x2 - x1, y2 - y1
@@ -106,7 +208,26 @@ def normalize_predictions(boxes, scores, phrases, image_size, scene_mode="single
                 and y1 - height <= (item["bbox"][1] + item["bbox"][3]) / 2 <= y2 + height
             )
         ]
-    return kept[:12]
+    if diagnostics is not None:
+        diagnostics.update(
+            policy=FILTER_POLICY,
+            input_candidates=len(boxes),
+            mapped_candidates=len(candidates),
+            post_nms_count=post_nms_count,
+            guards={
+                "min_equipment_anchor_area": 0.01,
+                "max_generic_cabinet_area": 0.65,
+                "context_envelope_containment": 0.9,
+                "context_envelope_area_ratio": 1.8,
+            },
+            rejected_context_cabinets=context_rejected,
+            primary_anchor_established=bool(anchors),
+            rejected_unanchored_bundles=ambiguous_rejected,
+            primary_bbox=primary["bbox"] if primary else None,
+            primary_kind=("inverter" if primary["_inverter"] else "cabinet") if primary else None,
+            retained=len(kept[:12]),
+        )
+    return [{key: value for key, value in item.items() if not key.startswith("_")} for item in kept[:12]]
 
 
 class GroundingDetector:
@@ -341,12 +462,24 @@ class GroundingDetector:
                     target_sizes=[(image.height, image.width)],
                 )[0]
                 phrases = result["text_labels"] if "text_labels" in result else result["labels"]
+                class_scores = None
+                if len(result["boxes"]):
+                    tokenized = self._processor.tokenizer(PROMPT, return_offsets_mapping=True)
+                    if tokenized["input_ids"] != inputs["input_ids"][0].cpu().tolist():
+                        raise ValueError("Prompt token offsets differ from the model input")
+                    probabilities = output.logits[0].sigmoid()
+                    # Same query order/threshold as the installed processor's post-processing.
+                    selected = probabilities[probabilities.max(dim=-1).values > 0.24]
+                    class_scores = prompt_class_scores(selected.cpu().tolist(), tokenized["offset_mapping"])
+                filter_diagnostics = {}
                 detections = normalize_predictions(
                     result["boxes"].cpu().tolist(),
                     result["scores"].cpu().tolist(),
                     phrases,
                     image.size,
                     scene_mode=scene_mode,
+                    class_scores=class_scores,
+                    diagnostics=filter_diagnostics,
                 )
                 detected = time.perf_counter()
                 if detections and os.environ.get("PV3D_SEGMENT", "1") == "1":
@@ -373,6 +506,8 @@ class GroundingDetector:
                         "cold_start": cold,
                         "prompt": PROMPT,
                         "score_kind": "uncalibrated_model_score",
+                        "label_mapping": "complete_prompt_noun_wordpieces",
+                        "filtering": filter_diagnostics,
                         "segmentation_id": self.sam_model_id if self._segmentation_state == "ready" else None,
                         "segmentation_revision": getattr(self._sam.config, "_commit_hash", None)
                         if self._sam
