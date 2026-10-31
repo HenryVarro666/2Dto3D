@@ -14,6 +14,7 @@ Use `docs/plan.md` for the approved design and docs/implementation-phase1.md for
 - Phase 1 is confirmed as string inverters and their external mounting structures. Document later expansion to compact substations, transformers, and other equipment; do not silently make all categories part of Phase 1.
 - The user has an NVIDIA RTX 5080; the fallback is an M4 Pro MacBook Pro. This execution host is M4 Pro with 24GB memory and MPS available; actual model calls ran here. RTX 5080 OS/driver/available VRAM and performance remain unverified. Use `docs/hardware.md` for resource-aware planning.
 - Make visible component composition understandable through selection, hiding, and an explanatory exploded view.
+- Support Chinese, English and Spanish UI switching with a remembered local preference. Switching language must preserve active jobs, photos, camera, selection, visibility and user edits; translate built-in labels for display without rewriting API data or user-entered names.
 - The canonical local project root is `/Users/caochao/Documents/2Dto3D/`. Earlier ChatGPT and Work paths are obsolete.
 
 ## Geometry and evidence

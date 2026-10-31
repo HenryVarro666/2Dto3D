@@ -1,0 +1,129 @@
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import type { Category, EditableComponent } from "../api/types";
+import { messages } from "./messages";
+import type { MessageKey } from "./messages";
+
+export type Locale = "zh" | "en" | "es";
+const storageKey = "pv3d.locale";
+type Params = Record<string, string | number>;
+
+const serverMessages: Record<string, MessageKey> = {
+  "Model unavailable. Check local server logs.":
+    "模型不可用，请检查本地服务日志。",
+  "Model status unavailable.": "模型状态不可用。",
+  "The server stopped before this task finished. Start a new task to try again.":
+    "任务因服务重启而中断。可重新识别或手动框选。",
+  "Use an actual JPEG, PNG, or WebP image.":
+    "图片格式或内容无效，请选择 JPEG、PNG 或 WebP 图片。",
+  "The file is not a valid supported image.":
+    "图片格式或内容无效，请选择 JPEG、PNG 或 WebP 图片。",
+  "The decoded image exceeds 25 million pixels.":
+    "图片解码后尺寸过大，请选择较小图片。",
+  "The decoded image is too large.": "图片解码后尺寸过大，请选择较小图片。",
+  "The upload exceeds 20 MB.": "图片超过 20MB 上限",
+  "The local processing queue is full. Retry after a task finishes.":
+    "处理队列已满，请等当前任务完成后重试。",
+  "Processing failed. Check local server logs, retry, or use manual components.":
+    "处理失败，请检查本地服务日志，重试或手动框选组件。",
+  "Asset not found.": "找不到照片。",
+  "Job not found.": "找不到任务。",
+  "The job has no completed result.": "任务尚无已完成的结果。",
+  "The asset image is unavailable.": "照片文件不可用，请重新上传。",
+  "The base job must belong to the same image asset.":
+    "校正必须基于同一照片的任务。",
+  "The result file is unavailable. Start a new task.":
+    "结果文件不可用，请新建任务。",
+  "There is no component scene. Add or correct components manually.":
+    "没有组件场景，请手动添加或校正组件。",
+  "API route not found.": "找不到 API 路由。",
+  "Metric scale is unknown; all geometry uses relative display units.":
+    "所有几何均采用相对显示单位，真实尺度未知。",
+  "Depth and hidden surfaces use category priors, not recovered measurements.":
+    "深度与隐藏面来自类别先验，并非恢复的实测数据。",
+  "An exploded view explains visible component composition, not a verified disassembly procedure.":
+    "分解视图用于解释可见组成，不代表经过验证的拆装流程。",
+  "No usable components were recognized. Add or correct boxes manually.":
+    "未识别到有效组件，请手动添加或校正候选框。",
+  "An oversized or distant unknown detection was excluded from the cabinet schematic.":
+    "已从柜体示意中排除过大或过远的未知候选。",
+  "Manual edits were applied. Unchanged component evidence is retained from the base result.":
+    "已应用人工校正，未修改组件保留原有识别依据。",
+  MPS_FALLBACK_CPU: "MPS 推理已回退到 CPU。",
+  SAM2_UNAVAILABLE_BBOX_ONLY: "SAM 2 不可用，保留真实检测框，不使用伪造区域。",
+};
+
+export const categoryKeys: Record<Category, MessageKey> = {
+  cabinet: "逆变器机柜",
+  bracket: "安装支架",
+  pole: "立柱 / 支撑",
+  cables: "线缆束",
+  unknown: "其他组件",
+};
+const defaultNames = new Set<string>([
+  "主机外壳",
+  "逆变器机柜",
+  "安装支架",
+  "支撑立柱",
+  "线缆束",
+]);
+
+function translator(locale: Locale) {
+  const t = (source: MessageKey, params: Params = {}) => {
+    const text =
+      locale === "zh" ? source : messages[source][locale === "en" ? 0 : 1];
+    return text.replace(/\{(\w+)\}/g, (placeholder, key: string) =>
+      Object.hasOwn(params, key) ? String(params[key]) : placeholder,
+    );
+  };
+  const localize = (message: string) => {
+    if (Object.hasOwn(messages, message)) return t(message as MessageKey);
+    if (Object.hasOwn(serverMessages, message))
+      return t(serverMessages[message]);
+    const status = /^请求未完成（(\d{3})），请重试。$/.exec(message);
+    return status
+      ? t("请求未完成（{status}），请重试。", { status: status[1] })
+      : message;
+  };
+  const componentLabel = (component: EditableComponent) =>
+    (component.labelEdited === false ||
+      (component.labelEdited === undefined &&
+        component.source === "grounding_dino")) &&
+    defaultNames.has(component.label)
+      ? t(component.label as MessageKey)
+      : component.label;
+  return { locale, t, localize, componentLabel };
+}
+
+const I18nContext = createContext({
+  ...translator("zh"),
+  setLocale: (_locale: Locale) => {},
+});
+
+function savedLocale(): Locale {
+  try {
+    const locale = localStorage.getItem(storageKey);
+    return locale === "en" || locale === "es" ? locale : "zh";
+  } catch {
+    return "zh";
+  }
+}
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [locale, setLocale] = useState<Locale>(savedLocale);
+  const value = useMemo(() => ({ ...translator(locale), setLocale }), [locale]);
+  useEffect(() => {
+    document.documentElement.lang = locale === "zh" ? "zh-CN" : locale;
+    document.title = `${value.t("设备结构工作台")} · PV Structure`;
+    try {
+      localStorage.setItem(storageKey, locale);
+    } catch {
+      /* Switching still works if storage is blocked. */
+    }
+  }, [locale, value]);
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
+}
+
+export function useI18n() {
+  return useContext(I18nContext);
+}

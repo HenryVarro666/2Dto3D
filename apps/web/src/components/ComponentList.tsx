@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import { Crosshair, Pencil, Trash2, X } from "lucide-react";
 import type { Category, EditableComponent } from "../api/types";
-
-export const categoryLabels: Record<Category, string> = {
-  cabinet: "逆变器机柜",
-  bracket: "安装支架",
-  pole: "立柱 / 支撑",
-  cables: "线缆束",
-  unknown: "其他组件",
-};
+import { categoryKeys, useI18n } from "../i18n";
 type Props = {
   components: EditableComponent[];
   selectedId: string | null;
@@ -34,6 +27,7 @@ export function ComponentList({
   editRequestId,
   mutationsDisabled = false,
 }: Props) {
+  const { t, componentLabel } = useI18n();
   const [editingId, setEditingId] = useState<string | null>(null);
   useEffect(() => {
     if (editRequestId) setEditingId(editRequestId);
@@ -43,10 +37,10 @@ export function ComponentList({
     <>
       <div className="component-table">
         <div className="component-table-head">
-          <span>可见</span>
-          <span>组件候选</span>
-          <span>来源 / 模型分数</span>
-          <span>操作</span>
+          <span>{t("可见")}</span>
+          <span>{t("组件候选")}</span>
+          <span>{t("来源 / 模型分数")}</span>
+          <span>{t("操作")}</span>
         </div>
         {components.map((component, index) => (
           <div
@@ -56,7 +50,9 @@ export function ComponentList({
             <label className="visibility-toggle">
               <input
                 type="checkbox"
-                aria-label={`显示 ${component.label}`}
+                aria-label={t("显示 {name}", {
+                  name: componentLabel(component),
+                })}
                 checked={!hiddenIds.has(component.id)}
                 onChange={() => onToggle(component.id)}
               />
@@ -65,7 +61,7 @@ export function ComponentList({
             <button
               className="component-select"
               onClick={() => onSelect(component.id)}
-              aria-label={`选择 ${component.label}`}
+              aria-label={t("选择 {name}", { name: componentLabel(component) })}
               aria-pressed={selectedId === component.id}
             >
               <span
@@ -73,10 +69,10 @@ export function ComponentList({
                 style={{ background: component.color || "#719c92" }}
               />
               <span>
-                <strong>{component.label}</strong>
+                <strong>{componentLabel(component)}</strong>
                 <small>
                   {String(index + 1).padStart(2, "0")} ·{" "}
-                  {categoryLabels[component.category]}
+                  {t(categoryKeys[component.category])}
                 </small>
               </span>
             </button>
@@ -84,11 +80,11 @@ export function ComponentList({
               className="component-confidence"
               title={
                 component.source === "manual"
-                  ? "人工框选与命名"
-                  : "模型匹配分数未经准确率校准"
+                  ? t("人工框选与命名")
+                  : t("模型匹配分数未经准确率校准")
               }
             >
-              {component.source === "manual" ? "人工标注" : "模型候选"}
+              {component.source === "manual" ? t("人工标注") : t("模型候选")}
               {component.score != null && (
                 <small>{component.score.toFixed(2)}</small>
               )}
@@ -96,16 +92,20 @@ export function ComponentList({
             <div className="row-actions">
               <button
                 className="icon-button"
-                aria-label={`只看 ${component.label}`}
-                title="只看此组件"
+                aria-label={t("只看 {name}", {
+                  name: componentLabel(component),
+                })}
+                title={t("只看此组件")}
                 onClick={() => onIsolate(component.id)}
               >
                 <Crosshair size={15} />
               </button>
               <button
                 className="icon-button"
-                aria-label={`编辑 ${component.label}`}
-                title="编辑组件"
+                aria-label={t("编辑 {name}", {
+                  name: componentLabel(component),
+                })}
+                title={t("编辑组件")}
                 disabled={mutationsDisabled}
                 onClick={() => {
                   onSelect(component.id);
@@ -121,11 +121,11 @@ export function ComponentList({
       {editing && (
         <div className="component-editor">
           <div className="editor-heading">
-            <strong>校正组件</strong>
+            <strong>{t("校正组件")}</strong>
             <code>{editing.id}</code>
             <button
               className="icon-button"
-              aria-label="关闭组件编辑"
+              aria-label={t("关闭组件编辑")}
               onClick={() => setEditingId(null)}
             >
               <X size={16} />
@@ -133,10 +133,10 @@ export function ComponentList({
           </div>
           <div className="editor-fields">
             <label>
-              组件名称
+              {t("组件名称")}
               <input
-                aria-label="组件名称"
-                value={editing.label}
+                aria-label={t("组件名称")}
+                value={componentLabel(editing)}
                 maxLength={80}
                 disabled={mutationsDisabled}
                 onChange={(event) =>
@@ -145,9 +145,9 @@ export function ComponentList({
               />
             </label>
             <label>
-              组件类别
+              {t("组件类别")}
               <select
-                aria-label="组件类别"
+                aria-label={t("组件类别")}
                 value={editing.category}
                 disabled={mutationsDisabled}
                 onChange={(event) =>
@@ -156,9 +156,9 @@ export function ComponentList({
                   })
                 }
               >
-                {Object.entries(categoryLabels).map(([value, label]) => (
+                {Object.entries(categoryKeys).map(([value, label]) => (
                   <option key={value} value={value}>
-                    {label}
+                    {t(label)}
                   </option>
                 ))}
               </select>
@@ -172,13 +172,15 @@ export function ComponentList({
               }}
             >
               <Trash2 size={14} />
-              移除组件
+              {t("移除组件")}
             </button>
           </div>
           <p>
             {mutationsDisabled
-              ? "结构正在生成，完成后可继续校正。"
-              : "修改保留组件 ID。完成校正后，点击“重新生成结构”应用到三维示意。"}
+              ? t("结构正在生成，完成后可继续校正。")
+              : t(
+                  "修改保留组件 ID。完成校正后，点击“重新生成结构”应用到三维示意。",
+                )}
           </p>
         </div>
       )}

@@ -21,6 +21,8 @@ import { ComponentList } from "./components/ComponentList";
 import { ModelHealth } from "./components/ModelHealth";
 import { PhotoPanel } from "./components/PhotoPanel";
 import { ProcessingStatus } from "./components/ProcessingStatus";
+import { LanguageSwitcher } from "./components/LanguageSwitcher";
+import { I18nProvider, useI18n } from "./i18n";
 
 const SceneViewer = lazy(() =>
   import("./components/SceneViewer").then((module) => ({
@@ -28,7 +30,8 @@ const SceneViewer = lazy(() =>
   })),
 );
 
-export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
+function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
+  const { t, localize, componentLabel } = useI18n();
   const { state, elapsedMs, selectPhoto, rebuild, cancel, viewerReady } =
     useWorkbench(apiClient);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -66,7 +69,19 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
   }, [assetId]);
   useEffect(() => {
     if (!state.result) return;
-    setComponents(state.result.components);
+    const received = state.result.components;
+    setComponents((current) =>
+      received.map((component) => {
+        const previous = current.find((item) => item.id === component.id);
+        return {
+          ...component,
+          labelEdited:
+            previous?.label === component.label
+              ? (previous.labelEdited ?? previous.source !== "grounding_dino")
+              : component.source !== "grounding_dino",
+        };
+      }),
+    );
     setHiddenIds(new Set());
     setSelectedId(null);
     setDirty(false);
@@ -99,7 +114,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
         id,
         bbox,
         category: "unknown",
-        label: `新组件 ${current.length + 1}`,
+        label: t("新组件 {count}", { count: current.length + 1 }),
         source: "manual",
         score: null,
         color: "#bc9563",
@@ -145,35 +160,37 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <a className="brand" href="/" aria-label="PV Structure 工作台首页">
+        <a className="brand" href="/" aria-label={t("PV Structure 工作台首页")}>
           <span className="brand-mark">
             <Box size={24} strokeWidth={1.7} />
           </span>
           <span>
             PV<span className="brand-light">STRUCTURE</span>
           </span>
-          <small>设备结构实验室</small>
+          <small>{t("设备结构实验室")}</small>
         </a>
         <div className="topbar-meta">
           <span className="local-badge">
             <span />
-            LOCAL WORKSPACE
+            {t("本地工作空间")}
           </span>
           <span className="topbar-divider" />
-          <span className="phase-badge">PHASE 01</span>
+          <span className="phase-badge">{t("一期")}</span>
+          <LanguageSwitcher />
         </div>
       </header>
       <main className="main-content">
         <div className="workspace-heading">
           <div>
             <div className="breadcrumb">
-              工作空间 <ChevronRight size={12} />
-              <span>照片 → 组件结构</span>
+              {t("工作空间")} <ChevronRight size={12} />
+              <span>{t("照片 → 组件结构")}</span>
             </div>
             <h1>
-              设备结构工作台<span aria-hidden="true">一期</span>
+              {t("设备结构工作台")}
+              <span aria-hidden="true">{t("一期")}</span>
             </h1>
-            <p>组串式逆变器与外部安装结构的可交互示意</p>
+            <p>{t("组串式逆变器与外部安装结构的可交互示意")}</p>
           </div>
           <div className="workspace-actions">
             <ModelHealth api={apiClient} />
@@ -182,7 +199,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
               onClick={() => fileInputRef.current?.click()}
             >
               <Upload size={16} />
-              {imageUrl ? "更换照片" : "导入照片"}
+              {imageUrl ? t("更换照片") : t("导入照片")}
             </button>
           </div>
         </div>
@@ -191,7 +208,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
           ref={fileInputRef}
           type="file"
           accept="image/jpeg,image/png,image/webp"
-          aria-label="选择设备照片"
+          aria-label={t("选择设备照片")}
           onChange={(event) => {
             const file = event.currentTarget.files?.[0];
             if (file) chooseFile(file);
@@ -199,11 +216,11 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
           }}
         />
 
-        <nav className="workflow-steps" aria-label="处理步骤">
+        <nav className="workflow-steps" aria-label={t("处理步骤")}>
           {[
-            ["导入照片", "单张现场照片"],
-            ["识别组件", "可见组件候选"],
-            ["查看结构", "独立组件示意"],
+            [t("导入照片"), t("单张现场照片")],
+            [t("识别组件"), t("可见组件候选")],
+            [t("查看结构"), t("独立组件示意")],
           ].map(([label, detail], index) => (
             <div
               key={label}
@@ -223,7 +240,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
           ))}
           <span className="workflow-scope">
             <span className="tiny-dot" />
-            单图 · 相对尺度 · 可人工校正
+            {t("单图 · 相对尺度 · 可人工校正")}
           </span>
         </nav>
 
@@ -263,16 +280,22 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
             <header className="panel-heading">
               <div>
                 <span className="panel-index">02</span>
-                <h2 id="model-title">三维结构</h2>
-                <span className="panel-heading-note">STRUCTURE VIEW</span>
+                <h2 id="model-title">{t("三维结构")}</h2>
+                <span className="panel-heading-note" aria-hidden="true">
+                  3D
+                </span>
               </div>
-              <span className="schematic-badge">结构示意 · 比例估计</span>
+              <span className="schematic-badge">
+                {t("结构示意 · 比例估计")}
+              </span>
             </header>
             <div className="model-stage">
               {state.result?.scene_url ? (
                 <Suspense
                   fallback={
-                    <div className="viewer-loading">正在准备三维查看器…</div>
+                    <div className="viewer-loading">
+                      {t("正在准备三维查看器…")}
+                    </div>
                   }
                 >
                   <SceneViewer
@@ -300,37 +323,37 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                     <i />
                   </div>
                   <h3>
-                    {active ? "正在准备组件结构" : "在这里查看设备的组成"}
+                    {active ? t("正在准备组件结构") : t("在这里查看设备的组成")}
                   </h3>
                   <p>
                     {active
-                      ? "识别完成后，三维视图将自动载入"
-                      : "上传照片后，旋转、选择并逐个查看组件"}
+                      ? t("识别完成后，三维视图将自动载入")
+                      : t("上传照片后，旋转、选择并逐个查看组件")}
                   </p>
                   <div className="empty-interactions">
                     <span>
                       <RotateCcw size={13} />
-                      旋转
+                      {t("旋转")}
                     </span>
                     <span>
                       <Focus size={13} />
-                      选中
+                      {t("选中")}
                     </span>
                     <span>
                       <Layers3 size={13} />
-                      分解
+                      {t("分解")}
                     </span>
                   </div>
                 </div>
               )}
               <span className="scale-badge">
                 <Info size={12} />
-                尺寸未标定
+                {t("尺寸未标定")}
               </span>
               {selected && (
                 <div className="selected-component">
                   <span style={{ background: selected.color || "#719c92" }} />
-                  <strong>{selected.label}</strong>
+                  <strong>{componentLabel(selected)}</strong>
                   <button
                     className="text-button"
                     onClick={() =>
@@ -343,7 +366,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                       )
                     }
                   >
-                    只看此组件 <Focus size={12} />
+                    {t("只看此组件")} <Focus size={12} />
                   </button>
                 </div>
               )}
@@ -356,7 +379,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   disabled={!state.result?.scene_url}
                 >
                   <RotateCcw size={14} />
-                  恢复视图
+                  {t("恢复视图")}
                 </button>
                 <label className="wireframe-toggle">
                   <input
@@ -365,12 +388,12 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                     disabled={!state.result?.scene_url}
                     onChange={(event) => setWireframe(event.target.checked)}
                   />
-                  线框
+                  {t("线框")}
                 </label>
               </div>
               <label className="explosion-control">
                 <Layers3 size={14} />
-                <span>组件分解</span>
+                <span>{t("组件分解")}</span>
                 <input
                   type="range"
                   min="0"
@@ -379,7 +402,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   value={explosion}
                   disabled={!state.result?.scene_url}
                   onChange={(event) => setExplosion(Number(event.target.value))}
-                  aria-label="组件分解程度"
+                  aria-label={t("组件分解程度")}
                 />
                 <span className="explosion-value">
                   {Math.round(explosion * 100)}%
@@ -387,7 +410,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
               </label>
             </div>
             <footer className="model-caption">
-              <span>拖动旋转 · 右键平移 · 滚轮缩放</span>
+              <span>{t("拖动旋转 · 右键平移 · 滚轮缩放")}</span>
               <span>Y ↑</span>
             </footer>
           </section>
@@ -403,11 +426,13 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                 <span className="section-icon">
                   <Layers3 size={17} />
                 </span>
-                <h2 id="components-title">组件候选</h2>
+                <h2 id="components-title">{t("组件候选")}</h2>
                 <span className="count-badge">
                   {String(components.length).padStart(2, "0")}
                 </span>
-                {dirty && <span className="dirty-badge">校正待生成</span>}
+                {dirty && (
+                  <span className="dirty-badge">{t("校正待生成")}</span>
+                )}
               </div>
               <div className="component-heading-actions">
                 <button
@@ -416,7 +441,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   onClick={() => setDrawing(!drawing)}
                 >
                   <ScanLine size={14} />
-                  添加组件框
+                  {t("添加组件框")}
                 </button>
                 <button
                   className="button primary small"
@@ -428,7 +453,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   onClick={manualRebuild}
                 >
                   <WandSparkles size={14} />
-                  重新生成结构
+                  {t("重新生成结构")}
                 </button>
               </div>
             </header>
@@ -453,7 +478,15 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   if (active) return;
                   setComponents((current) =>
                     current.map((item) =>
-                      item.id === id ? { ...item, ...patch } : item,
+                      item.id === id
+                        ? {
+                            ...item,
+                            ...patch,
+                            ...(patch.label !== undefined
+                              ? { labelEdited: true }
+                              : {}),
+                          }
+                        : item,
                     ),
                   );
                   setDirty(true);
@@ -475,11 +508,11 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   <Layers3 size={25} strokeWidth={1.3} />
                 </span>
                 <div>
-                  <strong>还没有组件候选</strong>
+                  <strong>{t("还没有组件候选")}</strong>
                   <p>
                     {state.asset && !active
-                      ? "未识别到组件时，可在照片上手动框选并命名。"
-                      : "照片中的可见机柜、安装支架和线缆会列在这里。"}
+                      ? t("未识别到组件时，可在照片上手动框选并命名。")
+                      : t("照片中的可见机柜、安装支架和线缆会列在这里。")}
                   </p>
                 </div>
                 {state.asset && !active && (
@@ -487,7 +520,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                     className="text-button"
                     onClick={() => setDrawing(true)}
                   >
-                    开始框选 <ArrowRight size={14} />
+                    {t("开始框选")} <ArrowRight size={14} />
                   </button>
                 )}
               </div>
@@ -495,14 +528,14 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
             <footer className="components-footnote">
               <span>
                 <Info size={12} />
-                模型输出为候选，请结合照片确认。分解视图用于解释组成。
+                {t("模型输出为候选，请结合照片确认。分解视图用于解释组成。")}
               </span>
               {hiddenIds.size > 0 && (
                 <button
                   className="text-button"
                   onClick={() => setHiddenIds(new Set())}
                 >
-                  显示全部组件
+                  {t("显示全部组件")}
                 </button>
               )}
             </footer>
@@ -511,21 +544,27 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
           <aside className="notes-panel">
             <div className="notes-title">
               <Info size={16} />
-              <h2>如何理解这个结果</h2>
+              <h2>{t("如何理解这个结果")}</h2>
             </div>
             <p>
-              这是基于照片的结构示意。组件厚度和背面使用简化先验，尚未标定真实尺寸。
+              {t(
+                "这是基于照片的结构示意。组件厚度和背面使用简化先验，尚未标定真实尺寸。",
+              )}
             </p>
             <div className="note-rule" />
             <p className="secondary-note">
-              候选组件不等同于完整工程 BOM；分解位置不代表真实拆装步骤。
+              {t("候选组件不等同于完整工程 BOM；分解位置不代表真实拆装步骤。")}
             </p>
             {Boolean(state.result?.warnings.length) && (
               <details className="result-warnings">
-                <summary>处理说明（{state.result?.warnings.length}）</summary>
+                <summary>
+                  {t("处理说明（{count}）", {
+                    count: state.result?.warnings.length ?? 0,
+                  })}
+                </summary>
                 <ul>
                   {state.result?.warnings.map((warning, index) => (
-                    <li key={index}>{warning}</li>
+                    <li key={index}>{localize(warning)}</li>
                   ))}
                 </ul>
               </details>
@@ -538,7 +577,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                 aria-disabled={!state.result?.scene_url}
               >
                 <ArrowDownToLine size={14} />
-                GLB 模型
+                {t("GLB 模型")}
               </a>
               <a
                 className={`download-link ${!state.result ? "disabled" : ""}`}
@@ -547,7 +586,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                 aria-disabled={!state.result}
               >
                 <FileJson size={14} />
-                组件 JSON
+                {t("组件 JSON")}
               </a>
             </div>
           </aside>
@@ -555,13 +594,22 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
         <footer className="workspace-footer">
           <span>
             <span className="tiny-dot" />
-            本地文件与本地推理服务
+            {t("本地文件与本地推理服务")}
           </span>
           <span>
-            PV STRUCTURE <span className="footer-slash">/</span> 工作台 v0.1
+            PV STRUCTURE <span className="footer-slash">/</span> {t("工作台")}{" "}
+            v0.1
           </span>
         </footer>
       </main>
     </div>
+  );
+}
+
+export default function App(props: { apiClient?: WorkbenchApi }) {
+  return (
+    <I18nProvider>
+      <Workbench {...props} />
+    </I18nProvider>
   );
 }

@@ -156,6 +156,36 @@ input[type="range"] {
   letter-spacing: 1.3px;
   color: #d4dcd5;
 }
+.language-switch {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 8px;
+  border: 1px solid #647a6d;
+  border-radius: 5px;
+  color: #e1eee5;
+  background: #31483d;
+  flex-shrink: 0;
+}
+.language-switch select {
+  min-height: 28px;
+  max-width: 110px;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+.language-switch select:focus-visible {
+  outline: 2px solid #aed9c4;
+  outline-offset: 3px;
+}
+.language-switch option {
+  color: #253c30;
+  background: #fff;
+}
 .main-content {
   max-width: 1740px;
   margin: auto;
@@ -188,6 +218,7 @@ input[type="range"] {
   align-items: center;
   gap: 10px;
   line-height: 1.3;
+  flex-wrap: wrap;
 }
 .workspace-heading h1 > span {
   font-size: 10px;
@@ -294,14 +325,16 @@ input[type="range"] {
 }
 .workflow-steps {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   background: #fbfcf9;
   border: 1px solid #e1e6dc;
   border-radius: 6px;
   min-height: 55px;
-  padding: 0 18px;
+  padding: 12px 18px;
   margin-bottom: 16px;
   gap: 26px;
+  row-gap: 10px;
 }
 .workflow-step {
   display: flex;
@@ -947,8 +980,10 @@ input[type="range"] {
   pointer-events: none;
 }
 .model-toolbar {
-  height: 48px;
+  height: auto;
+  min-height: 48px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   padding: 0 11px;
@@ -1854,6 +1889,7 @@ input[type="range"] {
   .phase-badge {
     font-size: 8px;
     letter-spacing: 1px;
+    display: none;
   }
   .main-content {
     padding: 22px 14px 0;
@@ -1866,6 +1902,7 @@ input[type="range"] {
   .workspace-heading {
     margin-bottom: 21px;
     gap: 8px;
+    flex-wrap: wrap;
   }
   .workspace-heading h1 {
     font-size: 21px;
@@ -1917,6 +1954,11 @@ input[type="range"] {
   .workflow-step {
     font-size: 9px;
     gap: 6px;
+    min-width: 0;
+    white-space: normal;
+  }
+  .workflow-step .step-number {
+    flex-shrink: 0;
   }
   .workflow-step strong {
     font-size: 9px;
@@ -2068,8 +2110,10 @@ input[type="range"] {
     font-size: 8px;
   }
   .model-toolbar {
-    height: 44px;
-    padding: 0 10px;
+    height: auto;
+    min-height: 44px;
+    flex-wrap: wrap;
+    padding: 8px 10px;
   }
   .model-toolbar .tool-button {
     font-size: 9px;

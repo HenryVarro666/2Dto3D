@@ -24,6 +24,7 @@ import {
   componentIdFromObject,
 } from "../core/sceneState";
 import type { ComponentBindings } from "../core/sceneState";
+import { useI18n } from "../i18n";
 
 type Props = {
   sceneUrl: string;
@@ -39,6 +40,7 @@ type Props = {
 };
 
 export function SceneViewer(props: Props) {
+  const { t, localize } = useI18n();
   const hostRef = useRef<HTMLDivElement>(null);
   const propsRef = useRef(props);
   propsRef.current = props;
@@ -228,6 +230,13 @@ export function SceneViewer(props: Props) {
     };
   }, [props.sceneUrl, idsKey]);
 
+  // Localize the existing canvas without recreating the renderer or resetting its camera.
+  useEffect(() => {
+    hostRef.current
+      ?.querySelector("canvas")
+      ?.setAttribute("aria-label", t("可旋转的三维结构示意"));
+  }, [t, props.sceneUrl, idsKey]);
+
   useEffect(() => {
     applyComponentState(
       bindingsRef.current,
@@ -246,15 +255,15 @@ export function SceneViewer(props: Props) {
       {loading && (
         <div className="viewer-loading">
           <LoaderCircle size={24} className="spin" />
-          <span>正在载入组件结构…</span>
+          <span>{t("正在载入组件结构…")}</span>
         </div>
       )}
       {error && (
         <div className="viewer-error" role="alert">
           <AlertCircle size={27} />
-          <strong>三维视图暂不可用</strong>
-          <p>{error}</p>
-          <span>组件列表、照片框选和文件导出仍可使用。</span>
+          <strong>{t("三维视图暂不可用")}</strong>
+          <p>{localize(error)}</p>
+          <span>{t("组件列表、照片框选和文件导出仍可使用。")}</span>
         </div>
       )}
       <div className="axis-indicator" aria-hidden="true">

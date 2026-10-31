@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 import type { Asset, BBox, EditableComponent, Point } from "../api/types";
+import { useI18n } from "../i18n";
 import {
   boxFromPoints,
   containedImageRect,
@@ -45,6 +46,7 @@ export function PhotoPanel({
   onDrawingChange,
   onBox,
 }: Props) {
+  const { t, componentLabel } = useI18n();
   const stageRef = useRef<HTMLDivElement>(null);
   const [panelSize, setPanelSize] = useState({ width: 0, height: 0 });
   const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 });
@@ -95,14 +97,13 @@ export function PhotoPanel({
       <header className="panel-heading">
         <div>
           <span className="panel-index">01</span>
-          <h2 id="photo-title">原始照片</h2>
-          <span className="panel-heading-note">SOURCE IMAGE</span>
+          <h2 id="photo-title">{t("原始照片")}</h2>
         </div>
         {imageUrl && (
           <button
             className="icon-button"
-            title="打开规范化原图"
-            aria-label="打开原图"
+            title={t("打开规范化原图")}
+            aria-label={t("打开原图")}
             onClick={() =>
               window.open(imageUrl, "_blank", "noopener,noreferrer")
             }
@@ -133,18 +134,18 @@ export function PhotoPanel({
               <span className="symbol-corner corner-a" />
               <span className="symbol-corner corner-b" />
             </div>
-            <h3>拖入一张设备照片</h3>
-            <p>让机柜、支架和线缆尽量清晰可见</p>
+            <h3>{t("拖入一张设备照片")}</h3>
+            <p>{t("让机柜、支架和线缆尽量清晰可见")}</p>
             <button className="button primary" onClick={onChoose}>
               <Upload size={16} />
-              选择照片
+              {t("选择照片")}
             </button>
             <span className="upload-formats">
-              JPEG / PNG / WebP · 最大 20MB
+              {t("JPEG / PNG / WebP · 最大 20MB")}
             </span>
             <div className="upload-tip">
               <ScanLine size={15} />
-              <span>识别可见组件，生成独立的结构示意</span>
+              <span>{t("识别可见组件，生成独立的结构示意")}</span>
             </div>
           </div>
         ) : (
@@ -181,7 +182,7 @@ export function PhotoPanel({
           >
             <img
               src={imageUrl}
-              alt="待识别的组串式逆变器现场照片"
+              alt={t("待识别的组串式逆变器现场照片")}
               draggable={false}
               onLoad={(event) =>
                 setNaturalSize({
@@ -211,10 +212,13 @@ export function PhotoPanel({
                     onClick={() => {
                       if (!drawing) onSelect(component.id);
                     }}
-                    aria-label={`照片中选择 ${component.label}`}
+                    aria-label={t("照片中选择 {name}", {
+                      name: componentLabel(component),
+                    })}
                   >
                     <span>
-                      {String(index + 1).padStart(2, "0")} {component.label}
+                      {String(index + 1).padStart(2, "0")}{" "}
+                      {componentLabel(component)}
                     </span>
                   </button>
                 ),
@@ -235,10 +239,10 @@ export function PhotoPanel({
         {imageUrl && drawing && (
           <div className="draw-hint">
             <ScanLine size={15} />
-            在照片上拖动，框出一个可见组件
+            {t("在照片上拖动，框出一个可见组件")}
             <button
               className="icon-button"
-              aria-label="退出框选"
+              aria-label={t("退出框选")}
               onClick={() => onDrawingChange(false)}
             >
               <X size={14} />
@@ -248,7 +252,7 @@ export function PhotoPanel({
         {dragActive && (
           <div className="drop-overlay">
             <Upload size={28} />
-            <strong>松开以替换照片</strong>
+            <strong>{t("松开以替换照片")}</strong>
           </div>
         )}
       </div>
@@ -256,7 +260,7 @@ export function PhotoPanel({
         {imageUrl ? (
           <>
             <span className="photo-filename" title={fileName || undefined}>
-              {fileName || "规范化照片"}
+              {fileName || t("规范化照片")}
               {asset && (
                 <small>
                   {asset.width} × {asset.height}
@@ -269,7 +273,7 @@ export function PhotoPanel({
                 checked={showBoxes}
                 onChange={(event) => setShowBoxes(event.target.checked)}
               />
-              候选框
+              {t("候选框")}
             </label>
             <button
               className={`tool-button ${drawing ? "active" : ""}`}
@@ -277,13 +281,13 @@ export function PhotoPanel({
               onClick={() => onDrawingChange(!drawing)}
             >
               <MousePointer2 size={14} />
-              {drawing ? "结束框选" : "添加组件框"}
+              {drawing ? t("结束框选") : t("添加组件框")}
             </button>
           </>
         ) : (
           <span className="muted">
             <span className="tiny-dot" />
-            单张照片优先 · 一期支持组串式逆变器
+            {t("单张照片优先 · 一期支持组串式逆变器")}
           </span>
         )}
       </footer>

@@ -12,6 +12,7 @@ export type EditableComponent = ManualComponent & {
   score?: number | null;
   source?: "grounding_dino" | "manual";
   color?: string;
+  labelEdited?: boolean; // Local name provenance (false = system, true = user); never submitted.
 };
 export type Component = EditableComponent & {
   score: number | null;

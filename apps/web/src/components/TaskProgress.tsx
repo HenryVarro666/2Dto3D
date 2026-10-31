@@ -7,8 +7,10 @@ import {
   AlertCircle,
 } from "lucide-react";
 import type { WorkbenchState } from "../core/workflow";
+import { useI18n } from "../i18n";
+import type { MessageKey } from "../i18n/messages";
 
-const automaticSteps = [
+const automaticSteps: MessageKey[] = [
   "上传照片",
   "准备模型",
   "识别组件",
@@ -16,7 +18,7 @@ const automaticSteps = [
   "构建三维",
   "载入视图",
 ];
-const manualSteps = ["应用组件校正", "构建三维", "载入视图"];
+const manualSteps: MessageKey[] = ["应用组件校正", "构建三维", "载入视图"];
 const automaticStages: Record<string, number> = {
   detecting: 2,
   recognition: 2,
@@ -45,8 +47,9 @@ export function TaskProgress({
   state: WorkbenchState;
   viewerError: string | null;
 }) {
+  const { t } = useI18n();
   const manual = state.mode === "manual";
-  const steps = manual ? manualSteps : automaticSteps;
+  const steps = (manual ? manualSteps : automaticSteps).map((step) => t(step));
   const active = ["uploading", "processing", "preparing"].includes(state.phase);
   const ready = state.phase === "ready" && !viewerError;
   const attention =
@@ -70,24 +73,36 @@ export function TaskProgress({
   const unconfirmedRegion =
     !manual && completed > 3 && !skippedRegion && segmentation !== "ready";
   const currentLabel = ready
-    ? "三维结构已就绪"
+    ? t("三维结构已就绪")
     : state.phase === "idle"
-      ? "等待上传照片"
-      : `${state.phase === "cancelled" ? "已停止于" : attention ? "待确认" : "当前"}：${steps[completed]}`;
+      ? t("等待上传照片")
+      : t(
+          state.phase === "cancelled"
+            ? "已停止于：{stage}"
+            : attention
+              ? "待确认：{stage}"
+              : "当前：{stage}",
+          { stage: steps[completed] },
+        );
 
   return (
-    <section className="task-progress" aria-label="任务进度">
+    <section className="task-progress" aria-label={t("任务进度")}>
       <div className="task-progress-heading">
         <strong>{currentLabel}</strong>
         <span>
-          {ready ? "全部完成" : `阶段 ${completed + 1} / ${steps.length}`} ·
-          按处理阶段更新
+          {ready
+            ? t("全部完成")
+            : t("阶段 {current} / {total}", {
+                current: completed + 1,
+                total: steps.length,
+              })}{" "}
+          ·{t("按处理阶段更新")}
         </span>
       </div>
       <div
         className="task-progress-track"
         role="progressbar"
-        aria-label="处理阶段进度"
+        aria-label={t("处理阶段进度")}
         aria-valuemin={0}
         aria-valuemax={steps.length}
         aria-valuenow={completed}
@@ -119,7 +134,7 @@ export function TaskProgress({
       </div>
       <ol
         className={`task-progress-steps ${manual ? "manual" : "automatic"}`}
-        aria-label="处理阶段"
+        aria-label={t("处理阶段")}
       >
         {steps.map((label, index) => {
           const skipped = skippedRegion && index === 3;
@@ -173,7 +188,7 @@ export function TaskProgress({
               />
               <span>
                 {label}
-                <small>{description}</small>
+                <small>{t(description)}</small>
               </span>
             </li>
           );

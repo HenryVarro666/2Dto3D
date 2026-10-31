@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { CircleHelp } from "lucide-react";
 import type { Health, WorkbenchApi } from "../api/types";
+import { useI18n } from "../i18n";
 
 const stateLabels: Record<string, string> = {
   unloaded: "模型待载入",
@@ -16,6 +17,7 @@ const stateLabels: Record<string, string> = {
 };
 
 export function ModelHealth({ api }: { api: WorkbenchApi }) {
+  const { t, localize } = useI18n();
   const [health, setHealth] = useState<Health | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -54,18 +56,22 @@ export function ModelHealth({ api }: { api: WorkbenchApi }) {
     <div
       className={`model-health ${ready && !failed ? "is-ready" : ""} ${failed ? "is-error" : ""}`}
       title={
-        error ||
-        health?.model.error ||
-        `${health?.model.model_id ?? "正在读取模型状态"} · ${health?.model.device ?? ""}`
+        error
+          ? localize(error)
+          : health?.model.error
+            ? localize(health.model.error)
+            : `${health?.model.model_id ?? t("正在读取模型状态")} · ${health?.model.device ?? ""}`
       }
     >
       <span className="status-dot" />
       <span>
         {error
-          ? "本地服务未连接"
+          ? t("本地服务未连接")
           : health
-            ? stateLabels[state] || `模型：${state}`
-            : "正在连接本地服务"}
+            ? stateLabels[state]
+              ? localize(stateLabels[state])
+              : t("模型：{state}", { state })
+            : t("正在连接本地服务")}
       </span>
       {health && !error && <small>{health.model.device.toUpperCase()}</small>}
       <CircleHelp size={13} />

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import type { WorkbenchState } from "../core/workflow";
 import { TaskProgress } from "./TaskProgress";
+import { useI18n } from "../i18n";
 
 const stageLabels: Record<string, string> = {
   queued: "任务已排队",
@@ -41,6 +42,7 @@ export function ProcessingStatus({
   onCancel: () => void;
   onRetry: () => void;
 }) {
+  const { t, localize, locale } = useI18n();
   const active = ["uploading", "processing", "preparing"].includes(state.phase);
   let title = "从一张照片开始";
   let subtitle = "照片上传后将自动识别，结果保留为可校正的组件候选。";
@@ -100,29 +102,34 @@ export function ProcessingStatus({
           )}
         </div>
         <div className="processing-copy">
-          <strong>{title}</strong>
-          <p>{subtitle}</p>
+          <strong>{localize(title)}</strong>
+          <p>{localize(subtitle)}</p>
         </div>
         <div className="processing-time">
           <span>
             <Clock3 size={14} />
             {state.startedAt === null
-              ? "按阶段显示处理进度"
-              : `已用 ${(elapsedMs / 1000).toFixed(1)} 秒`}
+              ? t("按阶段显示处理进度")
+              : t("已用 {seconds} 秒", {
+                  seconds: new Intl.NumberFormat(locale, {
+                    minimumFractionDigits: 1,
+                    maximumFractionDigits: 1,
+                  }).format(elapsedMs / 1000),
+                })}
           </span>
           <small>
             {state.startedAt === null
-              ? "包含上传、推理与视图载入"
+              ? t("包含上传、推理与视图载入")
               : active
-                ? "正在持续处理"
-                : "本次端到端用时"}
+                ? t("正在持续处理")
+                : t("本次端到端用时")}
           </small>
         </div>
         {active && (
           <button
             className="icon-button"
-            aria-label="停止等待任务"
-            title="停止等待"
+            aria-label={t("停止等待任务")}
+            title={t("停止等待")}
             onClick={onCancel}
           >
             <X size={17} />
@@ -131,7 +138,7 @@ export function ProcessingStatus({
         {["error", "cancelled", "review"].includes(state.phase) &&
           state.asset && (
             <button className="button small secondary" onClick={onRetry}>
-              重新识别
+              {t("重新识别")}
             </button>
           )}
       </div>
