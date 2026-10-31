@@ -101,6 +101,8 @@ make build
 
 `make build && make serve` serves both production UI and API at [port 8000](http://127.0.0.1:8000). `uv.lock` and `package-lock.json` pin dependencies. [Running and troubleshooting](docs/running.md) covers environments, timing scope and service settings.
 
+The latest paired E04 run shows partial improvement while retaining new thin-pole misses and semantic errors. Its [local before/after gallery](data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/index.html) is ignored and is not included in a clone.
+
 Real-photo evaluations and analytic measurement tests are separate evidence: [experiments E01–E05](docs/quality/experiments.md), [issue ledger](docs/quality/issues.md), and [verification log](docs/verification.md). Real photos can still produce misclassifications, incorrect associations, thin-wire loss, holes and sheet-like geometry. The ledger is authoritative; a `succeeded` job does not establish domain accuracy.
 
 **Unverified:** field dimension errors against independent physical measurements, complex occlusions, complete backsides, curved lengths, manufacturing CAD and complete engineering BOMs. Detection scores are uncalibrated; exploded positions do not describe a disassembly procedure. Future problems, failed hypotheses, improvements and tests must be appended under the [evidence and handoff rules](docs/quality/README.md).

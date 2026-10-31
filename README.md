@@ -101,6 +101,8 @@ make build
 
 `make build && make serve` 会在 [8000 端口](http://127.0.0.1:8000) 同时提供生产网页与 API。依赖由 `uv.lock` 和 `package-lock.json` 固定；[运行与排错](docs/running.md)包含环境、冷暖耗时和服务设置。
 
+最新 E04 同四组修复已有部分改善，同时保留新增细柱漏检和语义误分类；[本机前后图入口](data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/index.html)为 ignored 产物，不随克隆。
+
 真实照片评估与解析测量测试分别记录，不能互相代替：[实验索引 E01–E05](docs/quality/experiments.md)、[问题台账](docs/quality/issues.md)、[验证记录](docs/verification.md)。目前真实照片仍可能出现误分类、组件关联错误、细线丢点、空洞和薄片；详细状态以台账为准，任务 `succeeded` 不等于领域准确率。
 
 **仍待验证：** 独立实测的现场尺寸误差、复杂遮挡结构、完整背面、曲面长度、制造 CAD 与完整工程 BOM。自动分数未校准；解释性分解位置不是拆装步骤。后续每次问题、失败试验、改进和测试都需按[质量交接规则](docs/quality/README.md)追加保存。

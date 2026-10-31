@@ -70,6 +70,9 @@ def _projection_support(points, view, mask, geometry):
     height, width = mask.shape
     inside = (camera[:, 2] > 0) & (pixels[:, 0] >= 0) & (pixels[:, 0] < width)
     inside &= (pixels[:, 1] >= 0) & (pixels[:, 1] < height)
+    left, top, right, bottom = geometry["rects"][view]
+    inside &= (pixels[:, 0] >= left) & (pixels[:, 0] < right)
+    inside &= (pixels[:, 1] >= top) & (pixels[:, 1] < bottom)
     indices = np.flatnonzero(inside)
     x, y = pixels[indices].T
     hit = binary_dilation(mask, iterations=1)[y, x]
@@ -231,7 +234,10 @@ def build_pointcloud(geometry, assets, observations, store, automatic=True):
         if not candidates.any():
             continue
         threshold = float(np.percentile(confidence[candidates], 20))
-        local_depth = median_filter(np.where(finite, depth, 0), size=3, mode="nearest")
+        left, top, right, bottom = geometry["rects"][i]
+        local_depth = np.zeros_like(depth)
+        local_depth[top:bottom, left:right] = median_filter(
+            np.where(finite, depth, 0)[top:bottom, left:right], size=3, mode="nearest")
         consistent = (local_depth > 0) & (np.abs(depth - local_depth) / np.maximum(local_depth, 1e-8) < 0.15)
         valid[i] |= candidates & (confidence >= threshold) & consistent
         recovery.append({"observation_id": observation["id"], "confidence_threshold": threshold})

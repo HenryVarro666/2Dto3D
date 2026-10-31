@@ -246,3 +246,31 @@ def test_reprojection_ignores_target_pixels_without_positive_confidence(tmp_path
            observation('unsupported-target', 1, [0.2, 0.2, 0.8, 0.8])]
     cloud = build_pointcloud(data, assets(), obs, Store(tmp_path))
     assert len(cloud['components']) == 2
+
+
+def test_reprojection_support_excludes_letterbox_padding(tmp_path):
+    data = geometry()
+    data['rects'][:] = [2, 2, 8, 8]
+    data['points'][1] = data['points'][0] * 1.08
+    data['points'][1, ..., 0] += 0.1
+    data['depth'][1] = 1.08
+    views = [{**v, 'width': 6, 'height': 6} for v in assets()]
+    obs = [observation('front-edge', 0, [0, 0, 1/6, 1]),
+           observation('side-edge', 1, [0, 0, 1/6, 1])]
+    cloud = build_pointcloud(data, views, obs, Store(tmp_path))
+    assert len(cloud['components']) == 2
+
+
+def test_padding_depth_cannot_erase_low_confidence_cable_endpoints(tmp_path):
+    data = geometry()
+    data['rects'][:] = [2, 2, 8, 8]
+    data['depth'][0] = 100
+    data['depth'][0, 2:8, 2:8] = 1
+    data['confidence'][0] = 100
+    data['confidence'][0, 2:8, 2] = 1
+    data['confidence'][1] = 0
+    views = [{**v, 'width': 6, 'height': 6} for v in assets()]
+    obs = {**observation('edge-wire', 0, [0, 0, 1/6, 1], 'edge-wire'),
+           'category': 'cables', 'label': 'Wire'}
+    cloud = build_pointcloud(data, views, [obs], Store(tmp_path), automatic=False)
+    assert cloud['components'][0]['point_count'] == 6

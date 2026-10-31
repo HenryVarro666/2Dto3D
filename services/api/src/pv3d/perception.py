@@ -160,7 +160,7 @@ def normalize_predictions(
             context_rejected += 1
         else:
             bounded.append(item)
-    equipment = specific or [item for item in bounded if item["category"] == "cabinet" and area(item) >= 0.01]
+    equipment = [item for item in bounded if item["category"] == "cabinet" and area(item) >= 0.01]
 
     def connector_context(item):
         cx, cy = (item["bbox"][0] + item["bbox"][2]) / 2, (item["bbox"][1] + item["bbox"][3]) / 2
@@ -174,7 +174,11 @@ def normalize_predictions(
 
     before_context = len(bounded)
     bounded = [item for item in bounded if item["category"] != "connector" or connector_context(item)]
-    connectors = [item for item in bounded if item["category"] == "connector"]
+    connectors = []
+    for item in sorted((item for item in bounded if item["category"] == "connector"),
+                       key=lambda item: -item["score"]):
+        if not any(_iou(item["bbox"], previous["bbox"]) > 0.55 for previous in connectors):
+            connectors.append(item)
     valid = []
     for item in bounded:
         if item["category"] == "cable_tray":
