@@ -68,6 +68,12 @@ export type Job = {
 };
 export type Health = {
   status: "ok";
+  multiview?: {
+    state: string;
+    model_id?: string;
+    device?: string;
+    input_size?: number;
+  };
   model: {
     state: string;
     model_id: string;
@@ -104,4 +110,61 @@ export interface WorkbenchApi {
   createJob(input: JobInput, signal?: AbortSignal): Promise<Job>;
   getJob(id: string, signal?: AbortSignal): Promise<Job>;
   getResult(id: string, signal?: AbortSignal): Promise<Result>;
+  createCapture(assetIds: string[], signal?: AbortSignal): Promise<Capture>;
+  getCapture(id: string, signal?: AbortSignal): Promise<Capture>;
+  createMultiJob(input: MultiJobInput, signal?: AbortSignal): Promise<MultiJob>;
+  getMultiJob(id: string, signal?: AbortSignal): Promise<MultiJob>;
 }
+
+export type Capture = { id: string; assets: Asset[]; created_at: string };
+export type ViewObservation = EditableComponent & {
+  asset_id: string;
+  component_id: string;
+};
+export type MultiComponent = {
+  id: string;
+  category: Category;
+  label: string;
+  source: "grounding_dino" | "manual";
+  score: number | null;
+  observation_ids: string[];
+  point_count: number;
+  color: string;
+  position: [number, number, number];
+  dimensions: [number, number, number];
+};
+export type MultiResult = {
+  job_id: string;
+  capture_id: string;
+  geometry_job_id: string;
+  representation: "fused_point_cloud";
+  metric_scale_status: "unknown";
+  views: Asset[];
+  observations: ViewObservation[];
+  components: MultiComponent[];
+  scene_url: string | null;
+  ply_url: string | null;
+  json_url: string;
+  point_count: number;
+  context_point_count: number;
+  model: Record<string, unknown>;
+  quality: Record<string, unknown>;
+  timings: Record<string, number>;
+  warnings: string[];
+};
+export type MultiJob = Omit<Job, "asset_id" | "result"> & {
+  capture_id: string;
+  view_index: number;
+  total_views: number;
+  result: MultiResult | null;
+};
+export type MultiJobInput = {
+  capture_id: string;
+  mode?: "automatic" | "manual";
+  base_job_id?: string;
+  observations?: (ManualComponent & {
+    id: string;
+    asset_id: string;
+    component_id?: string;
+  })[];
+};

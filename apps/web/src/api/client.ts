@@ -6,6 +6,8 @@ import type {
   Result,
   Refinement,
   WorkbenchApi,
+  Capture,
+  MultiJob,
 } from "./types";
 
 export function createApi(): WorkbenchApi {
@@ -36,6 +38,26 @@ export function createApi(): WorkbenchApi {
     return response.json() as Promise<T>;
   }
   return {
+    createCapture: (assetIds, signal) =>
+      request<Capture>("/captures", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ asset_ids: assetIds }),
+        signal,
+      }),
+    getCapture: (id, signal) =>
+      request<Capture>(`/captures/${encodeURIComponent(id)}`, { signal }),
+    createMultiJob: (input, signal) =>
+      request<MultiJob>("/multiview/jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+        signal,
+      }),
+    getMultiJob: (id, signal) =>
+      request<MultiJob>(`/multiview/jobs/${encodeURIComponent(id)}`, {
+        signal,
+      }),
     refine: (input, signal) =>
       request<Refinement>("/refinements", {
         method: "POST",

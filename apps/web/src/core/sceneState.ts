@@ -4,6 +4,8 @@ import {
   Mesh,
   MeshStandardMaterial,
   Object3D,
+  Points,
+  PointsMaterial,
   Vector3,
 } from "three";
 
@@ -17,6 +19,7 @@ export type ComponentBinding = {
   originalPosition: Vector3;
   direction: Vector3;
   materials: MaterialState[];
+  pointMaterials: { material: PointsMaterial; color: Color }[];
 };
 export type ComponentBindings = Map<string, ComponentBinding>;
 
@@ -50,8 +53,9 @@ export function bindComponents(
           .sub(parent.worldToLocal(worldCenter.clone()))
       : offset;
     const materials: MaterialState[] = [];
+    const pointMaterials: ComponentBinding["pointMaterials"] = [];
     object.traverse((child) => {
-      if (!(child instanceof Mesh)) return;
+      if (!(child instanceof Mesh) && !(child instanceof Points)) return;
       const clones = (
         Array.isArray(child.material) ? child.material : [child.material]
       ).map((material) => material.clone());
@@ -63,12 +67,17 @@ export function bindComponents(
             emissive: material.emissive.clone(),
             intensity: material.emissiveIntensity,
           });
+        else if (material instanceof PointsMaterial) {
+          material.sizeAttenuation = false;
+          pointMaterials.push({ material, color: material.color.clone() });
+        }
     });
     bindings.set(id, {
       object,
       originalPosition: object.position.clone(),
       direction,
       materials,
+      pointMaterials,
     });
   });
   return bindings;
@@ -80,6 +89,7 @@ export function applyComponentState(
   selectedId: string | null,
   explosion: number,
   wireframe: boolean,
+  pointSize = 2,
 ) {
   for (const [id, binding] of bindings) {
     binding.object.visible = !hidden.has(id);
@@ -92,6 +102,10 @@ export function applyComponentState(
         id === selectedId ? new Color("#169b86") : emissive,
       );
       material.emissiveIntensity = id === selectedId ? 0.35 : intensity;
+    }
+    for (const { material, color } of binding.pointMaterials) {
+      material.size = pointSize * (id === selectedId ? 1.5 : 1);
+      material.color.copy(id === selectedId ? new Color("#75ffe2") : color);
     }
   }
 }

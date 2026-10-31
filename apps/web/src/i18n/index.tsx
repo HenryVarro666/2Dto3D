@@ -9,6 +9,25 @@ const storageKey = "pv3d.locale";
 type Params = Record<string, string | number>;
 
 const serverMessages: Record<string, MessageKey> = {
+  "Multi-view processing failed. Check local model setup, retry, or return to single-photo mode.":
+    "多图处理失败，请检查模型安装后重试，或使用单图模式。",
+  "Use different views, not repeated copies of the same photo.":
+    "请使用不同视角，不能重复上传同一张照片。",
+  "Capture not found.": "照片组不存在，请重新上传。",
+  "Multi-view job not found.": "多图任务不存在，请重新开始。",
+  "Multi-view result is not ready.": "多图结果尚未就绪。",
+  "Linked observations must use the same component name and category.":
+    "关联标注的名称和类别必须一致。",
+  MULTIVIEW_ASSOCIATIONS_REQUIRE_CONFIRMATION:
+    "自动关联仅为候选，请核对并按需合并或拆开。",
+  MULTIVIEW_TOO_FEW_VALID_VIEWS: "有效视角不足，请补拍清晰且有重叠的照片。",
+  MULTIVIEW_LOW_PARALLAX: "拍摄位置变化太小，请向侧面移动后补拍。",
+  MULTIVIEW_LOW_CROSS_VIEW_SUPPORT:
+    "视角间的几何支持较弱，请检查是否为同一静止设备并增加重叠。",
+  MULTIVIEW_NO_COMPONENTS_ADD_MANUALLY:
+    "未识别到组件，请在照片中框选后应用校正。",
+  MULTIVIEW_COMPONENT_WITHOUT_POINTS:
+    "部分组件没有有效三维点，请细化边界或补拍近照。",
   "No usable region. Add points, redraw the box, or use the box without refinement.":
     "未得到有效区域，请补点、重新框选或仅用框保存。",
   "Boundary refinement failed. Retry or keep the box without refinement.":

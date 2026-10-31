@@ -17,6 +17,7 @@ import {
 } from "../core/photoGeometry";
 
 type Props = {
+  idPrefix?: string;
   imageUrl: string | null;
   fileName: string | null;
   asset: Asset | null;
@@ -48,6 +49,7 @@ export function PhotoPanel({
   onDrawingChange,
   onBox,
   annotation,
+  idPrefix = "",
 }: Props) {
   const { t, componentLabel } = useI18n();
   const stageRef = useRef<HTMLDivElement>(null);
@@ -101,11 +103,14 @@ export function PhotoPanel({
     });
   };
   return (
-    <section className="view-panel photo-panel" aria-labelledby="photo-title">
+    <section
+      className="view-panel photo-panel"
+      aria-labelledby={`${idPrefix}photo-title`}
+    >
       <header className="panel-heading">
         <div>
           <span className="panel-index">01</span>
-          <h2 id="photo-title">{t("原始照片")}</h2>
+          <h2 id={`${idPrefix}photo-title`}>{t("原始照片")}</h2>
         </div>
         {imageUrl && (
           <button

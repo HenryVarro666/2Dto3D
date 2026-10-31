@@ -1,4 +1,13 @@
-import type { Asset, Component, Job, Result, WorkbenchApi } from "../api/types";
+import type {
+  Asset,
+  Component,
+  Job,
+  Result,
+  WorkbenchApi,
+  Capture,
+  MultiJob,
+  MultiResult,
+} from "../api/types";
 
 export const asset: Asset = {
   id: "asset-1",
@@ -58,8 +67,70 @@ export const completed: Job = {
   result,
 };
 
+export const capture: Capture = {
+  id: "capture-1",
+  assets: [asset, { ...asset, id: "asset-2" }],
+  created_at: running.created_at,
+};
+export const multiResult: MultiResult = {
+  job_id: "multi-1",
+  capture_id: capture.id,
+  geometry_job_id: "multi-1",
+  views: capture.assets,
+  representation: "fused_point_cloud",
+  metric_scale_status: "unknown",
+  observations: capture.assets.map((a, i) => ({
+    ...cabinet,
+    id: `obs-${i}`,
+    asset_id: a.id,
+    component_id: "part-1",
+  })),
+  components: [
+    {
+      ...cabinet,
+      id: "part-1",
+      observation_ids: ["obs-0", "obs-1"],
+      point_count: 8,
+    },
+  ],
+  scene_url: "/api/multiview/jobs/multi-1/cloud.glb",
+  ply_url: "/api/multiview/jobs/multi-1/cloud.ply",
+  json_url: "/api/multiview/jobs/multi-1/result.json",
+  point_count: 10,
+  context_point_count: 2,
+  model: { model_id: "VGGT-test-boundary" },
+  quality: {},
+  timings: {},
+  warnings: [],
+};
+export const multiRunning: MultiJob = {
+  id: "multi-1",
+  capture_id: capture.id,
+  total_views: 2,
+  view_index: 0,
+  created_at: running.created_at,
+  status: "running",
+  stage: "estimating_geometry",
+  elapsed_ms: 100,
+  error: null,
+  result: null,
+};
+export const multiCompleted: MultiJob = {
+  ...multiRunning,
+  status: "succeeded",
+  stage: "complete",
+  result: multiResult,
+};
+
 export function fakeApi(overrides: Partial<WorkbenchApi> = {}): WorkbenchApi {
   return {
+    createCapture: async (assetIds) => ({
+      ...capture,
+      assets: assetIds.map((id) => ({ ...asset, id })),
+    }),
+    getCapture: async () => capture,
+    createMultiJob: async () => multiRunning,
+    getMultiJob: async () => multiCompleted,
     refine: async (input) => ({
       ...input,
       id: "test-refinement",

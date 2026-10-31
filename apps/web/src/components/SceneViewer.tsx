@@ -7,6 +7,7 @@ import {
   Group,
   HemisphereLight,
   Mesh,
+  Points,
   PerspectiveCamera,
   Raycaster,
   Scene,
@@ -37,6 +38,7 @@ type Props = {
   onSelect: (id: string) => void;
   onReady: () => void;
   onError?: (error: string) => void;
+  pointSize?: number;
 };
 
 export function SceneViewer(props: Props) {
@@ -179,6 +181,7 @@ export function SceneViewer(props: Props) {
         displayGroup.position.copy(center).negate();
         scene.add(displayGroup);
         const maxSize = Math.max(size.x, size.y, size.z, 0.1);
+        raycaster.params.Points.threshold = maxSize * 0.006;
         floor.position.y = -size.y / 2 - maxSize * 0.015;
         floor.scale.setScalar(maxSize / 3);
         const reset = () => {
@@ -207,6 +210,7 @@ export function SceneViewer(props: Props) {
           current.selectedId,
           current.explosion,
           current.wireframe,
+          current.pointSize,
         );
         renderer.render(scene, camera);
         setLoading(false);
@@ -244,8 +248,15 @@ export function SceneViewer(props: Props) {
       props.selectedId,
       props.explosion,
       props.wireframe,
+      props.pointSize,
     );
-  }, [props.hiddenIds, props.selectedId, props.explosion, props.wireframe]);
+  }, [
+    props.hiddenIds,
+    props.selectedId,
+    props.explosion,
+    props.wireframe,
+    props.pointSize,
+  ]);
   useEffect(() => {
     resetRef.current?.();
   }, [props.resetKey]);
@@ -278,7 +289,7 @@ export function SceneViewer(props: Props) {
 
 function disposeObject(object: Group | Scene) {
   object.traverse((child) => {
-    if (child instanceof Mesh) {
+    if (child instanceof Mesh || child instanceof Points) {
       child.geometry.dispose();
       const materials = Array.isArray(child.material)
         ? child.material

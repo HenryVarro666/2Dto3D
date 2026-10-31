@@ -1,5 +1,178 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  单张照片: ["Single photo", "Una foto"],
+  多角度点云: ["Multi-view cloud", "Nube de múltiples vistas"],
+  重建模式: ["Reconstruction mode", "Modo de reconstrucción"],
+  "同一设备，多角度观察": [
+    "One device, multiple viewpoints",
+    "Un equipo, múltiples vistas",
+  ],
+  "上传 2–8 张有重叠的照片，融合可见表面并关联组件。": [
+    "Upload 2–8 overlapping photos to fuse visible surfaces and associate components.",
+    "Suba de 2 a 8 fotos solapadas para fusionar superficies visibles y asociar componentes.",
+  ],
+  选择照片组: ["Choose photo group", "Elegir grupo de fotos"],
+  选择多角度照片: ["Choose multiple viewpoints", "Elegir múltiples vistas"],
+  融合并识别组件: [
+    "Fuse and identify components",
+    "Fusionar e identificar componentes",
+  ],
+  "围绕静止设备拍摄：正面、左斜、右斜；保持同一焦距，让线缆和背部支架在至少两张照片中出现。":
+    [
+      "Photograph the stationary device from the front and both sides. Keep the same focal length; show cables and rear brackets in at least two views.",
+      "Fotografíe el equipo inmóvil de frente y desde ambos lados. Mantenga la distancia focal; incluya cables y soportes traseros en al menos dos vistas.",
+    ],
+  "相对尺度 · 可见表面 · 需人工核对": [
+    "Relative scale · Visible surfaces · Review required",
+    "Escala relativa · Superficies visibles · Requiere revisión",
+  ],
+  照片组: ["Photo group", "Grupo de fotos"],
+  "照片 {count}：{name}": ["Photo {count}: {name}", "Foto {count}: {name}"],
+  "移除照片 {count}": ["Remove photo {count}", "Quitar foto {count}"],
+  等待共享队列: [
+    "Waiting for the shared queue",
+    "Esperando la cola compartida",
+  ],
+  准备多图任务: ["Preparing multi-view job", "Preparando tarea multivista"],
+  载入多视角模型: [
+    "Loading the multi-view model",
+    "Cargando el modelo multivista",
+  ],
+  联合估计相机与深度: [
+    "Jointly estimating cameras and depth",
+    "Estimando cámaras y profundidad conjuntamente",
+  ],
+  生成共同坐标点云: [
+    "Unprojecting into shared coordinates",
+    "Proyectando a coordenadas compartidas",
+  ],
+  逐图识别组件: [
+    "Identifying components in each view",
+    "Identificando componentes en cada vista",
+  ],
+  融合点云与组件: [
+    "Fusing points and components",
+    "Fusionando puntos y componentes",
+  ],
+  导出点云: ["Exporting the point cloud", "Exportando la nube de puntos"],
+  上传照片组: ["Uploading photo group", "Subiendo grupo de fotos"],
+  联合几何推理: ["Joint geometry inference", "Inferencia geométrica conjunta"],
+  等待照片组: ["Waiting for photo group", "Esperando grupo de fotos"],
+  点云待核对: ["Point cloud needs review", "La nube requiere revisión"],
+  点云已就绪: ["Point cloud ready", "Nube de puntos lista"],
+  多图任务进度: ["Multi-view task progress", "Progreso de tarea multivista"],
+  多图阶段进度: ["Multi-view stage progress", "Progreso de etapas multivista"],
+  "复用已生成的几何，仅更新组件归属。": [
+    "Reusing existing geometry; updating component assignments.",
+    "Se reutiliza la geometría y se actualizan las asignaciones de componentes.",
+  ],
+  "已停止等待；服务端任务可能仍在完成。": [
+    "Stopped waiting; the server job may still be finishing.",
+    "Se dejó de esperar; la tarea del servidor puede seguir ejecutándose.",
+  ],
+  融合点云: ["Fused point cloud", "Nube de puntos fusionada"],
+  共同坐标中的彩色点云: [
+    "Colored points in shared coordinates",
+    "Puntos de color en coordenadas compartidas",
+  ],
+  "选择照片组后，点击“融合并识别组件”开始。": [
+    "Choose a photo group, then click “Fuse and identify components”.",
+    "Elija un grupo de fotos y pulse «Fusionar e identificar componentes».",
+  ],
+  显示背景点: ["Show background points", "Mostrar puntos de fondo"],
+  点大小: ["Point size", "Tamaño de punto"],
+  当前照片的组件: ["Components in this photo", "Componentes de esta foto"],
+  应用校正到点云: [
+    "Apply corrections to cloud",
+    "Aplicar correcciones a la nube",
+  ],
+  关联到全局组件: [
+    "Associate with global component",
+    "Asociar a un componente global",
+  ],
+  独立为新组件: ["Separate as new component", "Separar como componente nuevo"],
+  "同一物体在不同照片中的标注可关联；相邻物体请保持独立。": [
+    "Associate observations of the same object across photos; keep neighboring objects separate.",
+    "Asocie anotaciones del mismo objeto entre fotos; mantenga separados los objetos vecinos.",
+  ],
+  全局组件: ["Global components", "Componentes globales"],
+  "{count} 个点": ["{count} points", "{count} puntos"],
+  "{views} 处标注 · {count} 个点": [
+    "{views} observations · {count} points",
+    "{views} anotaciones · {count} puntos",
+  ],
+  "显示全局组件 {name}": [
+    "Show global component {name}",
+    "Mostrar componente global {name}",
+  ],
+  "未识别到组件时，仍可在照片中框选补充。": [
+    "If no components are detected, add them by drawing boxes on the photos.",
+    "Si no se detectan componentes, añádalos dibujando recuadros en las fotos.",
+  ],
+  "点云呈现照片中的可见表面；遮挡处和细线可能缺失，真实尺寸未知。": [
+    "The cloud shows visible surfaces. Occluded areas and thin wires may be missing; real dimensions are unknown.",
+    "La nube muestra superficies visibles. Pueden faltar zonas ocultas y cables finos; las dimensiones reales son desconocidas.",
+  ],
+  "每组最多 8 张照片。": [
+    "Each group supports up to 8 photos.",
+    "Cada grupo admite hasta 8 fotos.",
+  ],
+  "请选择同一设备的 2–8 张不同角度照片。": [
+    "Choose 2–8 different viewpoints of the same device.",
+    "Elija de 2 a 8 vistas distintas del mismo equipo.",
+  ],
+  "多图处理未完成，请重试。": [
+    "Multi-view processing did not finish. Please retry.",
+    "El procesamiento multivista no terminó. Reinténtelo.",
+  ],
+  "多图处理失败，请检查模型安装后重试，或使用单图模式。": [
+    "Multi-view processing failed. Check model setup and retry, or use single-photo mode.",
+    "Falló el procesamiento multivista. Revise la instalación del modelo y reinténtelo, o use una foto.",
+  ],
+  "请使用不同视角，不能重复上传同一张照片。": [
+    "Use different viewpoints, not copies of the same photo.",
+    "Use vistas diferentes, no copias de la misma foto.",
+  ],
+  "照片组不存在，请重新上传。": [
+    "Photo group not found. Upload it again.",
+    "No se encontró el grupo. Vuelva a subirlo.",
+  ],
+  "多图任务不存在，请重新开始。": [
+    "Multi-view job not found. Start again.",
+    "No se encontró la tarea multivista. Iníciela de nuevo.",
+  ],
+  "多图结果尚未就绪。": [
+    "Multi-view result is not ready.",
+    "El resultado multivista aún no está listo.",
+  ],
+  "关联标注的名称和类别必须一致。": [
+    "Linked observations must share a name and category.",
+    "Las anotaciones asociadas deben compartir nombre y categoría.",
+  ],
+  "自动关联仅为候选，请核对并按需合并或拆开。": [
+    "Automatic associations are suggestions. Review, merge or separate them as needed.",
+    "Las asociaciones automáticas son propuestas. Revise, combine o separe según corresponda.",
+  ],
+  "有效视角不足，请补拍清晰且有重叠的照片。": [
+    "Too few valid views. Add clear, overlapping photos.",
+    "Hay pocas vistas válidas. Añada fotos claras y solapadas.",
+  ],
+  "拍摄位置变化太小，请向侧面移动后补拍。": [
+    "Too little camera movement. Move sideways and take another photo.",
+    "El movimiento de cámara es insuficiente. Desplácese lateralmente y tome otra foto.",
+  ],
+  "视角间的几何支持较弱，请检查是否为同一静止设备并增加重叠。": [
+    "Weak cross-view geometry support. Check that photos show the same stationary device and add overlap.",
+    "El soporte geométrico entre vistas es débil. Verifique que sea el mismo equipo inmóvil y añada solapamiento.",
+  ],
+  "未识别到组件，请在照片中框选后应用校正。": [
+    "No components identified. Draw boxes on photos and apply corrections.",
+    "No se identificaron componentes. Dibuje recuadros y aplique las correcciones.",
+  ],
+  "部分组件没有有效三维点，请细化边界或补拍近照。": [
+    "Some components have no valid 3D points. Refine their boundaries or add close-up views.",
+    "Algunos componentes no tienen puntos 3D válidos. Refine los límites o añada primeros planos.",
+  ],
   设备结构工作台: [
     "Equipment Structure Workbench",
     "Mesa de trabajo de estructuras",
