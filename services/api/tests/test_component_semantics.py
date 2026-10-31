@@ -60,3 +60,20 @@ def test_new_components_round_trip_through_contract_and_schematic_export(tmp_pat
     import trimesh
     scene = trimesh.load_scene(tmp_path/'scene.glb')
     assert set(scene.graph.nodes_geometry) == {'new-part'}
+
+
+def test_duplicate_connector_queries_do_not_remove_a_real_tray():
+    output = normalize_predictions(
+        [[20, 10, 80, 60], [30, 58, 35, 70], [28, 56, 64, 74], [30, 58, 35, 70]],
+        [.7, .5, .5, .49], ['a solar inverter', 'an electrical connector',
+                            'a cable tray', 'an electrical connector'],
+        (100, 100), scene_mode='multiple')
+    assert [o['category'] for o in output] == ['cabinet', 'connector', 'cable_tray']
+
+
+def test_distant_specific_inverter_does_not_remove_another_cabinets_connector():
+    output = normalize_predictions(
+        [[0, 10, 30, 60], [60, 10, 95, 60], [70, 58, 74, 68]],
+        [.8, .7, .5], ['a solar inverter', 'an electrical cabinet', 'an electrical connector'],
+        (100, 100), scene_mode='multiple')
+    assert [o['category'] for o in output] == ['cabinet', 'cabinet', 'connector']
