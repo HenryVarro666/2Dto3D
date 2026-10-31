@@ -85,6 +85,30 @@ def test_tiny_specific_fragment_does_not_outrank_a_usable_generic_device_body():
     assert [item["bbox"] for item in result] == [[0.35, 0.25, 0.75, 0.8]]
 
 
+@pytest.mark.parametrize("scene_mode", ["single", "multiple"])
+def test_anchor_ineligible_fragment_cannot_suppress_a_usable_overlapping_device(scene_mode):
+    result = perception.normalize_predictions(
+        [[41, 41, 50, 50], [40, 40, 51, 51]],
+        [0.31, 0.72],
+        ["a solar inverter", "an electrical cabinet"],
+        (100, 100),
+        scene_mode=scene_mode,
+    )
+    assert [item["bbox"] for item in result] == [[0.4, 0.4, 0.51, 0.51]]
+
+
+@pytest.mark.parametrize("scene_mode", ["single", "multiple"])
+def test_rejected_scene_envelope_cannot_suppress_a_usable_overlapping_cabinet(scene_mode):
+    result = perception.normalize_predictions(
+        [[5, 5, 95, 95], [10, 10, 90, 85]],
+        [0.85, 0.72],
+        ["an electrical cabinet", "an electrical cabinet"],
+        (100, 100),
+        scene_mode=scene_mode,
+    )
+    assert [item["bbox"] for item in result] == [[0.1, 0.1, 0.9, 0.85]]
+
+
 def test_generic_near_full_frame_cabinet_alone_is_not_verified_equipment():
     result = perception.normalize_predictions(
         [[1, 1, 99, 99], [60, 40, 65, 95]],
