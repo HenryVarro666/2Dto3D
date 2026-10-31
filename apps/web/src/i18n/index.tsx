@@ -79,6 +79,8 @@ const serverMessages: Record<string, MessageKey> = {
     "已应用人工校正，未修改组件保留原有识别依据。",
   MPS_FALLBACK_CPU: "MPS 推理已回退到 CPU。",
   SAM2_UNAVAILABLE_BBOX_ONLY: "SAM 2 不可用，保留真实检测框，不使用伪造区域。",
+  SAM2_EMPTY_AUTOMATIC_REGION_BBOX_ONLY:
+    "自动分割未得到框内区域，保留候选框供人工修正。",
 };
 
 export const categoryKeys: Record<Category, MessageKey> = {

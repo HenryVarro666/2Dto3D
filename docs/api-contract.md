@@ -108,3 +108,5 @@ type MultiJob = {
 人工任务从base的`geometry_job_id`读取不可变几何，不接受外部几何路径，也不重跑VGGT。同组几何原始数据在本地`multiview/<geometry_job_id>/geometry.npz`，不经公共静态目录开放。模型信息包含源码与权重revision、设备、输入分辨率、geometry_reused；质量包含每视角保留点数、置信阈值、跨视角支持、视差诊断及needs_review。诊断分数不能当准确率。
 
 GLB的mesh primitive mode为0（POINTS），组件节点`extras.component_id`，背景ID`__context__`；asset.extras记录表示、尺度、Y-up和索引映射。PLY为binary little endian，每点`x/y/z:float32, red/green/blue:uint8, component_index:uint32`；0背景，其余按result.components顺序从1开始。服务端另存component-map.json，API结果列表和GLB extras给出相同映射。颜色是RGB，显示高亮／分解不会改导出数据。
+
+多图适配器内部调用 `detect(...,retain_masks=True)` 取完整自动SAM rasters，立即保存为服务端Refinement；二值数组不进入公共API。单图默认 `retain_masks=False`，沿用原检测轮廓契约。

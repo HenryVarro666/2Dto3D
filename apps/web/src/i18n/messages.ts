@@ -1,5 +1,9 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  "自动分割未得到框内区域，保留候选框供人工修正。": [
+    "Automatic segmentation found no region inside the box. The candidate box remains for manual correction.",
+    "La segmentación automática no encontró una región dentro del recuadro. Se conserva el recuadro para corregirlo manualmente.",
+  ],
   从照片组开始: ["Start with a photo group", "Empiece con un grupo de fotos"],
   当前视角照片: ["Current viewpoint photo", "Foto de la vista actual"],
   "修改保留标注 ID。完成后，点击“应用校正到点云”更新三维归属。": [

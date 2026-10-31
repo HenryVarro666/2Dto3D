@@ -9,6 +9,32 @@ from PIL import Image
 from .manual import apply_manual_components
 from .pointcloud import build_pointcloud, export_pointcloud
 from .reconstruction import load_geometry
+from .refinement import EmptyRegionError, save_refinement
+from .schemas import RefinementRequest
+
+
+def _persist_automatic_masks(store, asset, prediction):
+    """Turn internal SAM rasters into the same immutable evidence used by guided edits."""
+    model = prediction["model"]
+    for index, detection in enumerate(prediction["detections"]):
+        bitmap = prediction.get("binary_masks", {}).get(index)
+        if bitmap is None:
+            continue
+        try:
+            ref = save_refinement(
+                store.data_dir, asset, RefinementRequest(asset_id=asset["id"], bbox=detection["bbox"]),
+                {"mask": bitmap, "model": {"model_id": model.get("segmentation_id"),
+                                          "revision": model.get("segmentation_revision"),
+                                          "device": model.get("device"), "prompt": "automatic_detector_box"},
+                 "timings": {"image_segmentation_ms": prediction.get("timings", {}).get("segmentation_ms", 0)}},
+            )
+        except EmptyRegionError:
+            prediction["warnings"].append("SAM2_EMPTY_AUTOMATIC_REGION_BBOX_ONLY")
+            detection["mask_polygon"] = None
+            continue
+        store.add_refinement(ref)
+        detection.update(bbox=ref["geometry_bbox"], refinement_id=ref["id"], mask_polygons=ref["mask_polygons"],
+                         mask_polygon=next(iter(ref["mask_polygons"]), None), mask_model=ref["model"])
 
 
 def run_multiview(store, detector, reconstructor, job, request, report):
@@ -27,7 +53,9 @@ def run_multiview(store, detector, reconstructor, job, request, report):
             report("recognizing_view", i)
             with Image.open(store.data_dir / "assets" / asset["id"] / "image.jpg") as source:
                 prediction = detector.detect(source.convert("RGB"), scene_mode="multiple",
-                                             on_progress=lambda _, index=i: report("recognizing_view", index))
+                                             on_progress=lambda _, index=i: report("recognizing_view", index),
+                                             retain_masks=True)
+            _persist_automatic_masks(store, asset, prediction)
             recognition_models.append(prediction["model"])
             warnings.extend(prediction["warnings"])
             for detection in prediction["detections"]:

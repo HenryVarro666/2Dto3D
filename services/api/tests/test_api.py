@@ -21,7 +21,7 @@ class DetectorDouble:
     def status(self):
         return {"state": "ready", "model_id": "boundary-only", "device": "cpu"}
 
-    def detect(self, image, on_progress=None, scene_mode="single"):
+    def detect(self, image, on_progress=None, scene_mode="single", *, retain_masks=False):
         if self.release is not None:
             assert self.release.wait(5), "test did not release detector"
         if self.failure:

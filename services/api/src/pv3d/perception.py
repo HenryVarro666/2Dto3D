@@ -389,7 +389,7 @@ class GroundingDetector:
                 self._load_segmenter()
             return self.status()
 
-    def _segment(self, image, detections, on_progress=None) -> None:
+    def _segment(self, image, detections, on_progress=None, masks_out=None) -> None:
         if on_progress:
             on_progress("loading_segmentation" if self._sam is None else "segmenting")
         import cv2
@@ -410,7 +410,10 @@ class GroundingDetector:
             output.pred_masks.cpu(), inputs["original_sizes"].cpu()
         )[0]
         masks = masks.numpy().reshape(-1, image.height, image.width)
-        for detection, mask in zip(detections, masks):
+        for index, (detection, mask) in enumerate(zip(detections, masks)):
+            if masks_out is not None and np.any(mask):
+                # V3 retains the full raster before legacy contour simplification.
+                masks_out[index] = mask.astype(bool).copy()
             contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             if not contours:
                 continue
@@ -427,11 +430,13 @@ class GroundingDetector:
             ]
         self._segmentation_state = "ready"
 
-    def detect(self, image, on_progress: Callable[[str], None] | None = None, scene_mode="single") -> dict:
+    def detect(self, image, on_progress: Callable[[str], None] | None = None,
+               scene_mode="single", *, retain_masks=False) -> dict:
         with self._lock:
             started = time.perf_counter()
             cold = self._model is None
             warnings = []
+            binary_masks = {}
             try:
                 if on_progress:
                     on_progress("loading_model" if cold else "detecting")
@@ -484,11 +489,13 @@ class GroundingDetector:
                 detected = time.perf_counter()
                 if detections and os.environ.get("PV3D_SEGMENT", "1") == "1":
                     try:
-                        self._segment(image, detections, on_progress=on_progress)
+                        self._segment(image, detections, on_progress=on_progress,
+                                      masks_out=binary_masks if retain_masks else None)
                     except Exception:
                         # A segmentation failure must not turn genuine detector boxes into fake masks.
                         log.exception("Optional SAM2 segmentation unavailable; retaining detector boxes")
                         self._segmentation_state = "unavailable"
+                        binary_masks.clear()
                         warnings.append("SAM2_UNAVAILABLE_BBOX_ONLY")
                 else:
                     self._segmentation_state = "disabled"
@@ -497,6 +504,7 @@ class GroundingDetector:
                 self._error = None
                 return {
                     "detections": detections,
+                    **({"binary_masks": binary_masks} if retain_masks else {}),
                     "warnings": warnings,
                     "model": {
                         "model_id": MODEL_ID,
