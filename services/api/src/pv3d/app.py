@@ -22,7 +22,8 @@ from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageOps, UnidentifiedImageError
 
 from .geometry import build_components, export_scene
-from .schemas import Asset, Job, JobRequest, Result
+from .refinement import EmptyRegionError, save_refinement
+from .schemas import Asset, Job, JobRequest, Refinement, RefinementRequest, Result
 from .store import Store
 
 log = logging.getLogger(__name__)
@@ -82,12 +83,26 @@ class JobRunner:
         for component in request.components:
             submitted = component.model_dump(mode="json")
             old = previous.get(component.id)
-            evidence = {"source": "manual", "score": None, "mask_polygon": None}
-            if old is not None:
-                if submitted["bbox"] == old["bbox"]:
-                    evidence["mask_polygon"] = old.get("mask_polygon")
-                if all(submitted[field] == old[field] for field in ("label", "category", "bbox")):
-                    evidence.update({field: old.get(field) for field in ("source", "score", "mask_polygon")})
+            mask_fields = ("mask_polygon", "mask_polygons", "mask_model", "refinement_id")
+            evidence = {"source": "manual", "score": None, **{key: None for key in mask_fields}}
+            clear = "refinement_id" in component.model_fields_set and component.refinement_id is None
+            if old and submitted["bbox"] == old["bbox"] and not clear:
+                evidence.update({key: old.get(key) for key in mask_fields})
+            if component.refinement_id:
+                ref = self.store.get_refinement(component.refinement_id)
+                evidence.update(
+                    refinement_id=ref["id"],
+                    mask_polygons=ref["mask_polygons"],
+                    mask_polygon=next(iter(ref["mask_polygons"]), None),
+                    mask_model=ref["model"],
+                )
+            if (
+                old
+                and not clear
+                and evidence["refinement_id"] == old.get("refinement_id")
+                and all(submitted[field] == old[field] for field in ("label", "category", "bbox"))
+            ):
+                evidence.update({field: old.get(field) for field in ("source", "score")})
             detections.append({**submitted, **evidence})
         return {
             "detections": detections,
@@ -105,6 +120,32 @@ class JobRunner:
             ],
             "timings": {},
         }
+
+    def refine(self, request):
+        if not self.capacity.acquire(blocking=False):
+            raise HTTPException(409, "The local processing queue is full. Retry after a task finishes.")
+        try:
+            future = self.executor.submit(self._refine, request)
+        except Exception:
+            self.capacity.release()
+            raise
+        return future.result()
+
+    def _refine(self, request):
+        try:
+            asset = self.store.get_asset(request.asset_id)
+            with Image.open(self.store.data_dir / "assets" / asset["id"] / "image.jpg") as source:
+                prediction = self.detector.refine(
+                    source.convert("RGB"),
+                    request.bbox,
+                    [point.model_dump() for point in request.points],
+                    cache_key=asset["id"] + asset["sha256"],
+                )
+            result = save_refinement(self.store.data_dir, asset, request, prediction)
+            self.store.add_refinement(result)
+            return result
+        finally:
+            self.capacity.release()
 
     def _run(self, job, request):
         started = time.perf_counter()
@@ -232,6 +273,36 @@ def create_app(data_dir: Path | None = None, detector=None) -> FastAPI:
             raise HTTPException(409, "The job has no completed result.")
         return job["result"]
 
+    def require_refinement(identifier):
+        result = (
+            application.state.store.get_refinement(identifier) if RESOURCE_ID.fullmatch(identifier) else None
+        )
+        if result is None:
+            raise HTTPException(404, "Refinement not found.")
+        return result
+
+    @application.post("/api/refinements", response_model=Refinement, status_code=201)
+    def refine_component(request: RefinementRequest):
+        require_asset(request.asset_id)
+        try:
+            return application.state.runner.refine(request)
+        except HTTPException:
+            raise
+        except EmptyRegionError as error:
+            raise HTTPException(
+                422, "No usable region. Add points, redraw the box, or use the box without refinement."
+            ) from error
+        except Exception as error:
+            log.exception("Boundary refinement failed")
+            raise HTTPException(
+                503, "Boundary refinement failed. Retry or keep the box without refinement."
+            ) from error
+
+    @application.get("/api/refinements/{identifier}/mask.png")
+    def get_refinement_mask(identifier: str):
+        ref = require_refinement(identifier)
+        return FileResponse(configured_dir / "refinements" / ref["id"] / "mask.png", media_type="image/png")
+
     @application.get("/api/health")
     def health():
         try:
@@ -285,6 +356,11 @@ def create_app(data_dir: Path | None = None, detector=None) -> FastAPI:
     @application.post("/api/jobs", response_model=Job, status_code=202)
     def start_job(request: JobRequest):
         require_asset(request.asset_id)
+        for component in request.components or []:
+            if component.refinement_id:
+                ref = require_refinement(component.refinement_id)
+                if ref["asset_id"] != request.asset_id or list(component.bbox) != ref["geometry_bbox"]:
+                    raise HTTPException(400, "Refinement must match the image and component box.")
         if request.base_job_id is not None:
             base = require_job(request.base_job_id)
             if base["asset_id"] != request.asset_id:

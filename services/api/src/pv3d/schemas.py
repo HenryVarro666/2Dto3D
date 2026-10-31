@@ -22,6 +22,7 @@ class ManualComponent(Contract):
     category: Category
     label: str = Field(min_length=1, max_length=160)
     bbox: BBox
+    refinement_id: Annotated[str, Field(pattern=r"^[a-f0-9]{32}$")] | None = None
 
     @field_validator("label")
     @classmethod
@@ -44,6 +45,8 @@ class Detection(ManualComponent):
     score: float | None = Field(default=None, ge=0, le=1)
     source: Literal["grounding_dino", "manual"] = "grounding_dino"
     mask_polygon: list[tuple[float, float]] | None = None
+    mask_polygons: list[list[tuple[float, float]]] | None = Field(default=None, max_length=64)
+    mask_model: dict[str, Any] | None = None
 
     @field_validator("mask_polygon")
     @classmethod
@@ -53,6 +56,53 @@ class Detection(ManualComponent):
         ):
             raise ValueError("mask polygon must contain at least three normalized points")
         return value
+
+    @field_validator("mask_polygons")
+    @classmethod
+    def normalized_polygons(cls, value):
+        if value is not None:
+            for ring in value:
+                if len(ring) > 128:
+                    raise ValueError("mask ring exceeds 128 points")
+                cls.normalized_polygon(ring)
+        return value
+
+
+class PointPrompt(Contract):
+    x: float = Field(ge=0, le=1)
+    y: float = Field(ge=0, le=1)
+    label: Literal[0, 1]
+
+
+class RefinementRequest(Contract):
+    asset_id: str = Field(min_length=1, max_length=128)
+    bbox: BBox
+    points: list[PointPrompt] = Field(default_factory=list, max_length=64)
+
+    @field_validator("bbox")
+    @classmethod
+    def normalized_bbox(cls, value):
+        return ManualComponent.normalized_bbox(value)
+
+    @model_validator(mode="after")
+    def positive_points_inside_box(self):
+        x1, y1, x2, y2 = self.bbox
+        if any(p.label == 1 and not (x1 <= p.x <= x2 and y1 <= p.y <= y2) for p in self.points):
+            raise ValueError("positive points must be inside the prompt box")
+        return self
+
+
+class Refinement(Contract):
+    id: str
+    asset_id: str
+    bbox: BBox
+    geometry_bbox: BBox
+    points: list[PointPrompt]
+    mask_polygons: list[list[tuple[float, float]]]
+    mask_url: str
+    model: dict[str, Any]
+    timings: dict[str, float]
+    warnings: list[str] = Field(default_factory=list)
 
 
 class JobRequest(Contract):

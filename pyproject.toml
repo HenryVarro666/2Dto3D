@@ -11,6 +11,7 @@ dependencies = [
   "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "pydantic>=2.10,<3",
   "python-multipart>=0.0.20,<1", "pillow>=11,<13", "numpy>=2,<3",
   "trimesh>=4.6,<5", "scipy>=1.15,<2",
+  "opencv-python-headless>=4.11,<5",
 ]
 
 [project.optional-dependencies]
@@ -18,7 +19,6 @@ dev = ["pytest>=8,<10", "httpx>=0.28,<1", "ruff>=0.13,<1"]
 ml = [
   "torch>=2.8,<2.9", "torchvision>=0.23,<0.24",
   "transformers>=4.57,<4.58", "huggingface-hub>=0.34,<1",
-  "opencv-python-headless>=4.11,<5",
 ]
 
 [tool.setuptools.packages.find]

@@ -9,6 +9,7 @@ import math
 import os
 import threading
 import time
+from collections import OrderedDict
 from collections.abc import Callable
 from pathlib import Path
 
@@ -16,6 +17,12 @@ MODEL_ID = "IDEA-Research/grounding-dino-tiny"
 MODEL_REVISION = "a2bb814dd30d776dcf7e30523b00659f4f141c71"
 SEGMENTATION_ID = "facebook/sam2.1-hiera-tiny"
 SEGMENTATION_REVISION = "de431c4043854a71d8101e17995dfe596bf101a5"
+SAM_PRESETS = {
+    "tiny": (SEGMENTATION_ID, SEGMENTATION_REVISION),
+    "small": ("facebook/sam2.1-hiera-small", "ee5bba1d82bb8749febdf90f45e84b687142ba03"),
+    "base-plus": ("facebook/sam2.1-hiera-base-plus", "b7320756a13354e7530a63935656d35b2f91a290"),
+    "large": ("facebook/sam2.1-hiera-large", "665f8e2ad61cf5f53d65644ff27c8ee525124610"),
+}
 PROMPT = (
     "a solar inverter. an electrical cabinet. a metal mounting bracket. a concrete pole. a bundle of cables."
 )
@@ -103,12 +110,16 @@ def normalize_predictions(boxes, scores, phrases, image_size, scene_mode="single
 
 
 class GroundingDetector:
-    def __init__(self, cache_dir: Path, device: str = "auto"):
+    def __init__(self, cache_dir: Path, device: str = "auto", sam_size: str | None = None):
         if device not in {"auto", "cpu", "mps", "cuda"}:
             raise ValueError("Unsupported inference device")
         self.cache_dir = Path(cache_dir)
         self.requested_device = device
         self.device = device
+        self.sam_size = sam_size or os.environ.get("PV3D_SAM_SIZE", "tiny")
+        if self.sam_size not in SAM_PRESETS:
+            raise ValueError("Unsupported SAM size")
+        self.sam_model_id, self.sam_revision = SAM_PRESETS[self.sam_size]
         self._state = "not_loaded"
         self._error = None
         self._model = None
@@ -117,6 +128,7 @@ class GroundingDetector:
         self._sam_processor = None
         self._segmentation_state = "not_loaded"
         self._lock = threading.Lock()
+        self._embedding_cache = OrderedDict()
 
     def status(self) -> dict:
         return {
@@ -125,23 +137,28 @@ class GroundingDetector:
             "device": self.device,
             "error": self._error,
             "segmentation": self._segmentation_state,
+            "segmentation_model_id": self.sam_model_id,
         }
 
-    def _load(self) -> None:
-        if self._model is not None:
-            return
+    def _resolve_device(self):
         import torch
-        from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor
 
-        self._state = "loading"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         torch.set_num_threads(int(os.environ.get("PV3D_TORCH_THREADS", "4")))
-        if self.requested_device == "auto":
+        if self.device == "auto":
             self.device = (
                 "cuda"
                 if torch.cuda.is_available()
                 else ("mps" if torch.backends.mps.is_available() else "cpu")
             )
+
+    def _load(self) -> None:
+        if self._model is not None:
+            return
+        from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor
+
+        self._state = "loading"
+        self._resolve_device()
         self._processor = AutoProcessor.from_pretrained(
             MODEL_ID, revision=MODEL_REVISION, cache_dir=self.cache_dir
         )
@@ -162,15 +179,16 @@ class GroundingDetector:
     def _load_segmenter(self) -> None:
         from transformers import Sam2Model, Sam2Processor
 
+        self._resolve_device()
         if self._sam is None:
             self._segmentation_state = "loading"
             self._sam_processor = Sam2Processor.from_pretrained(
-                SEGMENTATION_ID, revision=SEGMENTATION_REVISION, cache_dir=self.cache_dir
+                self.sam_model_id, revision=self.sam_revision, cache_dir=self.cache_dir
             )
             self._sam = (
                 Sam2Model.from_pretrained(
-                    SEGMENTATION_ID,
-                    revision=SEGMENTATION_REVISION,
+                    self.sam_model_id,
+                    revision=self.sam_revision,
                     cache_dir=self.cache_dir,
                     use_safetensors=True,
                 )
@@ -179,6 +197,68 @@ class GroundingDetector:
             )
         self._sam.to(self.device)
         self._segmentation_state = "ready"
+
+    def refine(self, image, bbox, points, cache_key) -> dict:
+        """Use box+point prompts, caching only two image feature sets under the shared model lock."""
+        import torch
+
+        with self._lock:
+            started = time.perf_counter()
+            self._load_segmenter()
+            loaded = time.perf_counter()
+            prompt = {
+                "input_boxes": [
+                    [
+                        [
+                            bbox[0] * image.width,
+                            bbox[1] * image.height,
+                            bbox[2] * image.width,
+                            bbox[3] * image.height,
+                        ]
+                    ]
+                ]
+            }
+            if points:
+                prompt.update(
+                    input_points=[[[[p["x"] * image.width, p["y"] * image.height] for p in points]]],
+                    input_labels=[[[p["label"] for p in points]]],
+                )
+            inputs = self._sam_processor(images=image, return_tensors="pt", **prompt).to(self.device)
+            key = (cache_key, self.sam_model_id, self.sam_revision, self.device, image.size)
+            hit = key in self._embedding_cache
+            with torch.inference_mode():
+                if not hit:
+                    self._embedding_cache[key] = self._sam.get_image_embeddings(inputs["pixel_values"])
+                    while len(self._embedding_cache) > 2:
+                        self._embedding_cache.popitem(last=False)
+                self._embedding_cache.move_to_end(key)
+                output = self._sam(
+                    image_embeddings=self._embedding_cache[key],
+                    multimask_output=False,
+                    **{
+                        k: v
+                        for k, v in inputs.items()
+                        if k in {"input_boxes", "input_points", "input_labels"}
+                    },
+                )
+            masks = self._sam_processor.post_process_masks(
+                output.pred_masks.cpu(), inputs["original_sizes"].cpu()
+            )[0]
+            self._segmentation_state = "ready"
+            return {
+                "mask": masks.numpy().reshape(-1, image.height, image.width)[0].astype(bool),
+                "model": {
+                    "model_id": self.sam_model_id,
+                    "revision": self.sam_revision,
+                    "device": self.device,
+                    "prompt_kind": "box_and_points",
+                    "embedding_cache_hit": hit,
+                },
+                "timings": {
+                    "load_ms": round((loaded - started) * 1000, 2),
+                    "refine_ms": round((time.perf_counter() - loaded) * 1000, 2),
+                },
+            }
 
     def prepare(self) -> dict:
         """Cache both enabled checkpoints; a separate server still has its own cold load."""
@@ -293,7 +373,7 @@ class GroundingDetector:
                         "cold_start": cold,
                         "prompt": PROMPT,
                         "score_kind": "uncalibrated_model_score",
-                        "segmentation_id": SEGMENTATION_ID if self._segmentation_state == "ready" else None,
+                        "segmentation_id": self.sam_model_id if self._segmentation_state == "ready" else None,
                         "segmentation_revision": getattr(self._sam.config, "_commit_hash", None)
                         if self._sam
                         else None,

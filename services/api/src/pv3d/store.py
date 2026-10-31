@@ -14,6 +14,7 @@ class Store:
         data_dir.mkdir(parents=True, exist_ok=True)
         (data_dir / "assets").mkdir(exist_ok=True)
         (data_dir / "jobs").mkdir(exist_ok=True)
+        (data_dir / "refinements").mkdir(exist_ok=True)
         self.database = data_dir / "state.sqlite3"
         with self._connect() as connection:
             connection.execute("PRAGMA journal_mode=WAL")
@@ -26,6 +27,10 @@ class Store:
                     id TEXT PRIMARY KEY, asset_id TEXT NOT NULL REFERENCES assets(id),
                     status TEXT NOT NULL, stage TEXT NOT NULL, created_at TEXT NOT NULL,
                     elapsed_ms REAL NOT NULL DEFAULT 0, error TEXT, result_json TEXT
+                );
+                CREATE TABLE IF NOT EXISTS refinements (
+                    id TEXT PRIMARY KEY, asset_id TEXT NOT NULL REFERENCES assets(id),
+                    payload_json TEXT NOT NULL
                 );
             """)
 
@@ -59,6 +64,20 @@ class Store:
         with self._connect() as connection:
             row = connection.execute("SELECT * FROM assets WHERE id=?", (identifier,)).fetchone()
         return {**dict(row), "image_url": f"/api/assets/{identifier}/image"} if row else None
+
+    def add_refinement(self, result):
+        with self._connect() as connection:
+            connection.execute(
+                "INSERT INTO refinements (id,asset_id,payload_json) VALUES (?,?,?)",
+                (result["id"], result["asset_id"], json.dumps(result, allow_nan=False)),
+            )
+
+    def get_refinement(self, identifier):
+        with self._connect() as connection:
+            row = connection.execute(
+                "SELECT payload_json FROM refinements WHERE id=?", (identifier,)
+            ).fetchone()
+        return json.loads(row["payload_json"]) if row else None
 
     def create_job(self, asset_id):
         job = {
