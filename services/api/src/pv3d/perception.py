@@ -34,7 +34,7 @@ CLASS_WORDS = {
     "pole": ("pole",),
     "cables": ("bundle", "cables"),
 }
-FILTER_POLICY = "prompt_nouns_and_equipment_anchors_v1"
+FILTER_POLICY = "prompt_nouns_and_equipment_anchors_v2"
 log = logging.getLogger(__name__)
 
 
@@ -127,32 +127,17 @@ def normalize_predictions(
                 and not any(word in phrase for word in ("cable", "wire")),
             }
         )
-    kept = []
-    # Prefer specific device evidence over an overlapping generic cabinet query.
-    for candidate in sorted(
-        candidates,
-        key=lambda item: (item["category"] == "cabinet" and item["_inverter"], item["score"]),
-        reverse=True,
-    ):
-        if any(
-            candidate["category"] == prev["category"] and _iou(candidate["bbox"], prev["bbox"]) > 0.55
-            for prev in kept
-        ):
-            continue
-        kept.append(candidate)
-    kept.sort(key=lambda item: -item["score"])
-    post_nms_count = len(kept)
-
     def area(item):
         x1, y1, x2, y2 = item["bbox"]
         return (x2 - x1) * (y2 - y1)
 
     specific = [
-        item for item in kept if item["category"] == "cabinet" and item["_inverter"] and area(item) >= 0.01
+        item for item in candidates if item["category"] == "cabinet" and item["_inverter"] and area(item) >= 0.01
     ]
+    mapped_count = len(candidates)
     context_rejected = 0
     bounded = []
-    for item in kept:
+    for item in candidates:
         envelope = False
         if item["category"] == "cabinet" and not item["_inverter"]:
             envelope = area(item) > 0.65
@@ -167,7 +152,26 @@ def normalize_predictions(
             context_rejected += 1
         else:
             bounded.append(item)
-    kept = bounded
+    kept = []
+    # Reject envelopes before NMS. An unusable small fragment must not suppress
+    # a viable overlapping body, even when only the fragment says "inverter".
+    for candidate in sorted(
+        bounded,
+        key=lambda item: (
+            item["category"] == "cabinet" and area(item) >= 0.01,
+            item["category"] == "cabinet" and item["_inverter"],
+            item["score"],
+        ),
+        reverse=True,
+    ):
+        if any(
+            candidate["category"] == prev["category"] and _iou(candidate["bbox"], prev["bbox"]) > 0.55
+            for prev in kept
+        ):
+            continue
+        kept.append(candidate)
+    kept.sort(key=lambda item: -item["score"])
+    post_nms_count = len(kept)
     # Tiny corner boxes cannot establish a whole equipment or its relative scale.
     anchors = [item for item in kept if item["category"] == "cabinet" and area(item) >= 0.01]
     if not anchors:
@@ -212,7 +216,7 @@ def normalize_predictions(
         diagnostics.update(
             policy=FILTER_POLICY,
             input_candidates=len(boxes),
-            mapped_candidates=len(candidates),
+            mapped_candidates=mapped_count,
             post_nms_count=post_nms_count,
             guards={
                 "min_equipment_anchor_area": 0.01,
