@@ -2,7 +2,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it } from "vitest";
 import App from "./App";
-import { completed, fakeApi, running } from "./test/fixtures";
+import { cabinet, completed, fakeApi, result, running } from "./test/fixtures";
 import type { JobInput, Refinement } from "./api/types";
 
 const photo = new File(["image"], "inverter.png", { type: "image/png" });
@@ -135,4 +135,58 @@ it("does not allow an automatic retry to overwrite a guided draft after detectio
   await user.click(screen.getByRole("button", { name: "细化边界" }));
   expect(retry).toBeDisabled();
   expect(jobs).toBe(2);
+});
+
+it("does not send a server null refinement as an intentional mask-clear edit", async () => {
+  const user = userEvent.setup();
+  const serverResult = {
+    ...result,
+    components: [{ ...cabinet, refinement_id: null }],
+  };
+  let submitted: JobInput | undefined;
+  render(
+    <App
+      apiClient={fakeApi({
+        createJob: async (input) => {
+          submitted = input;
+          return { ...completed, result: serverResult };
+        },
+      })}
+    />,
+  );
+  await user.upload(screen.getByLabelText("选择设备照片"), photo);
+  const rebuild = screen.getByRole("button", { name: "重新生成结构" });
+  await waitFor(() => expect(rebuild).toBeEnabled());
+  await user.click(rebuild);
+  expect(submitted?.components?.[0]).not.toHaveProperty("refinement_id");
+  expect(submitted?.base_job_id).toBe("job-1");
+});
+
+it("still sends explicit null when a user chooses box-only for a refined component", async () => {
+  const user = userEvent.setup();
+  const serverResult = {
+    ...result,
+    components: [{ ...cabinet, refinement_id: "prior-mask" }],
+  };
+  let submitted: JobInput | undefined;
+  render(
+    <App
+      apiClient={fakeApi({
+        createJob: async (input) => {
+          submitted = input;
+          return { ...completed, result: serverResult };
+        },
+        refine: async () => new Promise<Refinement>(() => {}),
+      })}
+    />,
+  );
+  await user.upload(screen.getByLabelText("选择设备照片"), photo);
+  await waitFor(() =>
+    expect(screen.getByRole("button", { name: "重新生成结构" })).toBeEnabled(),
+  );
+  await user.click(screen.getByRole("button", { name: "编辑 逆变器机柜" }));
+  await user.click(screen.getByRole("button", { name: "细化边界" }));
+  await user.click(screen.getByRole("button", { name: "仅用框保存" }));
+  await user.click(screen.getByRole("button", { name: "重新生成结构" }));
+  expect(submitted?.components?.[0].refinement_id).toBeNull();
 });

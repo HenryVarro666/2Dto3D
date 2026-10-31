@@ -245,7 +245,7 @@ def create_app(data_dir: Path | None = None, detector=None) -> FastAPI:
         finally:
             runner.close()
 
-    application = FastAPI(title="PV Component Schematic Workbench", lifespan=lifespan)
+    application = FastAPI(title="PV Component Schematic Workbench", version="2.0.0", lifespan=lifespan)
 
     @application.exception_handler(RequestValidationError)
     async def invalid_request(_request, error):

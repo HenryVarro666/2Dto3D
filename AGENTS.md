@@ -2,7 +2,7 @@
 
 ## Current state
 
-This repository now contains a Phase 1 local web prototype: React/Three.js frontend, FastAPI API, real Grounding DINO/SAM2 recognition, SQLite jobs and Trimesh schematic GLB export. Read README.md and docs/running.md for current commands. High-fidelity generative refinement and additional equipment types remain future work. Local photos, weights and results are ignored.
+This repository contains V2 of the Phase 1 local web workbench: React/Three.js, FastAPI, real Grounding DINO/SAM2, guided box/positive/negative-point refinement, explicit single/multiple detection scope, SQLite jobs/refinements and Trimesh schematic GLB. Read README.md and docs/running.md for commands, docs/v2/model-options.md for checkpoint choices. V1 is immutable tag v1.0.0. High-fidelity generative geometry and additional equipment types remain future work. Local photos, weights and results are ignored.
 
 Use `docs/plan.md` for the approved design and docs/implementation-phase1.md for this implementation slice. Research notes retain earlier exploration and are not evidence of implemented behavior. Current behavior must be checked against code and actual tests.
 
@@ -20,6 +20,9 @@ Use `docs/plan.md` for the approved design and docs/implementation-phase1.md for
 ## Geometry and evidence
 
 - Keep stable component IDs across input masks, geometry, scene nodes, and manual corrections.
+- Refinements are immutable server records. Validate image and bbox ownership before a manual job; never trust client mask polygons or model provenance. Keep complete binary PNGs for disconnected regions/holes, even when JSON contours are simplified.
+- Preserve drafts on model errors, coalesce point edits behind one browser request, reject stale responses and retain explicit box-only fallback. Scope selection must not itself launch a job. Both task types share the bounded single inference executor.
+- Default SAM remains tiny; optional larger pinned presets are unbenchmarked. Segmentation changes visible boundaries, while current schematic geometry uses bbox/category priors. Do not imply pixel masks produce accurate 3D geometry.
 - Distinguish visible components from physical manufacturing parts. Holes, slots, and folds are features unless evidence identifies a separate part.
 - Label schematic geometry and inferred hidden surfaces explicitly. Unknown metric scale must not be displayed as measured dimensions.
 - A full-object mesh does not demonstrate real component decomposition. Preserve scene hierarchy and verify GLB reload and picking.

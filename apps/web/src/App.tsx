@@ -86,6 +86,9 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
         const previous = current.find((item) => item.id === component.id);
         return {
           ...component,
+          // Server null means no saved reference. Reserve client null for an
+          // explicit box-only edit, otherwise unchanged evidence would be cleared.
+          refinement_id: component.refinement_id ?? undefined,
           labelEdited:
             previous?.label === component.label
               ? (previous.labelEdited ?? previous.source !== "grounding_dino")
@@ -659,7 +662,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
           </span>
           <span>
             PV STRUCTURE <span className="footer-slash">/</span> {t("工作台")}{" "}
-            v0.1
+            v2.0.0
           </span>
         </footer>
       </main>
