@@ -22,6 +22,8 @@ from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageOps, UnidentifiedImageError
 
 from .geometry import build_components, export_scene
+from .manual import apply_manual_components
+from .multiview_schemas import MultiResult
 from .refinement import EmptyRegionError, save_refinement
 from .schemas import Asset, Job, JobRequest, Refinement, RefinementRequest, Result
 from .store import Store
@@ -57,9 +59,10 @@ def _normalized_image(content: bytes) -> Image.Image:
 
 
 class JobRunner:
-    def __init__(self, store: Store, detector):
+    def __init__(self, store: Store, detector, reconstructor=None):
         self.store = store
         self.detector = detector
+        self.reconstructor = reconstructor
         self.executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="pv3d-worker")
         self.capacity = threading.BoundedSemaphore(MAX_PENDING_JOBS)
 
@@ -79,31 +82,7 @@ class JobRunner:
         previous = (
             {component["id"]: component for component in base_result["components"]} if base_result else {}
         )
-        detections = []
-        for component in request.components:
-            submitted = component.model_dump(mode="json")
-            old = previous.get(component.id)
-            mask_fields = ("mask_polygon", "mask_polygons", "mask_model", "refinement_id")
-            evidence = {"source": "manual", "score": None, **{key: None for key in mask_fields}}
-            clear = "refinement_id" in component.model_fields_set and component.refinement_id is None
-            if old and submitted["bbox"] == old["bbox"] and not clear:
-                evidence.update({key: old.get(key) for key in mask_fields})
-            if component.refinement_id:
-                ref = self.store.get_refinement(component.refinement_id)
-                evidence.update(
-                    refinement_id=ref["id"],
-                    mask_polygons=ref["mask_polygons"],
-                    mask_polygon=next(iter(ref["mask_polygons"]), None),
-                    mask_model=ref["model"],
-                )
-            if (
-                old
-                and not clear
-                and evidence["refinement_id"] == old.get("refinement_id")
-                and all(submitted[field] == old[field] for field in ("label", "category", "bbox"))
-            ):
-                evidence.update({field: old.get(field) for field in ("source", "score")})
-            detections.append({**submitted, **evidence})
+        detections = apply_manual_components(request.components, previous, self.store)
         return {
             "detections": detections,
             "model": {
@@ -120,6 +99,66 @@ class JobRunner:
             ],
             "timings": {},
         }
+
+    def submit_multiview(self, request, total_views):
+        if not self.capacity.acquire(blocking=False):
+            raise HTTPException(409, "The local processing queue is full. Retry after a task finishes.")
+        try:
+            job = self.store.create_multiview_job(request.capture_id, total_views)
+            self.executor.submit(self._run_multiview, job, request)
+            return job
+        except Exception:
+            self.capacity.release()
+            raise
+
+    def _run_multiview(self, job, request):
+        started = time.perf_counter()
+        current_stage = "starting"
+
+        def report(stage, view_index=0):
+            nonlocal current_stage
+            current_stage = stage
+            self.store.update_multiview_job(
+                job["id"],
+                status="running",
+                stage=stage,
+                view_index=view_index,
+                elapsed_ms=(time.perf_counter() - started) * 1000,
+            )
+
+        try:
+            report("manual_components" if request.mode == "manual" else "starting")
+            from .multiview_runner import run_multiview
+
+            result = MultiResult.model_validate(
+                run_multiview(self.store, self.detector, self.reconstructor, job, request, report)
+            ).model_dump(mode="json")
+            folder = self.store.data_dir / "multiview" / job["id"]
+            folder.mkdir(parents=True, exist_ok=True)
+            temporary = folder / "result.tmp"
+            temporary.write_text(json.dumps(result, ensure_ascii=False, allow_nan=False), encoding="utf-8")
+            temporary.replace(folder / "result.json")
+            ready = bool(
+                result["point_count"] and result["components"] and not result["quality"].get("needs_review")
+            )
+            self.store.update_multiview_job(
+                job["id"],
+                status="succeeded" if ready else "needs_review",
+                stage="complete",
+                elapsed_ms=(time.perf_counter() - started) * 1000,
+                result=result,
+            )
+        except Exception:
+            log.exception("Multi-view job %s failed", job["id"])
+            self.store.update_multiview_job(
+                job["id"],
+                status="failed",
+                stage=current_stage,
+                elapsed_ms=(time.perf_counter() - started) * 1000,
+                error="Multi-view processing failed. Check local model setup, retry, or return to single-photo mode.",
+            )
+        finally:
+            self.capacity.release()
 
     def refine(self, request):
         if not self.capacity.acquire(blocking=False):
@@ -222,7 +261,7 @@ class JobRunner:
         self.executor.shutdown(wait=True)
 
 
-def create_app(data_dir: Path | None = None, detector=None) -> FastAPI:
+def create_app(data_dir: Path | None = None, detector=None, reconstructor=None) -> FastAPI:
     """Create an isolated service; only the slow model boundary is injectable for tests."""
     configured_dir = Path(data_dir or os.environ.get("PV3D_DATA_DIR", ROOT / "data" / "runtime")).resolve()
     if detector is None:
@@ -237,7 +276,7 @@ def create_app(data_dir: Path | None = None, detector=None) -> FastAPI:
     async def lifespan(application):
         store = Store(configured_dir)
         store.interrupt_unfinished()
-        runner = JobRunner(store, detector)
+        runner = JobRunner(store, detector, reconstructor)
         application.state.store = store
         application.state.runner = runner
         try:
@@ -393,6 +432,10 @@ def create_app(data_dir: Path | None = None, detector=None) -> FastAPI:
         return FileResponse(path, media_type="model/gltf-binary", filename=f"{identifier}-scene.glb")
 
     # Prevent unknown API URLs from falling through into the optional web app.
+    from .captures import register_capture_routes
+
+    register_capture_routes(application, configured_dir, require_asset, require_refinement)
+
     @application.api_route(
         "/api/{unmatched:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
     )

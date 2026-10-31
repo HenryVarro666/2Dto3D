@@ -15,6 +15,7 @@ class Store:
         (data_dir / "assets").mkdir(exist_ok=True)
         (data_dir / "jobs").mkdir(exist_ok=True)
         (data_dir / "refinements").mkdir(exist_ok=True)
+        (data_dir / "multiview").mkdir(exist_ok=True)
         self.database = data_dir / "state.sqlite3"
         with self._connect() as connection:
             connection.execute("PRAGMA journal_mode=WAL")
@@ -30,6 +31,13 @@ class Store:
                 );
                 CREATE TABLE IF NOT EXISTS refinements (
                     id TEXT PRIMARY KEY, asset_id TEXT NOT NULL REFERENCES assets(id),
+                    payload_json TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS captures (
+                    id TEXT PRIMARY KEY, asset_ids_json TEXT NOT NULL, created_at TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS multiview_jobs (
+                    id TEXT PRIMARY KEY, capture_id TEXT NOT NULL REFERENCES captures(id),
                     payload_json TEXT NOT NULL
                 );
             """)
@@ -51,6 +59,77 @@ class Store:
                 "UPDATE jobs SET status='interrupted', stage='interrupted', error=?, result_json=NULL "
                 "WHERE status IN ('queued','running')",
                 ("The server stopped before this task finished. Start a new task to try again.",),
+            )
+            for row in connection.execute("SELECT id,payload_json FROM multiview_jobs").fetchall():
+                job = json.loads(row["payload_json"])
+                if job["status"] in {"queued", "running"}:
+                    job.update(
+                        status="interrupted",
+                        stage="interrupted",
+                        result=None,
+                        error="The server stopped before this task finished. Start a new task to try again.",
+                    )
+                    connection.execute(
+                        "UPDATE multiview_jobs SET payload_json=? WHERE id=?",
+                        (json.dumps(job, allow_nan=False), job["id"]),
+                    )
+
+    def create_capture(self, asset_ids):
+        identifier, created_at = uuid4().hex, datetime.now(UTC).isoformat()
+        with self._connect() as connection:
+            connection.execute(
+                "INSERT INTO captures VALUES (?,?,?)", (identifier, json.dumps(asset_ids), created_at)
+            )
+        return self.get_capture(identifier)
+
+    def get_capture(self, identifier):
+        with self._connect() as connection:
+            row = connection.execute("SELECT * FROM captures WHERE id=?", (identifier,)).fetchone()
+        if row is None:
+            return None
+        return {
+            "id": identifier,
+            "created_at": row["created_at"],
+            "assets": [self.get_asset(asset_id) for asset_id in json.loads(row["asset_ids_json"])],
+        }
+
+    def create_multiview_job(self, capture_id, total_views):
+        job = {
+            "id": uuid4().hex,
+            "capture_id": capture_id,
+            "status": "queued",
+            "stage": "queued",
+            "view_index": 0,
+            "total_views": total_views,
+            "created_at": datetime.now(UTC).isoformat(),
+            "elapsed_ms": 0.0,
+            "error": None,
+            "result": None,
+        }
+        with self._connect() as connection:
+            connection.execute(
+                "INSERT INTO multiview_jobs VALUES (?,?,?)",
+                (job["id"], capture_id, json.dumps(job, allow_nan=False)),
+            )
+        return job
+
+    def get_multiview_job(self, identifier):
+        with self._connect() as connection:
+            row = connection.execute(
+                "SELECT payload_json FROM multiview_jobs WHERE id=?", (identifier,)
+            ).fetchone()
+        return json.loads(row["payload_json"]) if row else None
+
+    def update_multiview_job(self, identifier, **changes):
+        with self._connect() as connection:
+            row = connection.execute(
+                "SELECT payload_json FROM multiview_jobs WHERE id=?", (identifier,)
+            ).fetchone()
+            job = json.loads(row["payload_json"])
+            job.update(changes)
+            connection.execute(
+                "UPDATE multiview_jobs SET payload_json=? WHERE id=?",
+                (json.dumps(job, allow_nan=False), identifier),
             )
 
     def add_asset(self, asset):
