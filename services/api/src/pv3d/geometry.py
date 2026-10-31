@@ -83,7 +83,9 @@ def export_scene(components: list[dict], output: Path) -> None:
     """Write one independently pickable GLB node per stable component ID."""
     if not components:
         raise ValueError("Cannot export a scene without components")
-    scene = trimesh.Scene()
+    # Component IDs start with an alphanumeric character, so this private frame
+    # cannot collide with any accepted ID (including Trimesh's default 'world').
+    scene = trimesh.Scene(base_frame="__pv3d_scene_root__")
     for component in components:
         width, height, depth = component["dimensions"]
         if component["primitive"] == "cylinder":

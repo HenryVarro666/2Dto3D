@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it } from "vitest";
 import App from "./App";
-import { fakeApi } from "./test/fixtures";
+import { bracket, cabinet, completed, fakeApi, result } from "./test/fixtures";
+import type { Job, JobInput } from "./api/types";
 
 it("starts with a usable upload workspace and reports actual API model state", async () => {
   render(
@@ -47,4 +48,68 @@ it("keeps an upload failure visible without inventing recognized components", as
   expect(
     screen.queryByRole("button", { name: /选择 逆变器/ }),
   ).not.toBeInTheDocument();
+});
+
+it("locks component mutations while a submitted manual rebuild is pending", async () => {
+  const user = userEvent.setup();
+  let resolveManual!: (job: Job) => void;
+  let submitted: JobInput | undefined;
+  const pendingJob = new Promise<Job>((resolve) => {
+    resolveManual = resolve;
+  });
+  render(
+    <App
+      apiClient={fakeApi({
+        createJob: async (input) => {
+          if (input.mode === "manual") {
+            submitted = input;
+            return pendingJob;
+          }
+          return completed;
+        },
+      })}
+    />,
+  );
+  await user.upload(
+    screen.getByLabelText("选择设备照片"),
+    new File(["image"], "inverter.png", { type: "image/png" }),
+  );
+  const rebuildButton = screen.getByRole("button", { name: "重新生成结构" });
+  await waitFor(() => expect(rebuildButton).toBeEnabled());
+  await user.click(screen.getByRole("button", { name: "编辑 逆变器机柜" }));
+  const nameInput = screen.getByRole("textbox", { name: "组件名称" });
+  await user.clear(nameInput);
+  await user.type(nameInput, "已提交机柜");
+  await user.click(rebuildButton);
+
+  expect(nameInput).toBeDisabled();
+  expect(screen.getByRole("combobox", { name: "组件类别" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "移除组件" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "编辑 安装支架" })).toBeDisabled();
+  for (const button of screen.getAllByRole("button", { name: "添加组件框" })) {
+    expect(button).toBeDisabled();
+  }
+  expect(screen.getByRole("checkbox", { name: "显示 安装支架" })).toBeEnabled();
+  await user.type(nameInput, "不会被提交的修改");
+  await user.click(screen.getByRole("button", { name: "移除组件" }));
+  expect(nameInput).toHaveValue("已提交机柜");
+  expect(submitted?.components?.[0].label).toBe("已提交机柜");
+
+  await act(async () => {
+    resolveManual({
+      ...completed,
+      id: "manual-job",
+      result: {
+        ...result,
+        job_id: "manual-job",
+        scene_url: "/api/jobs/manual-job/scene.glb",
+        components: [{ ...cabinet, label: "已提交机柜" }, bracket],
+      },
+    });
+  });
+  await waitFor(() => expect(nameInput).toBeEnabled());
+  expect(nameInput).toHaveValue("已提交机柜");
+  expect(
+    screen.getByRole("button", { name: "选择 安装支架" }),
+  ).toBeInTheDocument();
 });

@@ -34,9 +34,9 @@ Consumes: `GroundingDetector.detect(PIL.Image) -> Recognition dict`（见下方�
 
 Produces: `/api/assets`、`/api/jobs`、任务状态和结果、规范化照片、场景 GLB／JSON，详见 [API 契约](api-contract.md)。
 
-- [ ] 写上传／错误／重启状态／独立 GLB 节点测试，先运行并观察缺失行为失败。
-- [ ] 实现图片验证、SQLite、单任务执行、参数化布局及导出。
-- [ ] 跑完整后端测试；用可控检测结果测试外部模型边界，保留真实文件与数据库操作。
+- [x] 写上传／错误／重启状态／独立 GLB 节点测试，先运行并观察缺失行为失败。
+- [x] 实现图片验证、SQLite、单任务执行、参数化布局及导出。
+- [x] 跑完整后端测试；用可控检测结果测试外部模型边界，保留真实文件与数据库操作。
 
 ## Task 2：网页工作台（Web owner）
 
@@ -46,9 +46,9 @@ Consumes: [API 契约](api-contract.md)，Vite `/api` 代理到 127.0.0.1:8000�
 
 Produces: 照片上传、原图候选框、组件列表、真实 GLB 的点选／隐藏／隔离／爆炸／恢复、导出与人工纠正重建。
 
-- [ ] 先测试上传后的任务轮询、错误和组件交互行为。
-- [ ] 实现自适应双视图工作台，保持明确的示意、来源、相对尺度和模型状态提示。
-- [ ] 运行前端测试与 TypeScript／生产构建；网页端实际检查 WebGL、文件上传和移动布局。
+- [x] 先测试上传后的任务轮询、错误和组件交互行为。
+- [x] 实现自适应双视图工作台，保持明确的示意、来源、相对尺度和模型状态提示。
+- [x] 运行前端测试与 TypeScript／生产构建；网页端实际检查 WebGL、文件上传和当前窄屏布局。
 
 ## Task 3：真实识别与运行集成（root owner）
 
@@ -56,14 +56,17 @@ Files: `services/api/src/pv3d/perception.py`、`services/api/tests/test_percepti
 
 Produces: Grounding DINO tiny 真实推理、可选 SAM 2 tiny 区域，显式设备／版本／来源和失败状态；可重复启动命令。
 
-- [ ] 先测试候选去重、类别映射和归一化边界，运行观察失败。
-- [ ] 实现懒加载、项目内权重缓存、CPU／MPS／CUDA 选择和模型状态。
-- [ ] 在已有样图上运行真实模型、HTTP 到 GLB 全流程，记录观测限制和冷／暖时间，不宣称跨设备准确率。
-- [ ] 完成浏览器验证、全分支审查、文档更新；提交推送并核对远端。
+- [x] 先测试候选去重、类别映射和归一化边界，运行观察失败。
+- [x] 实现懒加载、项目内权重缓存、CPU／MPS／CUDA 选择和模型状态。
+- [x] 在已有样图上运行真实模型、HTTP 到 GLB 全流程，记录观测限制和冷／暖时间，不宣称跨设备准确率。
+- [x] 完成浏览器验证、全分支审查、文档更新；提交推送并核对远端。
 
 ## Execution record
 
 - Baseline: docs-only repository, clean at `8c0b363`; no pre-existing application tests.
 - Ruling: 当前目录功能分支 `feat/phase1-workbench`，遵循用户明确指定代码和数据根目录。
 - Ruling: 本地网页平台是一期入口，Python 推理服务保留 GPU 迁移边界；本轮不创建云端 Site。
-- [ ] Backend / Web / perception tests and integration evidence to be filled after execution.
+- Backend: witnessed red, full local Python suite 34 passed. Web: witnessed red, 18 passed and production build passed.
+- Browser: real upload / GLB render / selection / visibility / explosion / rotation / manual provenance / download verified; notes in [verification](verification.md).
+- Ruling: 本切片人工编辑为名称、类别及照片框；直接编辑三维厚度／位姿留待后续，不能标为已实现。
+- Independent whole-branch review returned three functional findings. All reproduced and fixed: freeze mutation during rebuild, reserve a private scene root, clear stale health error after recovery. Regression suites passed.

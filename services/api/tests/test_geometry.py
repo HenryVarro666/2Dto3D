@@ -103,3 +103,44 @@ def test_oversized_unknown_background_does_not_dominate_cabinet_scene():
     components, warnings = build_components(parts, image_size=(1000, 1000))
     assert [item["id"] for item in components] == ["cabinet-01"]
     assert warnings
+
+
+def test_component_named_world_remains_independent_and_keeps_its_transform(tmp_path):
+    from pv3d.geometry import build_components, export_scene
+
+    candidates = detections()[:2]
+    candidates[0]["id"] = "cabinet"
+    candidates[1]["id"] = "world"
+    components, _ = build_components(candidates, image_size=(1000, 1000))
+    components[0]["position"] = [1.25, 0.5, -0.2]
+    components[1]["position"] = [-0.75, 1.5, 0.3]
+    output = tmp_path / "world-component.glb"
+    export_scene(components, output)
+    raw = output.read_bytes()
+    json_length = struct.unpack_from("<I", raw, 12)[0]
+    gltf = json.loads(raw[20 : 20 + json_length])
+    node_indices = {node["name"]: index for index, node in enumerate(gltf["nodes"])}
+    mesh_indices = {node_indices["world"], node_indices["cabinet"]}
+    parents = {
+        index: parent
+        for parent, node in enumerate(gltf["nodes"])
+        for index in node.get("children", [])
+        if index in mesh_indices
+    }
+    assert len(parents) == 2
+    assert len(set(parents.values())) == 1
+    assert parents[node_indices["world"]] not in mesh_indices
+    for identifier in ("world", "cabinet"):
+        node = gltf["nodes"][node_indices[identifier]]
+        assert node["extras"]["component_id"] == identifier
+        assert "mesh" in node
+        assert not node.get("children")
+    reloaded = trimesh.load(io.BytesIO(raw), file_type="glb", force="scene")
+    assert set(reloaded.graph.nodes_geometry) == {"world", "cabinet"}
+    root_index = gltf["scenes"][gltf.get("scene", 0)]["nodes"][0]
+    root_name = gltf["nodes"][root_index]["name"]
+    for component in components:
+        # Trimesh's importer itself reserves 'world'; query the actual exported
+        # scene root rather than its synthetic default frame.
+        matrix, _ = reloaded.graph.get(frame_to=component["id"], frame_from=root_name)
+        np.testing.assert_allclose(matrix[:3, 3], component["position"], atol=1e-7)

@@ -1,7 +1,7 @@
 .PHONY: setup dev test build serve models
 
 setup:
-	uv sync --extra dev --extra ml
+	uv sync --frozen --extra dev --extra ml
 	npm --prefix apps/web ci
 
 dev:

@@ -92,6 +92,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
     void selectPhoto(file);
   }
   function addBox(bbox: BBox) {
+    if (active || !state.asset) return;
     const id = `manual-${crypto.randomUUID()}`;
     setComponents((current) => [
       ...current,
@@ -125,6 +126,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
     setResetKey((current) => current + 1);
   }
   function manualRebuild() {
+    if (active) return;
     setDrawing(false);
     setViewerError(null);
     void rebuild(
@@ -232,6 +234,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
           viewerError={viewerError}
           onCancel={cancel}
           onRetry={() => {
+            setDrawing(false);
             setViewerError(null);
             void rebuild();
           }}
@@ -245,12 +248,12 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
             components={components}
             selectedId={selectedId}
             hiddenIds={hiddenIds}
-            drawing={drawing}
+            drawing={drawing && canDraw}
             canDraw={canDraw}
             onSelect={setSelectedId}
             onChoose={() => fileInputRef.current?.click()}
             onFile={chooseFile}
-            onDrawingChange={setDrawing}
+            onDrawingChange={(value) => setDrawing(value && canDraw)}
             onBox={addBox}
           />
 
@@ -448,6 +451,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   );
                 }}
                 onChange={(id, patch) => {
+                  if (active) return;
                   setComponents((current) =>
                     current.map((item) =>
                       item.id === id ? { ...item, ...patch } : item,
@@ -456,6 +460,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   setDirty(true);
                 }}
                 onRemove={(id) => {
+                  if (active) return;
                   setComponents((current) =>
                     current.filter((item) => item.id !== id),
                   );
@@ -463,6 +468,7 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   if (selectedId === id) setSelectedId(null);
                 }}
                 editRequestId={editRequestId}
+                mutationsDisabled={active}
               />
             ) : (
               <div className="components-empty">

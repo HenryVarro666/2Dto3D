@@ -53,8 +53,8 @@ flowchart LR
     A[单张照片与目标区域] --> B[可见组件检测与分割]
     B --> C[参数化简化几何与相对布局]
     C --> D[三维查看器与组件树]
-    B --> E[后台生成式几何细化]
-    E --> D
+    B -. 后续阶段 .-> E[生成式几何细化]
+    E -.-> D
     D --> F[GLB 与组件 JSON]
 ```
 
@@ -84,6 +84,8 @@ flowchart LR
 | 持久化 | SQLite、本地文件、单个持久任务 worker |
 
 依赖由 `uv.lock` 和前端 `package-lock.json` 固定。用户已有 **NVIDIA RTX 5080**，备选为 **M4 Pro MacBook Pro**；本轮在本机 M4 Pro、24GB 内存上验证 MPS 路径，5080 的操作系统、驱动和实际运行表现仍未验证。Blender 可用于导出后的网格查看和人工编辑。
+
+当前本地验证包含后端 34 项、前端 18 项行为测试及生产构建。在已有本地样图上，浏览器观察到暖机后约 3.3 秒、权重已缓存的新服务进程首轮约 6.5 秒显示结构示意；首次下载／准备模型更慢。这是少量样例的观察，尚不构成十秒验收或识别准确率结论。检查范围见 [验证记录](docs/verification.md)。
 
 按 NVIDIA 公布的标准 **16GB 显存**规划，5080 低于 SAM 3D Objects（至少 32GB）和 TRELLIS.2（至少 24GB）的官方门槛，因此首版不以这两套默认配置本地可跑为前提。硬件选择与低显存候选依据见 [硬件方案](docs/hardware.md)；M4 Pro 的 MPS 路径也需单独验证，10 秒目标尚无实测结果。[NVIDIA 规格](https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5080/)、[SAM 3D 安装要求](https://github.com/facebookresearch/sam-3d-objects/blob/main/doc/setup.md)、[TRELLIS.2 安装要求](https://github.com/microsoft/TRELLIS.2#prerequisites)
 

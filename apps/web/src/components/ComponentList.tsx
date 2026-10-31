@@ -19,6 +19,7 @@ type Props = {
   onChange: (id: string, patch: Partial<EditableComponent>) => void;
   onRemove: (id: string) => void;
   editRequestId?: string | null;
+  mutationsDisabled?: boolean;
 };
 
 export function ComponentList({
@@ -31,6 +32,7 @@ export function ComponentList({
   onChange,
   onRemove,
   editRequestId,
+  mutationsDisabled = false,
 }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null);
   useEffect(() => {
@@ -104,6 +106,7 @@ export function ComponentList({
                 className="icon-button"
                 aria-label={`编辑 ${component.label}`}
                 title="编辑组件"
+                disabled={mutationsDisabled}
                 onClick={() => {
                   onSelect(component.id);
                   setEditingId(component.id);
@@ -135,6 +138,7 @@ export function ComponentList({
                 aria-label="组件名称"
                 value={editing.label}
                 maxLength={80}
+                disabled={mutationsDisabled}
                 onChange={(event) =>
                   onChange(editing.id, { label: event.target.value })
                 }
@@ -145,6 +149,7 @@ export function ComponentList({
               <select
                 aria-label="组件类别"
                 value={editing.category}
+                disabled={mutationsDisabled}
                 onChange={(event) =>
                   onChange(editing.id, {
                     category: event.target.value as Category,
@@ -160,6 +165,7 @@ export function ComponentList({
             </label>
             <button
               className="text-button danger"
+              disabled={mutationsDisabled}
               onClick={() => {
                 onRemove(editing.id);
                 setEditingId(null);
@@ -169,7 +175,11 @@ export function ComponentList({
               移除组件
             </button>
           </div>
-          <p>修改保留组件 ID。完成校正后，点击“重新生成结构”应用到三维示意。</p>
+          <p>
+            {mutationsDisabled
+              ? "结构正在生成，完成后可继续校正。"
+              : "修改保留组件 ID。完成校正后，点击“重新生成结构”应用到三维示意。"}
+          </p>
         </div>
       )}
     </>

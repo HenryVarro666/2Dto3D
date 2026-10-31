@@ -2,6 +2,7 @@
 
 import math
 
+import pytest
 from pv3d.perception import normalize_predictions
 
 
@@ -54,3 +55,47 @@ def test_single_target_does_not_turn_background_or_subpanels_into_extra_cabinets
     )
     assert [d["category"] for d in result] == ["cabinet", "cables"]
     assert result[0]["bbox"] == [0.2, 0.2, 0.65, 0.7]
+
+
+def test_detector_health_recovers_after_transient_failure_without_reloading_weights(tmp_path):
+    """Use the real Torch context; replace only the expensive loaded model boundary."""
+    from types import SimpleNamespace
+
+    from PIL import Image
+    from pv3d.perception import GroundingDetector
+
+    torch = pytest.importorskip("torch", reason="Optional ML dependency; this test downloads no weights")
+
+    class Inputs(dict):
+        def to(self, device):
+            return self
+
+    class Processor:
+        def __call__(self, **kwargs):
+            return Inputs(input_ids=torch.tensor([1]))
+
+        def post_process_grounded_object_detection(self, *args, **kwargs):
+            return [{"text_labels": [], "boxes": torch.empty(0, 4), "scores": torch.empty(0)}]
+
+    class FlakyModel:
+        config = SimpleNamespace(_commit_hash="test")
+
+        def __init__(self):
+            self.calls = 0
+
+        def __call__(self, **kwargs):
+            self.calls += 1
+            if self.calls == 1:
+                raise RuntimeError("transient inference failure")
+
+    detector = GroundingDetector(tmp_path, device="cpu")
+    detector._model = FlakyModel()
+    detector._processor = Processor()
+    image = Image.new("RGB", (20, 20))
+    with pytest.raises(RuntimeError, match="transient"):
+        detector.detect(image)
+    assert detector.status()["state"] == "error"
+    assert detector.status()["error"] is not None
+    assert detector.detect(image)["detections"] == []
+    assert detector.status()["state"] == "ready"
+    assert detector.status()["error"] is None

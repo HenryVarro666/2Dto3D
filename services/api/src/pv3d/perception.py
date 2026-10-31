@@ -268,6 +268,7 @@ class GroundingDetector:
                     self._segmentation_state = "disabled"
                 finished = time.perf_counter()
                 self._state = "ready"
+                self._error = None
                 return {
                     "detections": detections,
                     "warnings": warnings,
