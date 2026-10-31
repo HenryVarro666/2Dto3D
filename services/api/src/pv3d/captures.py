@@ -62,9 +62,10 @@ def register_capture_routes(app, data_dir, require_asset, require_refinement):
                 old = previous.get(observation.id)
                 if old and old["asset_id"] != observation.asset_id:
                     raise HTTPException(400, "An observation ID cannot move to a different photo.")
-                if observation.component_id:
+                component_id = observation.component_id or (old or {}).get("component_id")
+                if component_id:
                     meaning = (observation.category, observation.label)
-                    if semantics.setdefault(observation.component_id, meaning) != meaning:
+                    if semantics.setdefault(component_id, meaning) != meaning:
                         raise HTTPException(400, "Linked observations must use the same component name and category.")
         return app.state.runner.submit_multiview(request, len(assets))
 

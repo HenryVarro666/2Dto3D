@@ -18,6 +18,7 @@ import {
 
 type Props = {
   idPrefix?: string;
+  multiView?: boolean;
   imageUrl: string | null;
   fileName: string | null;
   asset: Asset | null;
@@ -50,6 +51,7 @@ export function PhotoPanel({
   onBox,
   annotation,
   idPrefix = "",
+  multiView = false,
 }: Props) {
   const { t, componentLabel } = useI18n();
   const stageRef = useRef<HTMLDivElement>(null);
@@ -147,11 +149,11 @@ export function PhotoPanel({
               <span className="symbol-corner corner-a" />
               <span className="symbol-corner corner-b" />
             </div>
-            <h3>{t("拖入一张设备照片")}</h3>
+            <h3>{t(multiView ? "从照片组开始" : "拖入一张设备照片")}</h3>
             <p>{t("让机柜、支架和线缆尽量清晰可见")}</p>
             <button className="button primary" onClick={onChoose}>
               <Upload size={16} />
-              {t("选择照片")}
+              {t(multiView ? "选择照片组" : "选择照片")}
             </button>
             <span className="upload-formats">
               {t("JPEG / PNG / WebP · 最大 20MB")}
@@ -217,7 +219,9 @@ export function PhotoPanel({
             <img
               className="source-image"
               src={imageUrl}
-              alt={t("待识别的组串式逆变器现场照片")}
+              alt={t(
+                multiView ? "当前视角照片" : "待识别的组串式逆变器现场照片",
+              )}
               draggable={false}
               onLoad={(event) =>
                 setNaturalSize({
@@ -392,7 +396,11 @@ export function PhotoPanel({
         ) : (
           <span className="muted">
             <span className="tiny-dot" />
-            {t("单张照片优先 · 一期支持组串式逆变器")}
+            {t(
+              multiView
+                ? "相对尺度 · 可见表面 · 需人工核对"
+                : "单张照片优先 · 一期支持组串式逆变器",
+            )}
           </span>
         )}
       </footer>

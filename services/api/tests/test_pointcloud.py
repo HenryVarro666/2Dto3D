@@ -4,6 +4,7 @@ import json
 import struct
 
 import numpy as np
+import pytest
 from PIL import Image
 from pv3d.pointcloud import build_pointcloud, export_pointcloud
 from pv3d.store import Store
@@ -122,3 +123,40 @@ def test_glb_native_points_ids_and_ply_component_mapping(tmp_path):
     assert b"property uint component_index" in ply
     mapping = json.loads((tmp_path / "component-map.json").read_text())
     assert mapping == {"0": "__context__", "1": "part-kept"}
+
+
+def test_transitive_matches_do_not_merge_two_observations_in_the_same_view(tmp_path):
+    obs = [observation("a", 0, [0, 0.2, 0.6, 0.8]),
+           observation("b", 1, [0, 0.2, 1, 0.8]),
+           observation("c", 0, [0.4, 0.2, 1, 0.8])]
+    cloud = build_pointcloud(geometry(), assets(), obs, Store(tmp_path), automatic=True)
+    ids = {o["id"]: o["component_id"] for o in cloud["observations"]}
+    assert ids["a"] != ids["c"] and ids["b"] in {ids["a"], ids["c"]}
+
+
+def test_export_cap_is_deterministic_and_keeps_a_small_component(tmp_path):
+    data = geometry()
+    rng = np.random.default_rng(42)
+    data.update(points=rng.random((2, 400, 400, 3), dtype=np.float32),
+                depth=np.ones((2, 400, 400), np.float32),
+                confidence=np.ones((2, 400, 400), np.float32),
+                colors=np.full((2, 400, 400, 3), 128, np.uint8),
+                rects=np.array([[0, 0, 400, 400]] * 2))
+    obs = [observation("tiny", 0, [0, 0, 0.1, 0.1], "part-small")]
+    store = Store(tmp_path)
+    first = build_pointcloud(data, assets(), obs, store, automatic=False)
+    second = build_pointcloud(data, assets(), obs, store, automatic=False)
+    assert 100_000 < len(first["vertices"]) <= 150_000
+    assert first["components"][0]["point_count"] > 0
+    assert np.array_equal(first["vertices"], second["vertices"])
+    assert np.array_equal(first["indices"], second["indices"])
+
+
+def test_mask_from_another_view_is_not_accepted_by_fusion(tmp_path):
+    store = Store(tmp_path)
+    store.add_asset({**assets()[1], "sha256": "another-photo"})
+    ref = "b" * 32
+    store.add_refinement({"id": ref, "asset_id": assets()[1]["id"]})
+    obs = {**observation("wrong-mask", 0, [0, 0, 1, 1]), "refinement_id": ref}
+    with pytest.raises(ValueError, match="must belong"):
+        build_pointcloud(geometry(), assets(), [obs], store)

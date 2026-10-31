@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pv-structure-workbench"
-version = "2.0.0"
-description = "Local PV photo recognition and component-aware schematic 3D workbench"
+version = "3.0.0"
+description = "Local PV photo recognition, multiview point fusion and editable 3D workbench"
 requires-python = ">=3.12,<3.13"
 dependencies = [
   "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "pydantic>=2.10,<3",

@@ -701,7 +701,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
             </span>
             <span>
               PV STRUCTURE <span className="footer-slash">/</span> {t("工作台")}{" "}
-              v2.0.0
+              v3.0.0
             </span>
           </footer>
         </main>

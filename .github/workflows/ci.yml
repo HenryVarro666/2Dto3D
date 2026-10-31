@@ -26,6 +26,8 @@ jobs:
           uv sync --frozen --extra dev
       - name: Backend tests
         run: .venv/bin/python -m pytest
+      - name: Python lint
+        run: .venv/bin/ruff check services/api services/multiview/infer.py
       - name: Frontend checks
         run: |
           npm --prefix apps/web ci

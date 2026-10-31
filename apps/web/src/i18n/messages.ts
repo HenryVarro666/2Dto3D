@@ -1,5 +1,11 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  从照片组开始: ["Start with a photo group", "Empiece con un grupo de fotos"],
+  当前视角照片: ["Current viewpoint photo", "Foto de la vista actual"],
+  "修改保留标注 ID。完成后，点击“应用校正到点云”更新三维归属。": [
+    "Edits preserve observation IDs. Click “Apply corrections to cloud” to update 3D assignments.",
+    "Los cambios conservan los ID de las anotaciones. Pulse «Aplicar correcciones a la nube» para actualizar las asignaciones 3D.",
+  ],
   单张照片: ["Single photo", "Una foto"],
   多角度点云: ["Multi-view cloud", "Nube de múltiples vistas"],
   重建模式: ["Reconstruction mode", "Modo de reconstrucción"],

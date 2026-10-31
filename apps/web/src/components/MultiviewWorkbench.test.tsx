@@ -52,6 +52,10 @@ it("keeps per-view edits, global association and language while preserving singl
       screen.getByRole("button", { name: "应用校正到点云" }),
     ).toBeEnabled(),
   );
+  // jsdom intentionally has no WebGL: failed viewer loading must not mark all stages complete.
+  expect(
+    screen.getByRole("progressbar", { name: "多图阶段进度" }),
+  ).toHaveAttribute("aria-valuenow", "5");
   await user.click(screen.getByRole("button", { name: "编辑 逆变器机柜" }));
   const name = screen.getByRole("textbox", { name: "组件名称" });
   await user.clear(name);
@@ -68,6 +72,16 @@ it("keeps per-view edits, global association and language while preserving singl
   expect(
     screen.getByRole("textbox", { name: "Nombre del componente" }),
   ).toHaveValue("Housing A");
+  await user.click(
+    screen.getByRole("button", { name: "Separar como componente nuevo" }),
+  );
+  await user.selectOptions(
+    screen.getByRole("combobox", { name: "Asociar a un componente global" }),
+    "part-1",
+  );
+  expect(
+    screen.getByRole("combobox", { name: "Asociar a un componente global" }),
+  ).toHaveValue("part-1");
   await user.click(
     screen.getByRole("button", { name: "Separar como componente nuevo" }),
   );

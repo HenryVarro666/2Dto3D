@@ -203,6 +203,11 @@ def test_real_job_fusion_artifacts_and_manual_reuse_preserve_observation_identit
         assert {o["id"] for o in edited["observations"]} == {o["id"] for o in observations}
         observations[1]["label"] = "Conflicting label"
         assert client.post("/api/multiview/jobs", json=request).status_code == 400
+        # Omitted IDs inherit the base grouping, so its linked semantics still need validation.
+        inherited = [{k: o[k] for k in ("id", "asset_id", "category", "label", "bbox")}
+                     for o in result["observations"]]
+        inherited[1]["label"] = "Contradictory inherited name"
+        assert client.post("/api/multiview/jobs", json={**request, "observations": inherited}).status_code == 400
 
 
 def test_model_failure_is_sanitized_and_retains_capture_for_retry(tmp_path):

@@ -1,6 +1,6 @@
-# V2 本地工作台运行说明
+# V3 本地工作台运行说明
 
-代码范围：组串式逆变器照片上传 → Grounding DINO 组件候选 → SAM 2 区域 → 参数化结构示意 → 网页查看与 GLB／JSON 导出。高精单图生成、完整 CAD 和其他设备类别尚未接入。
+保留单图路径：组串式逆变器照片上传 → Grounding DINO 组件候选 → SAM 2 区域 → 参数化结构示意 → 网页查看与 GLB／JSON 导出。V3 新增同设备多图联合几何、组件点云融合及逐图修正。高精单图生成、完整 CAD 和其他设备类别尚未接入。
 
 ## 安装与启动
 
@@ -9,10 +9,14 @@
 ```bash
 make setup
 make models
+make setup-multiview
+make models-multiview
 make dev
 ```
 
 `make setup` 安装锁定的 Python 与前端依赖。`make models` 使用官方模型缓存机制准备 `IDEA-Research/grounding-dino-tiny` 和 `facebook/sam2.1-hiera-tiny`，不上传照片。首次网络下载可能较慢，需要能访问 Hugging Face。
+
+`make setup-multiview` 安装单独锁定的 VGGT 环境（NumPy 1.x），`make models-multiview` 缓存约 5GB 研究权重。单图模式无需此环境。缓存／版本与非商业权重限制见 [V3 模型说明](v3/models.md)。
 
 浏览器打开 `http://127.0.0.1:5173`，API 在 `http://127.0.0.1:8000`。按 Ctrl+C 会关闭此启动器创建的两项服务，不会终止已有端口的其他进程。若端口已有服务，先确认并停止自己的旧实例。
 
@@ -32,7 +36,13 @@ npm --prefix apps/web run dev
 
 执行 `make build` 后，`make serve` 可以只启动 8000 端口，同时提供静态网页和 API；开发模式有 5173 与 8000 两个服务。
 
-## 页面如何使用
+## 多图页面
+
+顶部切换“多角度点云”，选择同一设备 2–8 张不同视角照片，明确点击“融合并识别组件”。相机／深度联合推理完成后逐图检测，再融合和导出 POINTS GLB／PLY／JSON。左侧可切换视角、框选并加正负点；下方可关联同一全局组件或拆开误关联。“应用校正到点云”仅更新点归属，不重复 VGGT。细节与补拍建议见 [拍摄指南](v3/capture-guide.md)。
+
+模式／照片切换在运行或草稿中禁用；语言切换仍可用。两个模式在本次打开后各自保留内存工作区；刷新后不自动恢复整个组，持久结果可经 API 取回。失败保留照片组；几何诊断、无组件或零点组件会提示核对。默认三图 336 已在 MPS 测试，8 图／518 和 RTX 5080 尚未测试。
+
+## 单图页面（保留 V2）
 
 在右上角选择中文、English 或 Español，页面、进度和操作提示即时更新。选择仅保存在当前浏览器的当前站点；5173 开发站点与 8000 构建站点各自记忆。切换语言不重新运行识别，也不清空照片、组件选择、隐藏状态或人工编辑。
 
@@ -58,6 +68,10 @@ npm --prefix apps/web run dev
 | `PV3D_SAM_SIZE` | `tiny` | `tiny`／`small`／`base-plus`／`large`，只能选允许的固定 checkpoint revision；影响自动分割和交互细化。服务重启生效，大模型需另行下载。 |
 | `PV3D_MODEL_DIR` | `models/huggingface/` | API 模型缓存目录。CLI 可用 `--cache-dir` 指定同一目录。 |
 | `PV3D_DATA_DIR` | `data/runtime/` | SQLite、规范化图片和每个任务产物；保持在本机。 |
+| `PV3D_MULTIVIEW_DEVICE` | 继承 `PV3D_DEVICE` | 多图 `auto/cuda/mps/cpu`；auto 优先 CUDA、其次 MPS。 |
+| `PV3D_VGGT_SIZE` | `336` | 多图输入 `224/336/518`，启动时固定。更高分辨率消耗更多内存，未承诺更好。 |
+| `PV3D_MULTIVIEW_PYTHON` | `services/multiview/.venv/bin/python` | 隔离 VGGT 环境的 Python 可执行文件。 |
+| `PV3D_API_URL` | `http://127.0.0.1:8000` | 仅 Vite 开发代理目标，可用于独立测试端口；生产同源服务不需要。 |
 | `PV3D_TORCH_THREADS` | `4` | PyTorch CPU 线程数。 |
 
 本轮 M4 Pro 为 24GB 内存；已执行 MPS 真实模型调用。5080 尚未接入测试，不能据此宣称其延迟或环境可用。GPU 机器的系统／驱动和服务部署方式见 [硬件方案](hardware.md)。
@@ -81,7 +95,15 @@ uv run --extra ml python -m pv3d.perception photos/string_inverters/candidate_en
 
 例如 `PV3D_SAM_SIZE=base-plus make models` 先缓存所选 SAM，再用 `PV3D_SAM_SIZE=base-plus make dev` 启动相同配置。此开关不更换 Grounding DINO，不会自动提高漏检召回。当前只实测了 tiny，其余大小提供配置接入，未完成实机验证。选型、环境要求与比较方法见 [V2 模型说明](v2/model-options.md)。
 
-## 当前能力边界
+## 多图常见问题
+
+- 未安装／模型失败：先执行两个 multiview setup／models 命令，查看本地 `data/runtime/multiview/<job-id>/worker.log`；多图 worker 不静默制造替代结果。
+- 相同照片被拒绝：选择有视差的真实不同视角，不用复制件／裁剪件充数。
+- 融合差、线缆缺失：补拍有重叠的近照、避免纯旋转／移动物体，保持图像清晰。默认336细线可能不足一个像素；大 SAM 仅改善掩码。
+- 内存不足：先使用2–3张／224，重启时显式选择 `PV3D_MULTIVIEW_DEVICE=cpu` 也可尝试，但速度未测。
+- 有背景但无语义：点云仍可查看，在各张照片手动补框；真实类别必须核对。
+
+## 单图能力边界
 
 识别结果是开放词表模型的候选，仍可能把邻近结构当作安装件；需要人工核对。SAM 2 区域可改善可见边界，但三维箱体、杆件和线缆束的深度来自类别先验，不是从照片测量。三根示意线只表达线缆束，不表示真实数量或布线。参数化几何保持相对尺度，没有毫米测量或内部结构恢复。
 

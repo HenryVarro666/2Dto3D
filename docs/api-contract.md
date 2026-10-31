@@ -69,3 +69,42 @@ type Refinement = {
 `pv3d.perception.GroundingDetector` 构造为 `GroundingDetector(cache_dir:Path,device='auto',sam_size=None)`，提供同步 `detect(image,on_progress=None,scene_mode='single')->dict`、`refine(image,bbox,points,cache_key)->dict`、`status()->dict`。适配器在模型加载、检测、分割加载和分割执行前调用 `on_progress(stage)`；任务层负责持久化。细化可独立于检测器加载，使用两个图像特征的 LRU 缓存，键包含图像身份、尺寸、checkpoint 和设备。API 允许通过 `create_app(data_dir:Path, detector=...)` 注入慢模型替身用于边界测试，生产仅用真实模型。
 
 `detect` 返回 `{detections:[{category,label,bbox,score,source:'grounding_dino',mask_polygon?:...}], model:{model_id,revision,device,...}, timings:{...}, warnings:[...]}`。全部框为上述比例坐标。`status()` 只报告状态，不在健康查询中下载权重。首次识别可以懒加载，前端显示模型加载状态；异常交给任务层转成可见失败。生产环境禁止固定样例检测结果替代任意上传图片。
+
+
+## V3 多视角契约（独立于单图）
+
+照片与标注仍使用左上原点的归一化比例坐标。`POST /api/captures` 接受 `{asset_ids:[2..8个32位资源ID]}`，返回 `{id,assets:[Asset],created_at}`；输入顺序持久化。重复 ID 422、不同 ID 的相同文件哈希 400、未知照片404。`GET /api/captures/{id}` 读取组。它不证明照片为同一物理设备。
+
+`POST /api/multiview/jobs` 接受 `{capture_id,mode?:automatic|manual,observations?:ViewInput[],base_job_id?:string}`，返回202 `MultiJob`。automatic不接受人工数据；manual要求同组已完成base与显式observations（最多200，可为空以移除所有标注）。它与单图／SAM共用单worker、有界队列；满载409。`GET /api/multiview/jobs/{id}` 返回任务，前端约700ms轮询；`GET .../result.json` 无结果409。`GET .../cloud.glb`／`cloud.ply` 只开放当前版本存在的产物，不接受任意路径。
+
+```typescript
+type ViewInput = ManualComponent & { id:string; asset_id:string; component_id?:string|null };
+type ViewObservation = Detection & { id:string; asset_id:string; component_id:string };
+type MultiComponent = {
+  id:string; category:Category; label:string; source:'grounding_dino'|'manual'; score:number|null;
+  observation_ids:string[]; point_count:number; color:string;
+  position:[number,number,number]; dimensions:[number,number,number]; // 相对单位，非毫米
+};
+type MultiResult = {
+  job_id:string; capture_id:string; geometry_job_id:string;
+  representation:'fused_point_cloud'; metric_scale_status:'unknown';
+  views:Asset[]; observations:ViewObservation[]; components:MultiComponent[];
+  scene_url:string|null; ply_url:string|null; json_url:string;
+  point_count:number; context_point_count:number;
+  model:Record<string,unknown>; quality:Record<string,unknown>;
+  timings:Record<string,number>; warnings:string[];
+};
+type MultiJob = {
+  id:string; capture_id:string; status:Status; stage:string;
+  view_index:number; total_views:number; // view_index=0 表示非逐图阶段
+  created_at:string; elapsed_ms:number; error:string|null; result:MultiResult|null;
+};
+```
+
+多图stage依次可为 `queued → starting → loading_geometry_model → estimating_geometry → unprojecting → recognizing_view → fusing → exporting → complete`。手动仅 `queued → manual_components → fusing → exporting → complete`。浏览器载入 POINTS 后再完成最后阶段；查看器失败不标满进度。中断／失败保留数据以重试，没有有效点不生成假GLB。
+
+`ViewObservation.id` 标识一张照片上的一次观察；`component_id` 关联跨视角同物体。标注只能引用capture内照片，已有观察ID不能搬到另一张图；同一全局组件的名称／类别须一致。人工输入只接受名称、类别、框及可选服务端refinement引用，完整mask／模型证据沿用与单图相同的服务端规则。手动未改框／名称／类别／引用时保留原证据。
+
+人工任务从base的`geometry_job_id`读取不可变几何，不接受外部几何路径，也不重跑VGGT。同组几何原始数据在本地`multiview/<geometry_job_id>/geometry.npz`，不经公共静态目录开放。模型信息包含源码与权重revision、设备、输入分辨率、geometry_reused；质量包含每视角保留点数、置信阈值、跨视角支持、视差诊断及needs_review。诊断分数不能当准确率。
+
+GLB的mesh primitive mode为0（POINTS），组件节点`extras.component_id`，背景ID`__context__`；asset.extras记录表示、尺度、Y-up和索引映射。PLY为binary little endian，每点`x/y/z:float32, red/green/blue:uint8, component_index:uint32`；0背景，其余按result.components顺序从1开始。服务端另存component-map.json，API结果列表和GLB extras给出相同映射。颜色是RGB，显示高亮／分解不会改导出数据。

@@ -3,6 +3,7 @@ import { Crosshair, Pencil, Trash2, X } from "lucide-react";
 import type { Category, EditableComponent } from "../api/types";
 import { categoryKeys, useI18n } from "../i18n";
 type Props = {
+  multiView?: boolean;
   components: EditableComponent[];
   selectedId: string | null;
   hiddenIds: Set<string>;
@@ -28,6 +29,7 @@ export function ComponentList({
   editRequestId,
   mutationsDisabled = false,
   onRefine,
+  multiView = false,
 }: Props) {
   const { t, componentLabel } = useI18n();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -193,7 +195,9 @@ export function ComponentList({
             {mutationsDisabled
               ? t("结构正在生成，完成后可继续校正。")
               : t(
-                  "修改保留组件 ID。完成校正后，点击“重新生成结构”应用到三维示意。",
+                  multiView
+                    ? "修改保留标注 ID。完成后，点击“应用校正到点云”更新三维归属。"
+                    : "修改保留组件 ID。完成校正后，点击“重新生成结构”应用到三维示意。",
                 )}
           </p>
         </div>

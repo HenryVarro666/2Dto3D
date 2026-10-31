@@ -16,10 +16,12 @@ export function AnnotationPanel({
   annotation,
   onConfirm,
   onRedraw,
+  multiView = false,
 }: {
   annotation: AnnotationController;
   onConfirm: (boxOnly: boolean) => void;
   onRedraw: () => void;
+  multiView?: boolean;
 }) {
   const { t, localize, componentLabel, locale } = useI18n();
   const { draft, output, busy, error, pointMode, elapsedMs } = annotation;
@@ -143,7 +145,13 @@ export function AnnotationPanel({
         </p>
       ))}
       <footer>
-        <span>{t("细化失败也可保留原框；厚度仍为估计。")}</span>
+        <span>
+          {t(
+            multiView
+              ? "点云呈现照片中的可见表面；遮挡处和细线可能缺失，真实尺寸未知。"
+              : "细化失败也可保留原框；厚度仍为估计。",
+          )}
+        </span>
         <div>
           <button
             className="button small secondary"

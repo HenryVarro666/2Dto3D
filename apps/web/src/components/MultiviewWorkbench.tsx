@@ -279,7 +279,11 @@ export function MultiviewWorkbench({
     state.phase === "uploading" || state.phase === "idle"
       ? 0
       : complete
-        ? 6
+        ? state.result?.scene_url
+          ? viewerError
+            ? 5
+            : 6
+          : 3
         : state.phase === "preparing"
           ? 5
           : ({
@@ -292,6 +296,11 @@ export function MultiviewWorkbench({
   const actualStages = state.mode === "manual" ? stages.slice(3) : stages;
   const progress =
     state.mode === "manual" ? Math.max(0, stepIndex - 3) : stepIndex;
+  const currentLabel = viewerError
+    ? t("三维视图暂不可用")
+    : complete
+      ? t(state.phase === "review" ? "点云待核对" : "点云已就绪")
+      : phaseStage;
   return (
     <main className="main-content multiview-workspace">
       <div className="workspace-heading">
@@ -388,9 +397,7 @@ export function MultiviewWorkbench({
       >
         <div className="task-progress-heading">
           <strong aria-live="polite">
-            {complete
-              ? t(state.phase === "review" ? "点云待核对" : "点云已就绪")
-              : phaseStage}
+            {currentLabel}
             {active && state.phase === "uploading"
               ? ` · ${state.uploadIndex}/${state.files.length}`
               : active && state.job?.view_index
@@ -408,7 +415,7 @@ export function MultiviewWorkbench({
           aria-valuemin={0}
           aria-valuemax={actualStages.length}
           aria-valuenow={progress}
-          aria-valuetext={phaseStage}
+          aria-valuetext={currentLabel}
           aria-busy={active}
           style={{
             gridTemplateColumns: `repeat(${actualStages.length}, minmax(0, 1fr))`,
@@ -448,6 +455,7 @@ export function MultiviewWorkbench({
       <div className="workbench-grid">
         <PhotoPanel
           idPrefix="multi-"
+          multiView
           imageUrl={asset?.image_url ?? previews[view] ?? null}
           fileName={state.files[view]?.name ?? null}
           asset={asset}
@@ -470,6 +478,7 @@ export function MultiviewWorkbench({
         />
         <div className="model-side">
           <AnnotationPanel
+            multiView
             annotation={annotation}
             onConfirm={confirm}
             onRedraw={() => {
@@ -596,6 +605,7 @@ export function MultiviewWorkbench({
             </button>
           </header>
           <ComponentList
+            multiView
             components={currentObservations}
             selectedId={selectedObservation}
             hiddenIds={hiddenObservations}
