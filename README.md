@@ -94,6 +94,8 @@ flowchart LR
 
 ## 文档
 
+- [问题与改进交接](docs/quality/README.md)：历史问题台账、每轮实验、失败试验和后续维护要求。
+
 - [项目计划书](docs/plan.md)：范围、技术栈、数据契约、进度反馈和分阶段验收。
 - [扩展路线图](docs/roadmap.md)：从逆变器扩展到箱变、变压器及更多设备的顺序与验收。
 - [硬件与部署方案](docs/hardware.md)：RTX 5080 主运行端、M4 Pro 备用端及模型显存约束。

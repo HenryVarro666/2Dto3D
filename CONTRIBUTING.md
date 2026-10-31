@@ -29,3 +29,7 @@
 ## V3 多图开发
 
 API 与 VGGT 各有独立 uv.lock；不要为几何模型降级 API 的 NumPy。慢模型不进入普通 CI，测试使用解析相机／点图和可控模型边界；真实模型测试另记录硬件、输入、revision、分辨率和端到端耗时。多图的预处理坐标、掩码所属、跨图ID、同视角合并保护及人工几何复用是回归重点。运行 `make setup-multiview` 和 `make models-multiview` 后再进行真实推理，见 docs/v3/models.md。
+
+## 问题与改进必须持续留档
+
+所有会话先读[质量与交接入口](docs/quality/README.md)。发现问题、试验失败、代码修复、模型比较或新增误检，都要更新稳定[问题台账](docs/quality/issues.md)和[实验索引](docs/quality/experiments.md)，关联固定输入、前后版本、回归测试和产物证据。完成前记录仍未解决和未验证范围；不覆盖旧报告，不只在聊天中留结论。原始照片和大产物仍保留在ignored目录，Git保存实现、测试和可追溯文字。详细记录模板在质量入口中。

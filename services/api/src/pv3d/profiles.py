@@ -5,5 +5,7 @@ STRING_INVERTER = {
     "bracket": {"primitive": "box", "color": "#738da0", "depth_ratio": 0.12, "z": -0.25},
     "pole": {"primitive": "cylinder", "color": "#536b80", "depth_ratio": 1.0, "z": -0.32},
     "cables": {"primitive": "cable_bundle", "color": "#394851", "depth_ratio": 0.35, "z": 0.22},
+    "connector": {"primitive": "cylinder", "color": "#9a6d57", "depth_ratio": 0.65, "z": 0.18},
+    "cable_tray": {"primitive": "box", "color": "#899ba4", "depth_ratio": 0.12, "z": -0.12},
     "unknown": {"primitive": "box", "color": "#d3a96e", "depth_ratio": 0.15, "z": 0.0},
 }

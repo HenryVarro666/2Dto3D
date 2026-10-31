@@ -88,6 +88,8 @@ export const categoryKeys: Record<Category, MessageKey> = {
   bracket: "安装支架",
   pole: "立柱 / 支撑",
   cables: "线缆束",
+  connector: "接线插接件",
+  cable_tray: "电缆线槽",
   unknown: "其他组件",
 };
 const defaultNames = new Set<string>([
@@ -96,6 +98,8 @@ const defaultNames = new Set<string>([
   "安装支架",
   "支撑立柱",
   "线缆束",
+  "接线插接件",
+  "电缆线槽",
 ]);
 
 function translator(locale: Locale) {

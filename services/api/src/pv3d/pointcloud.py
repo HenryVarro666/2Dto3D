@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import trimesh
 from PIL import Image
+from scipy.ndimage import binary_dilation, median_filter
 from scipy.spatial import cKDTree
 
 from .profiles import STRING_INVERTER
@@ -55,13 +56,33 @@ def _mask(observation, asset, rect, shape, store):
         mask = Image.fromarray(values)
     left, top, right, bottom = rect
     result = np.zeros(shape, bool)
-    result[top:bottom, left:right] = np.asarray(
-        mask.resize((right - left, bottom - top), Image.Resampling.NEAREST)
-    ) > 0
+    # Area coverage retains a thin foreground wire between nearest sample centers.
+    sampling = Image.Resampling.BOX if observation["category"] == "cables" else Image.Resampling.NEAREST
+    result[top:bottom, left:right] = np.asarray(mask.resize((right - left, bottom - top), sampling)) > 0
     return result
 
 
-def _associate(observations, samples, scene_scale, automatic):
+def _projection_support(points, view, mask, geometry):
+    """Require visible mask agreement and positive, consistent target depth."""
+    camera = points @ geometry["extrinsics"][view, :, :3].T + geometry["extrinsics"][view, :, 3]
+    projected = camera @ geometry["intrinsics"][view].T
+    pixels = np.rint(projected[:, :2] / np.maximum(projected[:, 2:], 1e-8)).clip(-1e6, 1e6).astype(int)
+    height, width = mask.shape
+    inside = (camera[:, 2] > 0) & (pixels[:, 0] >= 0) & (pixels[:, 0] < width)
+    inside &= (pixels[:, 1] >= 0) & (pixels[:, 1] < height)
+    indices = np.flatnonzero(inside)
+    x, y = pixels[indices].T
+    hit = binary_dilation(mask, iterations=1)[y, x]
+    depth = geometry["depth"][view, y, x]
+    agreement = np.isfinite(depth) & (depth > 0)
+    confidence = geometry["confidence"][view, y, x]
+    agreement &= np.isfinite(confidence) & (confidence > 0)
+    agreement &= np.isfinite(geometry["points"][view, y, x]).all(-1)
+    agreement &= np.abs(camera[indices, 2] - depth) / np.maximum(depth, 1e-8) < 0.15
+    return float(hit.sum() / len(points)), float((hit & agreement).sum() / len(points))
+
+
+def _associate(observations, samples, scene_scale, automatic, geometry, masks, view_indices, diagnostics):
     parents = list(range(len(observations)))
     views = [{o["asset_id"]} for o in observations]
 
@@ -71,7 +92,7 @@ def _associate(observations, samples, scene_scale, automatic):
             i = parents[i]
         return i
 
-    matches = []
+    matches, projected_matches = [], []
     if automatic:
         for a, first in enumerate(observations):
             pa = samples[a]
@@ -84,17 +105,31 @@ def _associate(observations, samples, scene_scale, automatic):
                 if len(pb) < 4:
                     continue
                 threshold = max(scene_scale * 0.01, np.linalg.norm(np.ptp(pa, axis=0)) * 0.03, 1e-7)
-                if np.any(pa.min(0) - pb.max(0) > threshold) or np.any(pb.min(0) - pa.max(0) > threshold):
-                    continue
                 support = min(np.mean(cKDTree(pa).query(pb)[0] < threshold),
                               np.mean(cKDTree(pb).query(pa)[0] < threshold))
                 if support >= 0.25:
-                    matches.append((float(support), a, b))
-        for _, a, b in sorted(matches, reverse=True):
+                    matches.append((float(support), a, b, "spatial"))
+                elif first["category"] == "cabinet":
+                    ab = _projection_support(pa, view_indices[second["asset_id"]], masks[b], geometry)
+                    ba = _projection_support(pb, view_indices[first["asset_id"]], masks[a], geometry)
+                    if min(ab[0], ba[0]) >= 0.30 and min(ab[1], ba[1]) >= 0.25:
+                        projected_matches.append((min(ab[1], ba[1]), a, b, "reprojection"))
+        # The fallback must be an unambiguous mutual best match for this view pair.
+        for candidate in projected_matches:
+            score, a, b, _ = candidate
+            alternatives = [s for s, i, j, _ in matches + projected_matches
+                            if (i, j) != (a, b) and (
+                                (a in (i, j) and observations[j if i == a else i]["asset_id"] == observations[b]["asset_id"])
+                                or (b in (i, j) and observations[j if i == b else i]["asset_id"] == observations[a]["asset_id"]))]
+            if not alternatives or score - max(alternatives) >= 0.05:
+                matches.append(candidate)
+        for score, a, b, method in sorted(matches, reverse=True):
             ra, rb = root(a), root(b)
             if ra != rb and not (views[ra] & views[rb]):
                 parents[rb] = ra
                 views[ra] |= views[rb]
+                diagnostics.append({"first": observations[a]["id"], "second": observations[b]["id"],
+                                    "method": method, "support": score})
     groups = {}
     for i, observation in enumerate(observations):
         key = root(i) if automatic else observation.get("component_id") or observation["id"]
@@ -153,11 +188,12 @@ def _diagnostics(data, valid):
             "needs_review": bool(warnings)}, warnings
 
 
-def _voxel_merge(vertices, colors, indices, scale):
+def _voxel_merge(vertices, colors, indices, scale, *, fine_indices=()):
     if not len(vertices):
         return vertices.astype(np.float32), colors.astype(np.uint8), indices
     voxel_size = max(scale / 400, 1e-7)
-    keys = np.column_stack([np.rint(vertices / voxel_size).astype(np.int64), indices])
+    sizes = np.where(np.isin(indices, list(fine_indices)), voxel_size / 4, voxel_size)
+    keys = np.column_stack([np.rint(vertices / sizes[:, None]).astype(np.int64), indices])
     _, inverse = np.unique(keys, axis=0, return_inverse=True)
     counts = np.bincount(inverse)
     merged = np.column_stack([np.bincount(inverse, weights=v) / counts for v in vertices.T])
@@ -179,24 +215,46 @@ def _voxel_merge(vertices, colors, indices, scale):
 def build_pointcloud(geometry, assets, observations, store, automatic=True):
     observations = [dict(o) for o in observations]
     valid, thresholds = _valid_points(geometry)
+    view_indices = {a["id"]: i for i, a in enumerate(assets)}
+    raw_masks = [_mask(o, assets[view_indices[o["asset_id"]]], geometry["rects"][view_indices[o["asset_id"]]],
+                       valid.shape[1:], store) for o in observations]
+    original_valid = valid.copy()
+    recovery = []
+    for observation, mask in zip(observations, raw_masks):
+        if observation["category"] != "cables":
+            continue
+        i = view_indices[observation["asset_id"]]
+        depth, confidence = geometry["depth"][i], geometry["confidence"][i]
+        finite = np.isfinite(geometry["points"][i]).all(-1) & np.isfinite(depth) & (depth > 0)
+        finite &= np.isfinite(confidence) & (confidence > 0)
+        candidates = mask & finite
+        if not candidates.any():
+            continue
+        threshold = float(np.percentile(confidence[candidates], 20))
+        local_depth = median_filter(np.where(finite, depth, 0), size=3, mode="nearest")
+        consistent = (local_depth > 0) & (np.abs(depth - local_depth) / np.maximum(local_depth, 1e-8) < 0.15)
+        valid[i] |= candidates & (confidence >= threshold) & consistent
+        recovery.append({"observation_id": observation["id"], "confidence_threshold": threshold})
     visible = geometry["points"][valid]
     scale = float(np.linalg.norm(np.diff(np.quantile(visible, [0.01, 0.99], axis=0), axis=0))) if len(visible) else 1.0
-    view_indices = {a["id"]: i for i, a in enumerate(assets)}
     masks, samples = [], []
-    for observation in observations:
+    for observation, raw_mask in zip(observations, raw_masks):
         i = view_indices[observation["asset_id"]]
-        mask = _mask(observation, assets[i], geometry["rects"][i], valid.shape[1:], store) & valid[i]
+        mask = raw_mask & valid[i]
         masks.append(mask)
         points = geometry["points"][i][mask]
         samples.append(points[::max(1, len(points) // 1500)][:1500])
-    groups = _associate(observations, samples, scale, automatic)
+    associations = []
+    groups = _associate(observations, samples, scale, automatic, geometry, raw_masks, view_indices, associations)
     assignment = np.zeros(valid.shape, np.uint32)
     group_for = {i: g + 1 for g, group in enumerate(groups) for i in group}
     # More specific masks win; explicit manual evidence wins over automatic evidence.
     order = sorted(range(len(observations)), key=lambda i: (observations[i].get("source") == "manual", -masks[i].sum()))
     for i in order:
         assignment[view_indices[observations[i]["asset_id"]]][masks[i]] = group_for[i]
-    vertices, colors, indices = _voxel_merge(visible, geometry["colors"][valid], assignment[valid], scale)
+    fine_indices = [i for i, group in enumerate(groups, 1) if observations[group[0]]["category"] == "cables"]
+    vertices, colors, indices = _voxel_merge(visible, geometry["colors"][valid], assignment[valid], scale,
+                                            fine_indices=fine_indices)
     vertices *= [1, -1, -1]  # One OpenCV-to-Y-up transform, shared by all exported artifacts.
     components = []
     for group_index, group in enumerate(groups, 1):
@@ -211,7 +269,10 @@ def build_pointcloud(geometry, assets, observations, store, automatic=True):
                            "position": ((low + high) / 2).tolist(), "dimensions": (high - low).tolist()})
     quality, warnings = _diagnostics(geometry, valid)
     quality.update(confidence_percentile=35, confidence_thresholds=thresholds, exported_points=len(vertices),
-                   association_method="spatial_support_suggestions" if automatic else "explicit_observation_groups")
+                   association_method="spatial_and_bidirectional_reprojection" if automatic else "explicit_observation_groups",
+                   associations=associations, cable_confidence_percentile=20, cable_voxel_size_ratio=0.25,
+                   cable_recovery=recovery,
+                   cable_recovered_per_view=[int((a & ~b).sum()) for a, b in zip(valid, original_valid)])
     if automatic and components:
         warnings.append("MULTIVIEW_ASSOCIATIONS_REQUIRE_CONFIRMATION")
     if not components:

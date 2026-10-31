@@ -359,6 +359,8 @@ export const messages = {
   支撑立柱: ["Support post", "Poste de soporte"],
   "立柱 / 支撑": ["Post / support", "Poste / soporte"],
   线缆束: ["Cable bundle", "Haz de cables"],
+  接线插接件: ["Electrical connector", "Conector eléctrico"],
+  电缆线槽: ["Cable tray", "Canaleta de cables"],
   其他组件: ["Other component", "Otro componente"],
   可见: ["Visible", "Visible"],
   "来源 / 模型分数": ["Source / model score", "Origen / puntuación"],

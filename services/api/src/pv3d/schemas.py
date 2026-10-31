@@ -5,7 +5,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-Category = Literal["cabinet", "bracket", "pole", "cables", "unknown"]
+Category = Literal["cabinet", "bracket", "pole", "cables", "connector", "cable_tray", "unknown"]
 SceneMode = Literal["single", "multiple"]
 Identifier = Annotated[str, Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")]
 BBox = tuple[float, float, float, float]

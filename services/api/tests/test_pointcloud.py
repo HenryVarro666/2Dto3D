@@ -160,3 +160,89 @@ def test_mask_from_another_view_is_not_accepted_by_fusion(tmp_path):
     obs = {**observation("wrong-mask", 0, [0, 0, 1, 1]), "refinement_id": ref}
     with pytest.raises(ValueError, match="must belong"):
         build_pointcloud(geometry(), assets(), [obs], store)
+
+
+def test_reprojection_links_same_housing_despite_small_depth_scale_error(tmp_path):
+    data = geometry()
+    data['points'][1] = data['points'][0] * 1.08
+    data['points'][1, ..., 0] += 0.1
+    data['depth'][1] = 1.08
+    obs = [observation('front', 0, [0.2, 0.2, 0.8, 0.8]),
+           observation('side', 1, [0.2, 0.2, 0.8, 0.8])]
+    cloud = build_pointcloud(data, assets(), obs, Store(tmp_path))
+    assert len(cloud['components']) == 1
+    assert set(cloud['components'][0]['observation_ids']) == {'front', 'side'}
+
+
+def test_reprojection_does_not_link_a_different_depth_layer(tmp_path):
+    data = geometry()
+    data['points'][1] = data['points'][0] * 1.8
+    data['points'][1, ..., 0] += 0.1
+    data['depth'][1] = 1.8
+    obs = [observation('front', 0, [0.2, 0.2, 0.8, 0.8]),
+           observation('other-depth', 1, [0.2, 0.2, 0.8, 0.8])]
+    cloud = build_pointcloud(data, assets(), obs, Store(tmp_path))
+    assert len(cloud['components']) == 2
+
+
+def test_projection_ambiguity_does_not_choose_between_two_neighbor_housings(tmp_path):
+    data = geometry()
+    data['extrinsics'][1, 0, 3] = 0
+    data['points'][1] = data['points'][0] * 1.08
+    data['depth'][1] = 1.08
+    obs = [observation('uncertain', 0, [0.2, 0.2, 0.8, 0.8]),
+           observation('left', 1, [0.2, 0.2, 0.5, 0.8]),
+           observation('right', 1, [0.5, 0.2, 0.8, 0.8])]
+    cloud = build_pointcloud(data, assets(), obs, Store(tmp_path))
+    assert len({o['component_id'] for o in cloud['observations']}) == 3
+
+
+def test_subpixel_cable_mask_keeps_only_finite_positive_model_points(tmp_path):
+    data = geometry()
+    data['confidence'][0] = 100
+    data['confidence'][0, :, 0] = 1
+    data['confidence'][1] = 0
+    data['depth'][0, 4, 0] = 0
+    data['confidence'][0, 5, 0] = 0
+    data['points'][0, 6, 0] = np.nan
+    views = assets()
+    views[0] = {**views[0], 'width': 100, 'height': 100}
+    store = Store(tmp_path)
+    store.add_asset({**views[0], 'sha256': 'thin-wire'})
+    ref = 'c' * 32
+    folder = tmp_path / 'refinements' / ref
+    folder.mkdir()
+    mask = np.zeros((100, 100), np.uint8)
+    mask[:, 1] = 255  # nearest sampling at x=5,15,... erases this real mask
+    Image.fromarray(mask).save(folder / 'binary-mask.png')
+    store.add_refinement({'id': ref, 'asset_id': views[0]['id']})
+    obs = {**observation('wire', 0, [0, 0, 0.02, 1], 'thin-wire'),
+           'category': 'cables', 'label': 'Wire', 'refinement_id': ref}
+    cloud = build_pointcloud(data, views, [obs], store, automatic=False)
+    assert cloud['components'][0]['point_count'] == 7
+    selected = cloud['vertices'][cloud['indices'] == 1]
+    assert sorted(np.round(selected[:, 1], 3)) == pytest.approx([-0.9, -0.8, -0.7, -0.3, -0.2, -0.1, 0])
+    assert np.allclose(selected[:, [0, 2]], [0, -1])
+
+
+def test_thin_cable_uses_finer_voxels_than_scene_background(tmp_path):
+    data = geometry()
+    data['confidence'][1] = 0
+    data['points'][0, 0, :3, 0] = [0, 0.001, 0.002]
+    obs = {**observation('wire', 0, [0, 0, 0.3, 0.1], 'thin-wire'),
+           'category': 'cables', 'label': 'Wire'}
+    cloud = build_pointcloud(data, assets(), [obs], Store(tmp_path), automatic=False)
+    assert cloud['components'][0]['point_count'] == 3
+
+
+def test_reprojection_ignores_target_pixels_without_positive_confidence(tmp_path):
+    data = geometry()
+    data['points'][1] = data['points'][0] * 1.08
+    data['points'][1, ..., 0] += 0.1
+    data['depth'][1] = 1.08
+    data['confidence'][1] = 0
+    data['confidence'][1, :, 2] = 1  # some valid target samples, but insufficient projected support
+    obs = [observation('front', 0, [0.2, 0.2, 0.8, 0.8]),
+           observation('unsupported-target', 1, [0.2, 0.2, 0.8, 0.8])]
+    cloud = build_pointcloud(data, assets(), obs, Store(tmp_path))
+    assert len(cloud['components']) == 2

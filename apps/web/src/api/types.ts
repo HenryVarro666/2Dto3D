@@ -1,4 +1,4 @@
-export type Category = "cabinet" | "bracket" | "pole" | "cables" | "unknown";
+export type Category = "cabinet" | "bracket" | "pole" | "cables" | "connector" | "cable_tray" | "unknown";
 export type SceneMode = "single" | "multiple";
 export type BBox = [number, number, number, number];
 export type Point = [number, number];

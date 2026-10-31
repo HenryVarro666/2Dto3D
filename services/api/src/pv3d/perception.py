@@ -25,16 +25,20 @@ SAM_PRESETS = {
 }
 PROMPT = (
     "a solar inverter. an electrical cabinet. a metal mounting bracket. a concrete pole. a bundle of cables."
+    " an electrical connector. a cable tray."
 )
-LABELS = {"cabinet": "主机外壳", "bracket": "安装支架", "pole": "支撑立柱", "cables": "线缆束"}
+LABELS = {"cabinet": "主机外壳", "bracket": "安装支架", "pole": "支撑立柱", "cables": "线缆束",
+          "connector": "接线插接件", "cable_tray": "电缆线槽"}
 CLASS_WORDS = {
     "inverter": ("inverter",),
     "cabinet": ("cabinet",),
     "bracket": ("bracket",),
     "pole": ("pole",),
     "cables": ("bundle", "cables"),
+    "connector": ("connector",),
+    "cable_tray": ("tray",),
 }
-FILTER_POLICY = "prompt_nouns_and_equipment_anchors_v2"
+FILTER_POLICY = "prompt_roles_and_component_context_v3"
 log = logging.getLogger(__name__)
 
 
@@ -65,6 +69,10 @@ def prompt_class_scores(probabilities, offsets) -> list[dict[str, float]]:
 
 def _category(phrase: str) -> str | None:
     phrase = phrase.lower()
+    if "connector" in phrase:
+        return "connector"
+    if "tray" in phrase:
+        return "cable_tray"
     if any(word in phrase for word in ("cabinet", "inverter", "electrical box")):
         return "cabinet"
     if any(word in phrase for word in ("bracket", "mounting")):
@@ -152,6 +160,42 @@ def normalize_predictions(
             context_rejected += 1
         else:
             bounded.append(item)
+    equipment = specific or [item for item in bounded if item["category"] == "cabinet" and area(item) >= 0.01]
+
+    def connector_context(item):
+        cx, cy = (item["bbox"][0] + item["bbox"][2]) / 2, (item["bbox"][1] + item["bbox"][3]) / 2
+        for device in equipment:
+            x1, y1, x2, y2 = device["bbox"]
+            w, h = x2 - x1, y2 - y1
+            if (x1 - w * 0.2 <= cx <= x2 + w * 0.2 and y1 - h * 0.1 <= cy <= y2 + h * 0.6
+                    and area(item) <= area(device) * 0.25):
+                return True
+        return False
+
+    before_context = len(bounded)
+    bounded = [item for item in bounded if item["category"] != "connector" or connector_context(item)]
+    connectors = [item for item in bounded if item["category"] == "connector"]
+    valid = []
+    for item in bounded:
+        if item["category"] == "cable_tray":
+            x1, y1, x2, y2 = item["bbox"]
+            w, h = (x2 - x1) * width, (y2 - y1) * height
+            if max(w, h) < 2 * min(w, h):
+                continue  # A square neighboring enclosure is not a tray.
+            contained = 0
+            for plug in connectors:
+                a, b, c, d = plug["bbox"]
+                overlap = max(0, min(x2, c) - max(x1, a)) * max(0, min(y2, d) - max(y1, b))
+                contained += overlap >= 0.8 * area(plug)
+            if contained >= 2:
+                continue  # An envelope around a row of plugs is not a second tray.
+        valid.append(item)
+    context_rejected_parts = before_context - len(valid)
+    # Explicit electrical/linear roles supersede overlapping generic bracket/cabinet queries.
+    overrides = {"bracket": "connector", "cabinet": "cable_tray"}
+    bounded = [item for item in valid if not (item["category"] in overrides and not item["_inverter"]
+               and any(part["category"] == overrides[item["category"]] and _iou(item["bbox"], part["bbox"]) > 0.55
+                       for part in valid))]
     kept = []
     # Reject envelopes before NMS. An unusable small fragment must not suppress
     # a viable overlapping body, even when only the fragment says "inverter".
@@ -225,6 +269,8 @@ def normalize_predictions(
                 "context_envelope_area_ratio": 1.8,
             },
             rejected_context_cabinets=context_rejected,
+            rejected_component_context=context_rejected_parts,
+            rejected_overlapping_generic_roles=len(valid) - len(bounded),
             primary_anchor_established=bool(anchors),
             rejected_unanchored_bundles=ambiguous_rejected,
             primary_bbox=primary["bbox"] if primary else None,

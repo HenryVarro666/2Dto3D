@@ -41,3 +41,5 @@ models/                       下载的权重及版本记录
 一组照片须对应同一物理设备的不同角度；按设备分组划分训练／测试，不能将同设备视角拆到不同分区。`data/runtime/`中SQLite新增captures／multiview_jobs，几何在`multiview/<job>/geometry.npz`，导出在同任务目录；人工版本保留原geometry_job_id。现有V2资产／任务／细化记录保留。
 
 本机`data/samples/vggt-kitchen/`为官方VGGT固定commit的00／01／02公开玩具样图，source.json记录链接和哈希；仅验证链路，非光伏评测集，不随仓库发布。`data/v3-preview/`与`artifacts/v3-browser/`是本地验证数据／证据，不进Git。实际用户照片、权重和结果仍需各自来源与许可记录。
+
+当前组件契约兼容原5类，并增加connector（接线插接件）和cable_tray（电缆线槽）。历史冻结记录保持原类别；新实验保存自己的prompt与版本，不能重写旧结果。所有问题和新旧实验应连接到[质量台账](../docs/quality/README.md)。
