@@ -37,7 +37,7 @@ PV3D_DATA_DIR="$PWD/data/measurement-demo" make dev
 
 Open the [workbench](http://127.0.0.1:5173), choose **Multi-view cloud**, paste the script's **Job ID** into **Restore a point-cloud job**, and click **Open saved result**. Show the reference endpoints or recorded distance endpoints to see A/B and the line in the actual Three.js viewer. API docs: [8000/docs](http://127.0.0.1:8000/docs).
 
-This demo **directly authors analytic GLB geometry and receipts; it does not call detection or reconstruction models**. It verifies software behavior, not VGGT quality. Running it again appends immutable measurement history. Stop services with `Ctrl+C`. Demo data stays in ignored `data/measurement-demo/`; regenerate it on each machine. Generated Job IDs may differ.
+This demo **directly authors analytic GLB geometry and receipts; it does not call detection or reconstruction models**. It verifies software behavior, not VGGT quality. Viewing and measurement work; refinement and component reconstruction are disabled for the authored demo. Use real multi-view output for that workflow. Running it again appends immutable measurement history. Stop services with `Ctrl+C`. Demo data stays in ignored `data/measurement-demo/`; regenerate it on each machine. Generated Job IDs may differ.
 
 ## Run models on real photos
 

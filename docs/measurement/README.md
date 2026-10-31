@@ -69,7 +69,7 @@ npm --prefix apps/web ci
 PV3D_DATA_DIR="$PWD/data/measurement-demo" make dev
 ```
 
-脚本直接生成原创解析 GLB/图示，不调用模型。200 mm 宽度标定；刻意拉长的高度由独立 300 mm 依据检出约 330 mm / 10% 误差；独立 120 mm 深度保持约 120 mm。原始 JSON 留在 ignored `data/measurement-demo/`，浮点残差不是现场精度。
+脚本直接生成原创解析 GLB/图示，不调用模型。解析结果只用于查看/测量，没有VGGT原几何缓存，组件细化和重建入口关闭；真实结果的这些功能保留。200 mm 宽度标定；刻意拉长的高度由独立 300 mm 依据检出约 330 mm / 10% 误差；独立 120 mm 深度保持约 120 mm。原始 JSON 留在 ignored `data/measurement-demo/`，浮点残差不是现场精度。
 
 | 现象 | 检查 |
 |---|---|

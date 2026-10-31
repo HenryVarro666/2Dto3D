@@ -151,8 +151,12 @@ export function MultiviewWorkbench({
   const hiddenObservations = new Set(
     observations.filter((o) => hidden.has(o.component_id)).map((o) => o.id),
   );
+  const analyticDemo = state.result?.model.not_model_inference === true;
   const editable =
-    Boolean(asset && state.result) && !active && !annotation.draft;
+    Boolean(asset && state.result) &&
+    !analyticDemo &&
+    !active &&
+    !annotation.draft;
   const selected = observations.find(
     (o) => o.id === selectedObservation && o.asset_id === asset?.id,
   );

@@ -1,5 +1,9 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  "解析测量演示未运行模型；组件细化和重建请使用真实多图结果。": [
+    "This analytic measurement demo runs no models. Use a real multi-view result for refinement and reconstruction.",
+    "Esta demostración analítica no ejecuta modelos. Use un resultado multivista real para refinar y reconstruir.",
+  ],
   查看参照端点: ["Show reference endpoints", "Ver extremos de referencia"],
   查看端点: ["Show endpoints", "Ver extremos"],
   标定与测距: ["Calibration & measurement", "Calibración y medición"],

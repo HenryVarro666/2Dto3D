@@ -9,6 +9,8 @@ const storageKey = "pv3d.locale";
 type Params = Record<string, string | number>;
 
 const serverMessages: Record<string, MessageKey> = {
+  AUTHORED_ANALYTIC_DEMO_NOT_FIELD_ACCURACY:
+    "解析测量演示未运行模型；组件细化和重建请使用真实多图结果。",
   MEASUREMENT_REFERENCE_REUSED:
     "标定线不能作为独立验证线。请选择另一条未参与标定的实测长度。",
   MEASUREMENT_GEOMETRY_CHANGED: "点云已变化，请重新载入结果并重新标定。",

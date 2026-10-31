@@ -79,3 +79,4 @@
 | DEV-002 | worktree工具路径限制、系统Python和文档cwd误用 | 本轮已恢复，有复现说明 | E05过程记录，ignored隔离worktree、显式.venv/root；无误写入文件 |
 | TEST-001 | 夹具RGB契约、查询歧义、job stub/import错误 | 测试输入已纠正 | E05保留过程；不将夹具问题当产品改善 |
 | DOC-001 | README缺英文对照与可验证配图 | 本轮已补齐 | README.md/README.en.md、6张可再生成SVG、4张真实解析演示截图，场景与精度边界明示 |
+| DEMO-001 | 原创解析GLB没有VGGT缓存，却暴露组件细化/重建入口 | 本轮已限制演示入口 | 解析模式仅查看/测量；真实结果不受影响。新增行为测试先RED后GREEN，原警告改为三语说明 |
