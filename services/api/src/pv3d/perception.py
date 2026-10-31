@@ -43,7 +43,7 @@ def _iou(a: list[float], b: list[float]) -> float:
     return intersection / max(area_a + area_b - intersection, 1e-12)
 
 
-def normalize_predictions(boxes, scores, phrases, image_size) -> list[dict]:
+def normalize_predictions(boxes, scores, phrases, image_size, scene_mode="single") -> list[dict]:
     """Keep finite, supported predictions and remove duplicate same-class boxes."""
     width, height = image_size
     candidates = []
@@ -78,7 +78,7 @@ def normalize_predictions(boxes, scores, phrases, image_size) -> list[dict]:
             continue
         kept.append(candidate)
     cabinets = [item for item in kept if item["category"] == "cabinet"]
-    if cabinets:
+    if cabinets and scene_mode == "single":
         # The first release handles one selected equipment, not a whole station.
         primary = max(
             cabinets,
@@ -226,7 +226,7 @@ class GroundingDetector:
             ]
         self._segmentation_state = "ready"
 
-    def detect(self, image, on_progress: Callable[[str], None] | None = None) -> dict:
+    def detect(self, image, on_progress: Callable[[str], None] | None = None, scene_mode="single") -> dict:
         with self._lock:
             started = time.perf_counter()
             cold = self._model is None
@@ -262,7 +262,11 @@ class GroundingDetector:
                 )[0]
                 phrases = result["text_labels"] if "text_labels" in result else result["labels"]
                 detections = normalize_predictions(
-                    result["boxes"].cpu().tolist(), result["scores"].cpu().tolist(), phrases, image.size
+                    result["boxes"].cpu().tolist(),
+                    result["scores"].cpu().tolist(),
+                    phrases,
+                    image.size,
+                    scene_mode=scene_mode,
                 )
                 detected = time.perf_counter()
                 if detections and os.environ.get("PV3D_SEGMENT", "1") == "1":
@@ -283,6 +287,7 @@ class GroundingDetector:
                     "warnings": warnings,
                     "model": {
                         "model_id": MODEL_ID,
+                        "scene_mode": scene_mode,
                         "revision": self._model.config._commit_hash,
                         "device": self.device,
                         "cold_start": cold,

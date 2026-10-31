@@ -125,7 +125,9 @@ class JobRunner:
                 recognition = self._manual_recognition(request)
             else:
                 with Image.open(self.store.data_dir / "assets" / asset["id"] / "image.jpg") as source:
-                    recognition = self.detector.detect(source.convert("RGB"), on_progress=report)
+                    recognition = self.detector.detect(
+                        source.convert("RGB"), on_progress=report, scene_mode=request.scene_mode
+                    )
             report("geometry")
             geometry_started = time.perf_counter()
             components, geometry_warnings = build_components(
@@ -141,6 +143,7 @@ class JobRunner:
             result = Result(
                 job_id=job_id,
                 asset_id=asset["id"],
+                scene_mode=request.scene_mode,
                 components=components,
                 scene_url=f"/api/jobs/{job_id}/scene.glb" if components else None,
                 json_url=f"/api/jobs/{job_id}/result.json",

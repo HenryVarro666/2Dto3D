@@ -21,7 +21,7 @@ class DetectorDouble:
     def status(self):
         return {"state": "ready", "model_id": "boundary-only", "device": "cpu"}
 
-    def detect(self, image, on_progress=None):
+    def detect(self, image, on_progress=None, scene_mode="single"):
         if self.release is not None:
             assert self.release.wait(5), "test did not release detector"
         if self.failure:
@@ -63,6 +63,27 @@ def factory(tmp_path, detector=None):
     from pv3d.app import create_app
 
     return create_app(data_dir=tmp_path, detector=detector or DetectorDouble())
+
+
+def test_job_scope_reaches_detector_and_is_recorded_without_changing_v1_default(tmp_path):
+    seen = []
+
+    class ScopeDetector(DetectorDouble):
+        def detect(self, image, on_progress=None, scene_mode="single"):
+            seen.append(scene_mode)
+            return super().detect(image, on_progress=on_progress)
+
+    with TestClient(factory(tmp_path, ScopeDetector())) as client:
+        asset = upload(client)
+        for body, expected in [({}, "single"), ({"scene_mode": "multiple"}, "multiple")]:
+            response = client.post("/api/jobs", json={"asset_id": asset["id"], **body})
+            assert response.status_code == 202, response.text
+            result = terminal(client, response.json()["id"])["result"]
+            assert result["scene_mode"] == expected
+        assert seen == ["single", "multiple"]
+        assert (
+            client.post("/api/jobs", json={"asset_id": asset["id"], "scene_mode": "any"}).status_code == 422
+        )
 
 
 def test_upload_rejects_invalid_image_without_persisting_asset(tmp_path):
@@ -139,7 +160,7 @@ def test_real_stage_reports_are_pollable_before_the_model_returns(tmp_path):
     release = {stage: threading.Event() for stage in stages}
 
     class StagedDetector(DetectorDouble):
-        def detect(self, image, on_progress=None):
+        def detect(self, image, on_progress=None, scene_mode="single"):
             assert callable(on_progress), "the runner must forward real model progress"
             for stage in stages:
                 on_progress(stage)
@@ -165,7 +186,7 @@ def test_real_stage_reports_are_pollable_before_the_model_returns(tmp_path):
 
 def test_failed_job_retains_the_actual_processing_stage(tmp_path):
     class FailingDetector(DetectorDouble):
-        def detect(self, image, on_progress=None):
+        def detect(self, image, on_progress=None, scene_mode="single"):
             if on_progress:
                 on_progress("detecting")
             raise RuntimeError("transient model failure")

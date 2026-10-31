@@ -57,6 +57,18 @@ def test_single_target_does_not_turn_background_or_subpanels_into_extra_cabinets
     assert result[0]["bbox"] == [0.2, 0.2, 0.65, 0.7]
 
 
+def test_multiple_scope_keeps_distinct_cabinets_and_distant_support_after_nms():
+    result = normalize_predictions(
+        [[20, 10, 60, 40], [22, 11, 59, 39], [20, 55, 65, 98], [80, 0, 90, 100]],
+        [0.8, 0.7, 0.65, 0.6],
+        ["inverter", "electrical cabinet", "electrical cabinet", "pole"],
+        (100, 100),
+        scene_mode="multiple",
+    )
+    assert [item["category"] for item in result] == ["cabinet", "cabinet", "pole"]
+    assert result[1]["bbox"] == [0.2, 0.55, 0.65, 0.98]
+
+
 def test_detector_health_recovers_after_transient_failure_without_reloading_weights(tmp_path):
     """Use the real Torch context; replace only the expensive loaded model boundary."""
     from types import SimpleNamespace

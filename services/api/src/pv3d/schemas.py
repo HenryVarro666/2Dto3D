@@ -6,6 +6,7 @@ from typing import Annotated, Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 Category = Literal["cabinet", "bracket", "pole", "cables", "unknown"]
+SceneMode = Literal["single", "multiple"]
 Identifier = Annotated[str, Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")]
 BBox = tuple[float, float, float, float]
 Vector3 = tuple[float, float, float]
@@ -57,6 +58,7 @@ class Detection(ManualComponent):
 class JobRequest(Contract):
     asset_id: str = Field(min_length=1, max_length=128)
     mode: Literal["automatic", "manual"] = "automatic"
+    scene_mode: SceneMode = "single"
     components: list[ManualComponent] | None = Field(default=None, max_length=100)
     base_job_id: str | None = Field(default=None, min_length=1, max_length=128)
 
@@ -95,6 +97,7 @@ class Result(Contract):
     job_id: str
     asset_id: str
     equipment_type: Literal["string_inverter"] = "string_inverter"
+    scene_mode: SceneMode = "single"
     representation: Literal["structural_schematic"] = "structural_schematic"
     metric_scale_status: Literal["unknown"] = "unknown"
     components: list[Component]
