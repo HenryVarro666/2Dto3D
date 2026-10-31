@@ -101,3 +101,5 @@ GitHub私有仓库默认main在 `d36bffb` 推送后，重新HTTPS克隆到本机
 | `validation.zh.jpg` | `f2caa40ec80a0b1d7fc85ce83124bf308ad0e977a8d13cb6cf0ba970e102632a` |
 | `workbench.en.jpg` | `141eebe66e0f66869891fab53c894b9036930d6536319b2385719e92f1cb1ab9` |
 | `workbench.zh.jpg` | `cc08925e471eefd29eb22ec0ac0db0a6710ad5a4479013ce040450689f66e636` |
+
+最终克隆复核：同一全新GitHub克隆更新到 `9c98a60` 后，**66前端、生产构建、6SVG生成一致性、79个可移植文档链接通过**，2个ignored本机证据链接单列；工作区干净。确认从已测`d36bffb`到`9c98a60`的`services/api/`与`scripts/`完全没有变化，因此沿用已执行的111＋2跳过新环境后端和正式环境113后端证据，不重复模型或端到端耗时。正式根目录也已构建最新网页。私有main与feat/scale-measurement均已推送；本次最终追加仅补充文档收据。

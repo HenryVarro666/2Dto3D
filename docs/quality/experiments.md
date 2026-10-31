@@ -9,7 +9,7 @@
 | E02 | ae4816c→00d0594，同13张 | 已运行26次＋主线0522a85补测26次 | [本机前后报告](../../data/collections/sungrow/evaluation/runs/2026-10-31_v2_perception_fix_13photos/report.md)，改善大框与主机；新增空槽假线束，保留中间版及审查反例 |
 | E03 | 0522a85，4组9张同机候选 | 已运行4多图＋18单图 | [本机报告](../../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_real_4groups/report.md)，主机未跨图合并、细线丢点、插接件/槽体误分类；21 succeeded/1 needs_review不是质量准确率 |
 | E04 | 0522a85→237f796，同E03输入＋原13图保护 | 最终42模型任务＋4受控回放；部分改善，有新错误 | [本机前后图](../../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/index.html)、[报告](../../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/report.md)、[计划](../superpowers/plans/2026-10-31-v3-real-regression-fixes.md)。4组主机均合并；固定旧mask线点保留改善；新推理Later线点略降、HC05丢细柱和新增语义误检。9c202d1的22任务另存，原747基线冻结 |
-| E05 | 9c202d1上的标定/测距扩展；解析fixture + 4份E03旧GLB | 工具与解析/兼容性已验证，现场尺寸待测 | [本次记录](2026-10-31-scale-measurement.md)、[测量指南](../measurement/README.md)；200mm参照，独立高度10%误差反例；真实旧GLB仅相对单位；新克隆/整合验证继续追加 |
+| E05 | 58e3e28 / e66a6d9 / 9c98a60；解析fixture + 4份E03旧GLB | 工具与解析/兼容性已验证，现场尺寸待测 | [本次记录](2026-10-31-scale-measurement.md)、[测量指南](../measurement/README.md)；200mm参照，独立高度10%误差反例；真实旧GLB仅相对单位；已完成整合、新克隆与生产浏览器验证，最终66前端/113正式后端；原始数据不入Git |
 
 ## 下一位接手者
 
