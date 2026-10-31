@@ -35,12 +35,14 @@ export function ProcessingStatus({
   viewerError,
   onCancel,
   onRetry,
+  retryDisabled = false,
 }: {
   state: WorkbenchState;
   elapsedMs: number;
   viewerError: string | null;
   onCancel: () => void;
   onRetry: () => void;
+  retryDisabled?: boolean;
 }) {
   const { t, localize, locale } = useI18n();
   const active = ["uploading", "processing", "preparing"].includes(state.phase);
@@ -137,7 +139,11 @@ export function ProcessingStatus({
         )}
         {["error", "cancelled", "review"].includes(state.phase) &&
           state.asset && (
-            <button className="button small secondary" onClick={onRetry}>
+            <button
+              className="button small secondary"
+              onClick={onRetry}
+              disabled={retryDisabled}
+            >
               {t("重新识别")}
             </button>
           )}

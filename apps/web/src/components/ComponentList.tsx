@@ -13,6 +13,7 @@ type Props = {
   onRemove: (id: string) => void;
   editRequestId?: string | null;
   mutationsDisabled?: boolean;
+  onRefine?: (id: string) => void;
 };
 
 export function ComponentList({
@@ -26,6 +27,7 @@ export function ComponentList({
   onRemove,
   editRequestId,
   mutationsDisabled = false,
+  onRefine,
 }: Props) {
   const { t, componentLabel } = useI18n();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -174,6 +176,18 @@ export function ComponentList({
               <Trash2 size={14} />
               {t("移除组件")}
             </button>
+            {onRefine && (
+              <button
+                className="text-button"
+                disabled={mutationsDisabled}
+                onClick={() => {
+                  onRefine(editing.id);
+                  setEditingId(null);
+                }}
+              >
+                {t("细化边界")}
+              </button>
+            )}
           </div>
           <p>
             {mutationsDisabled

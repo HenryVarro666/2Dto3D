@@ -585,6 +585,219 @@ input[type="range"] {
   gap: 19px;
   align-items: start;
 }
+.model-side {
+  min-width: 0;
+}
+.model-panel[hidden] {
+  display: none;
+}
+.detection-scope {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #dfe5db;
+  border-radius: 6px;
+}
+.detection-scope fieldset {
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0;
+  min-width: 0;
+}
+.detection-scope legend {
+  float: left;
+  margin-right: 16px;
+  font-size: 12px;
+  color: #3f5e4b;
+}
+.detection-scope label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.detection-scope p {
+  flex: 1;
+  min-width: 180px;
+  color: #6c786b;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.detection-scope input {
+  accent-color: var(--teal);
+}
+.annotation-panel {
+  border: 1px solid #a8c7b6;
+  border-radius: 7px;
+  background: #f8fbf6;
+  overflow: hidden;
+  color: #3f5d4b;
+}
+.annotation-panel header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid #d6e3d7;
+}
+.annotation-panel header > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.annotation-panel h2 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.annotation-panel header span {
+  font-size: 10px;
+  color: #6b7c6e;
+}
+.annotation-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  padding: 14px;
+}
+.annotation-fields label {
+  font-size: 11px;
+  min-width: 0;
+}
+.annotation-fields input,
+.annotation-fields select {
+  display: block;
+  margin-top: 6px;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #bdcdbd;
+  border-radius: 4px;
+  padding: 8px;
+  background: white;
+  font: inherit;
+  color: #2f4939;
+}
+.annotation-points-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px 10px;
+}
+.point-mode-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.point-mode-controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid #bacabd;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 11px;
+}
+.point-mode-controls .positive {
+  color: #296547;
+}
+.point-mode-controls .negative {
+  color: #9b3f37;
+}
+.point-mode-controls .active {
+  box-shadow: inset 0 0 0 1px currentColor;
+  background: #eaf3e8;
+}
+.point-mode-controls .negative.active {
+  background: #fff0eb;
+}
+.annotation-panel > p {
+  margin: 0;
+  padding: 0 14px 12px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.annotation-state {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-height: 40px;
+  padding: 10px 14px;
+  font-size: 12px;
+  background: #edf4e9;
+}
+.annotation-state [role="alert"],
+.annotation-warning {
+  color: #8d4536;
+}
+.annotation-panel footer {
+  padding: 14px;
+  border-top: 1px solid #d6e3d7;
+}
+.annotation-panel footer > span {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.annotation-panel footer > div {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.photo-fit.is-annotating {
+  cursor: crosshair;
+}
+.photo-fit.is-annotating .photo-box {
+  pointer-events: none;
+}
+.photo-fit > .photo-mask {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+.draft-box {
+  position: absolute;
+  border: 2px dashed #237a5a;
+  box-shadow: 0 0 0 1px #fff8;
+  pointer-events: none;
+  z-index: 4;
+}
+.prompt-point {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid white;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 6;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 1;
+  box-shadow: 0 1px 3px #0008;
+}
+.prompt-point.positive {
+  background: #236746;
+}
+.prompt-point.negative {
+  background: #b14739;
+}
 .view-panel {
   background: white;
   border: 1px solid #dfe5db;

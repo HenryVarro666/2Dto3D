@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import type { Asset, BBox, EditableComponent, Point } from "../api/types";
 import { useI18n } from "../i18n";
+import type { AnnotationController } from "../core/annotation";
 import {
   boxFromPoints,
   containedImageRect,
@@ -29,6 +30,7 @@ type Props = {
   onFile: (file: File) => void;
   onDrawingChange: (value: boolean) => void;
   onBox: (box: BBox) => void;
+  annotation?: AnnotationController;
 };
 
 export function PhotoPanel({
@@ -45,9 +47,11 @@ export function PhotoPanel({
   onFile,
   onDrawingChange,
   onBox,
+  annotation,
 }: Props) {
   const { t, componentLabel } = useI18n();
   const stageRef = useRef<HTMLDivElement>(null);
+  const pointDown = useRef<Point | null>(null);
   const [panelSize, setPanelSize] = useState({ width: 0, height: 0 });
   const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 });
   const [dragActive, setDragActive] = useState(false);
@@ -83,6 +87,10 @@ export function PhotoPanel({
     asset?.height || naturalSize.height,
   );
   const currentBox = drag ? boxFromPoints(drag.start, drag.current) : null;
+  const selected = components.find((item) => item.id === selectedId);
+  const rings =
+    selected?.mask_polygons ??
+    (selected?.mask_polygon ? [selected.mask_polygon] : []);
   const pointAt = (event: React.PointerEvent<HTMLDivElement>): Point => {
     const rect = event.currentTarget.getBoundingClientRect();
     return normalizedPoint(event.clientX, event.clientY, {
@@ -150,7 +158,7 @@ export function PhotoPanel({
           </div>
         ) : (
           <div
-            className={`photo-fit ${drawing ? "is-drawing" : ""}`}
+            className={`photo-fit ${drawing ? "is-drawing" : ""} ${annotation?.draft ? "is-annotating" : ""}`}
             style={
               fit.width
                 ? {
@@ -162,6 +170,11 @@ export function PhotoPanel({
                 : { inset: 0 }
             }
             onPointerDown={(event) => {
+              if (annotation?.draft) {
+                event.preventDefault();
+                pointDown.current = [event.clientX, event.clientY];
+                return;
+              }
               if (!drawing) return;
               event.preventDefault();
               event.currentTarget.setPointerCapture?.(event.pointerId);
@@ -173,14 +186,31 @@ export function PhotoPanel({
                 setDrag({ ...drag, current: pointAt(event) });
             }}
             onPointerUp={(event) => {
+              if (annotation?.draft) {
+                const start = pointDown.current;
+                pointDown.current = null;
+                if (
+                  start &&
+                  Math.hypot(
+                    event.clientX - start[0],
+                    event.clientY - start[1],
+                  ) <= 6
+                )
+                  annotation.addPoint(pointAt(event), annotation.pointMode);
+                return;
+              }
               if (!drawing || !drag) return;
               const bbox = boxFromPoints(drag.start, pointAt(event));
               setDrag(null);
               if (bbox) onBox(bbox);
             }}
-            onPointerCancel={() => setDrag(null)}
+            onPointerCancel={() => {
+              setDrag(null);
+              pointDown.current = null;
+            }}
           >
             <img
+              className="source-image"
               src={imageUrl}
               alt={t("待识别的组串式逆变器现场照片")}
               draggable={false}
@@ -191,6 +221,74 @@ export function PhotoPanel({
                 })
               }
             />
+            {!annotation?.draft && !drawing && selected?.refinement_id && (
+              <img
+                className="photo-mask"
+                alt=""
+                draggable={false}
+                src={`/api/refinements/${selected.refinement_id}/mask.png`}
+              />
+            )}
+            {!annotation?.draft &&
+              !drawing &&
+              selected &&
+              !selected.refinement_id &&
+              rings.length > 0 && (
+                <svg
+                  className="photo-mask"
+                  viewBox="0 0 1 1"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d={rings
+                      .map(
+                        (ring) =>
+                          `M${ring.map((point) => `${point[0]},${point[1]}`).join(" L")} Z`,
+                      )
+                      .join(" ")}
+                    fill="rgba(24,150,114,.3)"
+                    fillRule="evenodd"
+                    stroke="#188b6a"
+                    strokeWidth="1.5"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+              )}
+            {annotation?.draft && (
+              <>
+                {annotation.output && (
+                  <img
+                    className="photo-mask"
+                    alt=""
+                    draggable={false}
+                    src={annotation.output.mask_url}
+                  />
+                )}
+                <div
+                  className="draft-box"
+                  style={{
+                    left: `${annotation.draft.box[0] * 100}%`,
+                    top: `${annotation.draft.box[1] * 100}%`,
+                    width: `${(annotation.draft.box[2] - annotation.draft.box[0]) * 100}%`,
+                    height: `${(annotation.draft.box[3] - annotation.draft.box[1]) * 100}%`,
+                  }}
+                />
+                {annotation.draft.points.map((point, index) => (
+                  <span
+                    className={`prompt-point ${point.label === 1 ? "positive" : "negative"}`}
+                    key={index}
+                    style={{
+                      left: `${point.x * 100}%`,
+                      top: `${point.y * 100}%`,
+                    }}
+                    aria-hidden="true"
+                  >
+                    {point.label === 1 ? "+" : "−"}
+                  </span>
+                ))}
+              </>
+            )}
             {showBoxes &&
               components.map((component, index) =>
                 hiddenIds.has(component.id) ? null : (
@@ -207,10 +305,12 @@ export function PhotoPanel({
                       } as React.CSSProperties
                     }
                     onPointerDown={(event) => {
-                      if (!drawing) event.stopPropagation();
+                      if (!drawing && !annotation?.draft)
+                        event.stopPropagation();
                     }}
                     onClick={() => {
-                      if (!drawing) onSelect(component.id);
+                      if (!drawing && !annotation?.draft)
+                        onSelect(component.id);
                     }}
                     aria-label={t("照片中选择 {name}", {
                       name: componentLabel(component),

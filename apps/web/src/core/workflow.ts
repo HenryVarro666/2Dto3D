@@ -5,6 +5,7 @@ import type {
   ManualComponent,
   Result,
   WorkbenchApi,
+  SceneMode,
 } from "../api/types";
 
 export type Phase =
@@ -58,7 +59,10 @@ function waitForPoll(signal: AbortSignal): Promise<void> {
   });
 }
 
-export function useWorkbench(api: WorkbenchApi) {
+export function useWorkbench(
+  api: WorkbenchApi,
+  sceneMode: SceneMode = "single",
+) {
   const [state, setState] = useState<WorkbenchState>(initialState);
   const [clock, setClock] = useState(Date.now);
   const generation = useRef(0);
@@ -99,15 +103,23 @@ export function useWorkbench(api: WorkbenchApi) {
         ? {
             asset_id: asset.id,
             mode: "manual",
-            components: components.map(({ id, category, label, bbox }) => ({
-              id,
-              category,
-              label,
-              bbox,
-            })),
+            ...(sceneMode === "multiple" ? { scene_mode: sceneMode } : {}),
+            components: components.map(
+              ({ id, category, label, bbox, refinement_id }) => ({
+                id,
+                category,
+                label,
+                bbox,
+                ...(refinement_id !== undefined ? { refinement_id } : {}),
+              }),
+            ),
             ...(baseJobId ? { base_job_id: baseJobId } : {}),
           }
-        : { asset_id: asset.id, mode: "automatic" },
+        : {
+            asset_id: asset.id,
+            mode: "automatic",
+            ...(sceneMode === "multiple" ? { scene_mode: sceneMode } : {}),
+          },
       signal,
     );
     if (token !== generation.current) return;

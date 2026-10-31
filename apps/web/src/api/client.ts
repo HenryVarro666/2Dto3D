@@ -4,6 +4,7 @@ import type {
   Job,
   JobInput,
   Result,
+  Refinement,
   WorkbenchApi,
 } from "./types";
 
@@ -35,6 +36,13 @@ export function createApi(): WorkbenchApi {
     return response.json() as Promise<T>;
   }
   return {
+    refine: (input, signal) =>
+      request<Refinement>("/refinements", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+        signal,
+      }),
     health: (signal) => request<Health>("/health", { signal }),
     uploadAsset: (file, signal) => {
       const body = new FormData();

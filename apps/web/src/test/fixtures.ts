@@ -60,6 +60,22 @@ export const completed: Job = {
 
 export function fakeApi(overrides: Partial<WorkbenchApi> = {}): WorkbenchApi {
   return {
+    refine: async (input) => ({
+      ...input,
+      id: "test-refinement",
+      geometry_bbox: input.bbox,
+      mask_polygons: [
+        [
+          [input.bbox[0], input.bbox[1]],
+          [input.bbox[2], input.bbox[1]],
+          [input.bbox[2], input.bbox[3]],
+        ],
+      ],
+      mask_url: "/api/refinements/test-refinement/mask.png",
+      model: { model_id: "test-sam" },
+      timings: {},
+      warnings: [],
+    }),
     health: async () => ({
       status: "ok",
       model: { state: "ready", model_id: "grounding-dino", device: "cpu" },

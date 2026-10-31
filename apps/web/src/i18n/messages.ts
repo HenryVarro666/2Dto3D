@@ -512,6 +512,92 @@ export const messages = {
     "SAM 2 is unavailable. Real detection boxes are retained without fabricated regions.",
     "SAM 2 no está disponible. Se conservan los recuadros reales sin inventar regiones.",
   ],
+  自动识别范围: ["Recognition scope", "Alcance del reconocimiento"],
+  单设备: ["Single equipment", "Un equipo"],
+  多设备: ["Multiple equipment", "Varios equipos"],
+  "仅影响下一次自动识别；手工补录不受主柜数量限制。": [
+    "Applies to the next recognition. Manual additions are not limited to one cabinet.",
+    "Se aplica al próximo reconocimiento. Las adiciones manuales no se limitan a un gabinete.",
+  ],
+  按当前范围重新识别: [
+    "Recognize with selected scope",
+    "Reconocer con el alcance elegido",
+  ],
+  边界细化草稿: [
+    "Boundary refinement draft",
+    "Borrador de refinamiento del contorno",
+  ],
+  确认后加入组件: [
+    "Confirm to apply the component",
+    "Confirme para aplicar el componente",
+  ],
+  取消边界细化: [
+    "Cancel boundary refinement",
+    "Cancelar refinamiento del contorno",
+  ],
+  补录组件名称: ["Draft component name", "Nombre del componente del borrador"],
+  补录组件类别: [
+    "Draft component category",
+    "Categoría del componente del borrador",
+  ],
+  修正点类型: ["Correction point type", "Tipo de punto de corrección"],
+  保留物体: ["Keep object", "Conservar objeto"],
+  排除背景: ["Exclude background", "Excluir fondo"],
+  撤销一点: ["Undo last point", "Deshacer último punto"],
+  清空点: ["Clear points", "Borrar puntos"],
+  重新框选: ["Redraw box", "Volver a dibujar el recuadro"],
+  "在左侧照片点击补点：绿色加号保留物体，红色减号排除背景。": [
+    "Click on the photo: green plus points keep the object; red minus points exclude background.",
+    "Haga clic en la foto: los puntos verdes con signo más conservan el objeto; los rojos con signo menos excluyen el fondo.",
+  ],
+  "正在等待或细化边界…": [
+    "Waiting for or refining the boundary…",
+    "Esperando o refinando el contorno…",
+  ],
+  "边界预览已更新，请确认是否覆盖目标物体。": [
+    "Boundary preview updated. Check that it covers the intended object.",
+    "Vista previa actualizada. Compruebe que cubra el objeto deseado.",
+  ],
+  "细化失败也可保留原框；厚度仍为估计。": [
+    "You can keep the box if refinement fails. Depth remains estimated.",
+    "Puede conservar el recuadro si falla el refinamiento. La profundidad sigue siendo estimada.",
+  ],
+  重试细化: ["Retry refinement", "Reintentar refinamiento"],
+  仅用框保存: ["Save box only", "Guardar solo el recuadro"],
+  确认区域: ["Confirm region", "Confirmar región"],
+  细化边界: ["Refine boundary", "Refinar contorno"],
+  "边界细化未完成，请重试或仅用框保存。": [
+    "Boundary refinement did not finish. Retry or save the box only.",
+    "El refinamiento no terminó. Reinténtelo o guarde solo el recuadro.",
+  ],
+  "最多添加 64 个修正点，请撤销或清空后继续。": [
+    "Up to 64 correction points are allowed. Undo or clear points to continue.",
+    "Se permiten hasta 64 puntos de corrección. Deshaga o borre puntos para continuar.",
+  ],
+  "保留点请点击框内物体；排除点可以点击背景。": [
+    "Place keep points on the object inside the box. Exclude points may be on background.",
+    "Coloque los puntos de conservación en el objeto dentro del recuadro. Los puntos de exclusión pueden estar en el fondo.",
+  ],
+  "未得到有效区域，请补点、重新框选或仅用框保存。": [
+    "No usable region. Add points, redraw the box, or use the box without refinement.",
+    "No se obtuvo una región válida. Añada puntos, vuelva a dibujar el recuadro o guarde solo el recuadro.",
+  ],
+  "边界细化失败，请重试或仅用框保存。": [
+    "Boundary refinement failed. Retry or keep the box without refinement.",
+    "Falló el refinamiento del contorno. Reinténtelo o conserve solo el recuadro.",
+  ],
+  "区域记录与当前照片或组件框不匹配，请重新细化。": [
+    "The region does not match the photo or component box. Refine it again.",
+    "La región no corresponde a la foto o al recuadro. Vuelva a refinarla.",
+  ],
+  "找不到边界细化记录，请重新细化。": [
+    "Refinement not found. Refine the boundary again.",
+    "No se encontró el refinamiento. Vuelva a refinar el contorno.",
+  ],
+  "部分修正点未被满足，请补点或重新框选。": [
+    "Some prompt points were not satisfied. Add points or redraw the box.",
+    "No se cumplieron algunos puntos de corrección. Añada puntos o vuelva a dibujar el recuadro.",
+  ],
 } as const satisfies Record<string, readonly [string, string]>;
 
 export type MessageKey = keyof typeof messages;

@@ -13,6 +13,39 @@ const flush = async () => {
   });
 };
 
+it("submits multiple scope and only the server refinement reference for a corrected component", async () => {
+  const submitted: JobInput[] = [];
+  const { result } = renderHook(() =>
+    useWorkbench(
+      fakeApi({
+        createJob: async (input) => {
+          submitted.push(input);
+          return completed;
+        },
+      }),
+      "multiple",
+    ),
+  );
+  await act(async () => {
+    await result.current.selectPhoto(photo);
+  });
+  await act(async () => {
+    await result.current.rebuild([
+      { ...cabinet, refinement_id: "server-mask" },
+    ]);
+  });
+  expect(submitted[0].scene_mode).toBe("multiple");
+  expect(submitted[1].components).toEqual([
+    {
+      id: cabinet.id,
+      category: cabinet.category,
+      label: cabinet.label,
+      bbox: cabinet.bbox,
+      refinement_id: "server-mask",
+    },
+  ]);
+});
+
 describe("photo-to-scene workflow", () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());

@@ -9,6 +9,15 @@ const storageKey = "pv3d.locale";
 type Params = Record<string, string | number>;
 
 const serverMessages: Record<string, MessageKey> = {
+  "No usable region. Add points, redraw the box, or use the box without refinement.":
+    "未得到有效区域，请补点、重新框选或仅用框保存。",
+  "Boundary refinement failed. Retry or keep the box without refinement.":
+    "边界细化失败，请重试或仅用框保存。",
+  "Refinement must match the image and component box.":
+    "区域记录与当前照片或组件框不匹配，请重新细化。",
+  "Refinement not found.": "找不到边界细化记录，请重新细化。",
+  "Some prompt points were not satisfied. Add points or redraw the box.":
+    "部分修正点未被满足，请补点或重新框选。",
   "Model unavailable. Check local server logs.":
     "模型不可用，请检查本地服务日志。",
   "Model status unavailable.": "模型状态不可用。",

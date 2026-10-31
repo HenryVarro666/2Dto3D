@@ -15,7 +15,12 @@ import {
   WandSparkles,
 } from "lucide-react";
 import { api } from "./api/client";
-import type { BBox, EditableComponent, WorkbenchApi } from "./api/types";
+import type {
+  BBox,
+  EditableComponent,
+  WorkbenchApi,
+  SceneMode,
+} from "./api/types";
 import { useWorkbench } from "./core/workflow";
 import { ComponentList } from "./components/ComponentList";
 import { ModelHealth } from "./components/ModelHealth";
@@ -23,6 +28,9 @@ import { PhotoPanel } from "./components/PhotoPanel";
 import { ProcessingStatus } from "./components/ProcessingStatus";
 import { LanguageSwitcher } from "./components/LanguageSwitcher";
 import { I18nProvider, useI18n } from "./i18n";
+import { useAnnotation } from "./core/annotation";
+import { AnnotationPanel } from "./components/AnnotationPanel";
+import { DetectionScope } from "./components/DetectionScope";
 
 const SceneViewer = lazy(() =>
   import("./components/SceneViewer").then((module) => ({
@@ -32,8 +40,11 @@ const SceneViewer = lazy(() =>
 
 function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
   const { t, localize, componentLabel } = useI18n();
+  const [sceneMode, setSceneMode] = useState<SceneMode>("single");
   const { state, elapsedMs, selectPhoto, rebuild, cancel, viewerReady } =
-    useWorkbench(apiClient);
+    useWorkbench(apiClient, sceneMode);
+  const annotation = useAnnotation(apiClient);
+  const redrawSeed = useRef<EditableComponent | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewRef = useRef<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -89,6 +100,8 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
   }, [state.result]);
 
   function chooseFile(file: File) {
+    annotation.cancel();
+    redrawSeed.current = null;
     if (previewRef.current) URL.revokeObjectURL(previewRef.current);
     const nextPreview =
       typeof URL.createObjectURL === "function"
@@ -107,23 +120,32 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
   }
   function addBox(bbox: BBox) {
     if (active || !state.asset) return;
-    const id = `manual-${crypto.randomUUID()}`;
-    setComponents((current) => [
-      ...current,
-      {
-        id,
-        bbox,
-        category: "unknown",
-        label: t("新组件 {count}", { count: current.length + 1 }),
-        source: "manual",
-        score: null,
-        color: "#bc9563",
-      },
-    ]);
-    setSelectedId(id);
-    setEditRequestId(id);
-    setDirty(true);
+    const component: EditableComponent = redrawSeed.current ?? {
+      id: `manual-${crypto.randomUUID()}`,
+      bbox,
+      category: "unknown",
+      label: t("新组件 {count}", { count: components.length + 1 }),
+      source: "manual",
+      score: null,
+      color: "#bc9563",
+      labelEdited: true,
+    };
+    redrawSeed.current = null;
+    annotation.start(state.asset, bbox, component);
     setDrawing(false);
+  }
+  function confirmAnnotation(boxOnly: boolean) {
+    if (active) return;
+    const component = annotation.confirm(boxOnly);
+    if (!component) return;
+    setComponents((current) =>
+      current.some((item) => item.id === component.id)
+        ? current.map((item) => (item.id === component.id ? component : item))
+        : [...current, component],
+    );
+    setSelectedId(component.id);
+    setEditRequestId(component.id);
+    setDirty(true);
   }
   function toggleHidden(id: string) {
     setHiddenIds((current) => {
@@ -140,22 +162,23 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
     setResetKey((current) => current + 1);
   }
   function manualRebuild() {
-    if (active) return;
+    if (active || annotation.draft) return;
     setDrawing(false);
     setViewerError(null);
     void rebuild(
-      components.map(({ id, category, label, bbox }) => ({
+      components.map(({ id, category, label, bbox, refinement_id }) => ({
         id,
         category,
         label: label.trim(),
         bbox,
+        ...(refinement_id !== undefined ? { refinement_id } : {}),
       })),
     );
   }
   const completedStep = state.result ? 3 : state.asset ? 2 : preview ? 1 : 0;
   const imageUrl = state.asset?.image_url || preview;
   const selected = components.find((item) => item.id === selectedId);
-  const canDraw = Boolean(state.asset) && !active;
+  const canDraw = Boolean(state.asset) && !active && !annotation.draft;
 
   return (
     <div className="app-shell">
@@ -244,10 +267,24 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
           </span>
         </nav>
 
+        <DetectionScope
+          value={sceneMode}
+          onChange={setSceneMode}
+          disabled={active || Boolean(annotation.draft)}
+          canRetry={Boolean(state.asset)}
+          onRetry={() => {
+            setDrawing(false);
+            redrawSeed.current = null;
+            setViewerError(null);
+            void rebuild();
+          }}
+        />
+
         <ProcessingStatus
           state={state}
           elapsedMs={elapsedMs}
           viewerError={viewerError}
+          retryDisabled={Boolean(annotation.draft)}
           onCancel={cancel}
           onRetry={() => {
             setDrawing(false);
@@ -271,149 +308,166 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
             onFile={chooseFile}
             onDrawingChange={(value) => setDrawing(value && canDraw)}
             onBox={addBox}
+            annotation={annotation}
           />
 
-          <section
-            className="view-panel model-panel"
-            aria-labelledby="model-title"
-          >
-            <header className="panel-heading">
-              <div>
-                <span className="panel-index">02</span>
-                <h2 id="model-title">{t("三维结构")}</h2>
-                <span className="panel-heading-note" aria-hidden="true">
-                  3D
-                </span>
-              </div>
-              <span className="schematic-badge">
-                {t("结构示意 · 比例估计")}
-              </span>
-            </header>
-            <div className="model-stage">
-              {state.result?.scene_url ? (
-                <Suspense
-                  fallback={
-                    <div className="viewer-loading">
-                      {t("正在准备三维查看器…")}
-                    </div>
-                  }
-                >
-                  <SceneViewer
-                    sceneUrl={state.result.scene_url}
-                    componentIds={sceneIds}
-                    selectedId={selectedId}
-                    hiddenIds={hiddenIds}
-                    explosion={explosion}
-                    wireframe={wireframe}
-                    resetKey={resetKey}
-                    onSelect={setSelectedId}
-                    onReady={viewerReady}
-                    onError={(error) => {
-                      setViewerError(error);
-                      viewerReady();
-                    }}
-                  />
-                </Suspense>
-              ) : (
-                <div className="model-empty">
-                  <div className="model-grid" />
-                  <div className="empty-model-symbol">
-                    <Box size={60} strokeWidth={0.9} />
-                    <span />
-                    <i />
-                  </div>
-                  <h3>
-                    {active ? t("正在准备组件结构") : t("在这里查看设备的组成")}
-                  </h3>
-                  <p>
-                    {active
-                      ? t("识别完成后，三维视图将自动载入")
-                      : t("上传照片后，旋转、选择并逐个查看组件")}
-                  </p>
-                  <div className="empty-interactions">
-                    <span>
-                      <RotateCcw size={13} />
-                      {t("旋转")}
-                    </span>
-                    <span>
-                      <Focus size={13} />
-                      {t("选中")}
-                    </span>
-                    <span>
-                      <Layers3 size={13} />
-                      {t("分解")}
-                    </span>
-                  </div>
+          <div className="model-side">
+            <AnnotationPanel
+              annotation={annotation}
+              onConfirm={confirmAnnotation}
+              onRedraw={() => {
+                redrawSeed.current = annotation.draft?.component ?? null;
+                annotation.cancel();
+                setDrawing(true);
+              }}
+            />
+            <section
+              hidden={Boolean(annotation.draft)}
+              className="view-panel model-panel"
+              aria-labelledby="model-title"
+            >
+              <header className="panel-heading">
+                <div>
+                  <span className="panel-index">02</span>
+                  <h2 id="model-title">{t("三维结构")}</h2>
+                  <span className="panel-heading-note" aria-hidden="true">
+                    3D
+                  </span>
                 </div>
-              )}
-              <span className="scale-badge">
-                <Info size={12} />
-                {t("尺寸未标定")}
-              </span>
-              {selected && (
-                <div className="selected-component">
-                  <span style={{ background: selected.color || "#719c92" }} />
-                  <strong>{componentLabel(selected)}</strong>
-                  <button
-                    className="text-button"
-                    onClick={() =>
-                      setHiddenIds(
-                        new Set(
-                          components
-                            .filter((item) => item.id !== selected.id)
-                            .map((item) => item.id),
-                        ),
-                      )
+                <span className="schematic-badge">
+                  {t("结构示意 · 比例估计")}
+                </span>
+              </header>
+              <div className="model-stage">
+                {state.result?.scene_url ? (
+                  <Suspense
+                    fallback={
+                      <div className="viewer-loading">
+                        {t("正在准备三维查看器…")}
+                      </div>
                     }
                   >
-                    {t("只看此组件")} <Focus size={12} />
-                  </button>
-                </div>
-              )}
-            </div>
-            <div className="model-toolbar">
-              <div className="view-tool-buttons">
-                <button
-                  className="tool-button"
-                  onClick={resetView}
-                  disabled={!state.result?.scene_url}
-                >
-                  <RotateCcw size={14} />
-                  {t("恢复视图")}
-                </button>
-                <label className="wireframe-toggle">
-                  <input
-                    type="checkbox"
-                    checked={wireframe}
+                    <SceneViewer
+                      sceneUrl={state.result.scene_url}
+                      componentIds={sceneIds}
+                      selectedId={selectedId}
+                      hiddenIds={hiddenIds}
+                      explosion={explosion}
+                      wireframe={wireframe}
+                      resetKey={resetKey}
+                      onSelect={setSelectedId}
+                      onReady={viewerReady}
+                      onError={(error) => {
+                        setViewerError(error);
+                        viewerReady();
+                      }}
+                    />
+                  </Suspense>
+                ) : (
+                  <div className="model-empty">
+                    <div className="model-grid" />
+                    <div className="empty-model-symbol">
+                      <Box size={60} strokeWidth={0.9} />
+                      <span />
+                      <i />
+                    </div>
+                    <h3>
+                      {active
+                        ? t("正在准备组件结构")
+                        : t("在这里查看设备的组成")}
+                    </h3>
+                    <p>
+                      {active
+                        ? t("识别完成后，三维视图将自动载入")
+                        : t("上传照片后，旋转、选择并逐个查看组件")}
+                    </p>
+                    <div className="empty-interactions">
+                      <span>
+                        <RotateCcw size={13} />
+                        {t("旋转")}
+                      </span>
+                      <span>
+                        <Focus size={13} />
+                        {t("选中")}
+                      </span>
+                      <span>
+                        <Layers3 size={13} />
+                        {t("分解")}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                <span className="scale-badge">
+                  <Info size={12} />
+                  {t("尺寸未标定")}
+                </span>
+                {selected && (
+                  <div className="selected-component">
+                    <span style={{ background: selected.color || "#719c92" }} />
+                    <strong>{componentLabel(selected)}</strong>
+                    <button
+                      className="text-button"
+                      onClick={() =>
+                        setHiddenIds(
+                          new Set(
+                            components
+                              .filter((item) => item.id !== selected.id)
+                              .map((item) => item.id),
+                          ),
+                        )
+                      }
+                    >
+                      {t("只看此组件")} <Focus size={12} />
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="model-toolbar">
+                <div className="view-tool-buttons">
+                  <button
+                    className="tool-button"
+                    onClick={resetView}
                     disabled={!state.result?.scene_url}
-                    onChange={(event) => setWireframe(event.target.checked)}
+                  >
+                    <RotateCcw size={14} />
+                    {t("恢复视图")}
+                  </button>
+                  <label className="wireframe-toggle">
+                    <input
+                      type="checkbox"
+                      checked={wireframe}
+                      disabled={!state.result?.scene_url}
+                      onChange={(event) => setWireframe(event.target.checked)}
+                    />
+                    {t("线框")}
+                  </label>
+                </div>
+                <label className="explosion-control">
+                  <Layers3 size={14} />
+                  <span>{t("组件分解")}</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={explosion}
+                    disabled={!state.result?.scene_url}
+                    onChange={(event) =>
+                      setExplosion(Number(event.target.value))
+                    }
+                    aria-label={t("组件分解程度")}
                   />
-                  {t("线框")}
+                  <span className="explosion-value">
+                    {Math.round(explosion * 100)}%
+                  </span>
                 </label>
               </div>
-              <label className="explosion-control">
-                <Layers3 size={14} />
-                <span>{t("组件分解")}</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={explosion}
-                  disabled={!state.result?.scene_url}
-                  onChange={(event) => setExplosion(Number(event.target.value))}
-                  aria-label={t("组件分解程度")}
-                />
-                <span className="explosion-value">
-                  {Math.round(explosion * 100)}%
-                </span>
-              </label>
-            </div>
-            <footer className="model-caption">
-              <span>{t("拖动旋转 · 右键平移 · 滚轮缩放")}</span>
-              <span>Y ↑</span>
-            </footer>
-          </section>
+              <footer className="model-caption">
+                <span>{t("拖动旋转 · 右键平移 · 滚轮缩放")}</span>
+                <span>Y ↑</span>
+              </footer>
+            </section>
+          </div>
         </div>
 
         <div className="details-grid">
@@ -475,7 +529,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   );
                 }}
                 onChange={(id, patch) => {
-                  if (active) return;
+                  if (active || annotation.draft) return;
                   setComponents((current) =>
                     current.map((item) =>
                       item.id === id
@@ -492,7 +546,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   setDirty(true);
                 }}
                 onRemove={(id) => {
-                  if (active) return;
+                  if (active || annotation.draft) return;
                   setComponents((current) =>
                     current.filter((item) => item.id !== id),
                   );
@@ -500,7 +554,14 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                   if (selectedId === id) setSelectedId(null);
                 }}
                 editRequestId={editRequestId}
-                mutationsDisabled={active}
+                mutationsDisabled={active || Boolean(annotation.draft)}
+                onRefine={(id) => {
+                  const component = components.find((item) => item.id === id);
+                  if (component && state.asset) {
+                    setDrawing(false);
+                    annotation.start(state.asset, component.bbox, component);
+                  }
+                }}
               />
             ) : (
               <div className="components-empty">
