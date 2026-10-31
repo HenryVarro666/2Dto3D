@@ -1,0 +1,52 @@
+# Local photos and datasets. Only explanatory documents are versioned.
+/photos/**
+!/photos/README.md
+/data/**
+!/data/README.md
+
+# Models, generated geometry, experiments and caches.
+/models/
+/artifacts/
+/outputs/
+/runs/
+/checkpoints/
+/.cache/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# JavaScript
+node_modules/
+dist/
+build/
+coverage/
+.next/
+.vite/
+
+# Local configuration and OS/editor metadata
+.env
+.env.*
+!.env.example
+.DS_Store
+._*
+.idea/
+.vscode/
+.code-review-graph/
+*.log
