@@ -121,6 +121,10 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
     setViewerError(null);
     void selectPhoto(file);
   }
+  function changeDrawing(value: boolean) {
+    redrawSeed.current = null;
+    setDrawing(value && canDraw);
+  }
   function addBox(bbox: BBox) {
     if (active || !state.asset) return;
     const component: EditableComponent = redrawSeed.current ?? {
@@ -166,6 +170,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
   }
   function manualRebuild() {
     if (active || annotation.draft) return;
+    redrawSeed.current = null;
     setDrawing(false);
     setViewerError(null);
     void rebuild(
@@ -291,6 +296,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
           onCancel={cancel}
           onRetry={() => {
             setDrawing(false);
+            redrawSeed.current = null;
             setViewerError(null);
             void rebuild();
           }}
@@ -309,7 +315,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
             onSelect={setSelectedId}
             onChoose={() => fileInputRef.current?.click()}
             onFile={chooseFile}
-            onDrawingChange={(value) => setDrawing(value && canDraw)}
+            onDrawingChange={changeDrawing}
             onBox={addBox}
             annotation={annotation}
           />
@@ -495,7 +501,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                 <button
                   className={`text-button ${drawing ? "active" : ""}`}
                   disabled={!canDraw}
-                  onClick={() => setDrawing(!drawing)}
+                  onClick={() => changeDrawing(!drawing)}
                 >
                   <ScanLine size={14} />
                   {t("添加组件框")}
@@ -561,6 +567,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                 onRefine={(id) => {
                   const component = components.find((item) => item.id === id);
                   if (component && state.asset) {
+                    redrawSeed.current = null;
                     setDrawing(false);
                     annotation.start(state.asset, component.bbox, component);
                   }
@@ -582,7 +589,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
                 {state.asset && !active && (
                   <button
                     className="text-button"
-                    onClick={() => setDrawing(true)}
+                    onClick={() => changeDrawing(true)}
                   >
                     {t("开始框选")} <ArrowRight size={14} />
                   </button>

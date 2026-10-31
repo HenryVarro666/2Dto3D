@@ -1,6 +1,12 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import App from "./App";
 import { cabinet, completed, fakeApi, result, running } from "./test/fixtures";
 import type { JobInput, Refinement } from "./api/types";
@@ -189,4 +195,114 @@ it("still sends explicit null when a user chooses box-only for a refined compone
   await user.click(screen.getByRole("button", { name: "仅用框保存" }));
   await user.click(screen.getByRole("button", { name: "重新生成结构" }));
   expect(submitted?.components?.[0].refinement_id).toBeNull();
+});
+
+function drawNewBox(container: HTMLElement) {
+  const surface = container.querySelector<HTMLElement>(".photo-fit")!;
+  vi.spyOn(surface, "getBoundingClientRect").mockReturnValue({
+    x: 0,
+    y: 0,
+    left: 0,
+    top: 0,
+    width: 1000,
+    height: 1000,
+    right: 1000,
+    bottom: 1000,
+    toJSON: () => ({}),
+  });
+  fireEvent.pointerDown(surface, { clientX: 600, clientY: 600 });
+  fireEvent.pointerMove(surface, { clientX: 900, clientY: 900 });
+  fireEvent.pointerUp(surface, { clientX: 900, clientY: 900 });
+}
+
+it.each(["exit", "other refinement"])(
+  "creates a new component after abandoning a redraw via %s",
+  async (abandonment) => {
+    vi.stubGlobal("PointerEvent", MouseEvent);
+    try {
+      const user = userEvent.setup();
+      let submitted: JobInput | undefined;
+      const { container } = render(
+        <App
+          apiClient={fakeApi({
+            createJob: async (input) => {
+              submitted = input;
+              return completed;
+            },
+            refine: async () => new Promise<Refinement>(() => {}),
+          })}
+        />,
+      );
+      await user.upload(screen.getByLabelText("选择设备照片"), photo);
+      await waitFor(() =>
+        expect(
+          screen.getByRole("button", { name: "重新生成结构" }),
+        ).toBeEnabled(),
+      );
+      await user.click(screen.getByRole("button", { name: "编辑 逆变器机柜" }));
+      await user.click(screen.getByRole("button", { name: "细化边界" }));
+      await user.click(screen.getByRole("button", { name: "重新框选" }));
+      if (abandonment === "exit") {
+        await user.click(screen.getByRole("button", { name: "退出框选" }));
+      } else {
+        await user.click(screen.getByRole("button", { name: "编辑 安装支架" }));
+        await user.click(screen.getByRole("button", { name: "细化边界" }));
+        await user.click(screen.getByRole("button", { name: "取消边界细化" }));
+      }
+      await user.click(
+        screen.getAllByRole("button", { name: "添加组件框" })[0],
+      );
+      drawNewBox(container);
+      await user.click(screen.getByRole("button", { name: "仅用框保存" }));
+      await user.click(screen.getByRole("button", { name: "重新生成结构" }));
+      expect(submitted?.components).toHaveLength(3);
+      expect(submitted?.components?.[0]).toMatchObject({
+        id: cabinet.id,
+        bbox: cabinet.bbox,
+      });
+      expect(submitted?.components?.[2].id).not.toBe(cabinet.id);
+    } finally {
+      vi.unstubAllGlobals();
+      vi.restoreAllMocks();
+    }
+  },
+);
+
+it("preserves the original component ID when redraw is completed without abandonment", async () => {
+  vi.stubGlobal("PointerEvent", MouseEvent);
+  try {
+    const user = userEvent.setup();
+    let submitted: JobInput | undefined;
+    const { container } = render(
+      <App
+        apiClient={fakeApi({
+          createJob: async (input) => {
+            submitted = input;
+            return completed;
+          },
+          refine: async () => new Promise<Refinement>(() => {}),
+        })}
+      />,
+    );
+    await user.upload(screen.getByLabelText("选择设备照片"), photo);
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "重新生成结构" }),
+      ).toBeEnabled(),
+    );
+    await user.click(screen.getByRole("button", { name: "编辑 逆变器机柜" }));
+    await user.click(screen.getByRole("button", { name: "细化边界" }));
+    await user.click(screen.getByRole("button", { name: "重新框选" }));
+    drawNewBox(container);
+    await user.click(screen.getByRole("button", { name: "仅用框保存" }));
+    await user.click(screen.getByRole("button", { name: "重新生成结构" }));
+    expect(submitted?.components).toHaveLength(2);
+    expect(submitted?.components?.[0]).toMatchObject({
+      id: cabinet.id,
+      bbox: [0.6, 0.6, 0.9, 0.9],
+    });
+  } finally {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  }
 });
