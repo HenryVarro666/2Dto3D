@@ -18,6 +18,7 @@ export type MultiState = {
   mode: "automatic" | "manual";
   error: string | null;
   uploadIndex: number;
+  viewerRevision: number;
   startedAt: number | null;
   finishedAt: number | null;
 };
@@ -30,6 +31,7 @@ const initial: MultiState = {
   mode: "automatic",
   error: null,
   uploadIndex: 0,
+  viewerRevision: 0,
   startedAt: null,
   finishedAt: null,
 };
@@ -104,7 +106,8 @@ export function useMultiview(api: WorkbenchApi) {
   async function run(observations?: ViewObservation[]) {
     const previous = current.current;
     if (active(previous.phase)) return;
-    if (previous.files.length < 2 || previous.files.length > 8) {
+    const viewCount = previous.capture?.assets.length ?? previous.files.length;
+    if (viewCount < 2 || viewCount > 8) {
       setState((s) => ({
         ...s,
         error: "请选择同一设备的 2–8 张不同角度照片。",
@@ -186,6 +189,7 @@ export function useMultiview(api: WorkbenchApi) {
         ...s,
         job,
         result,
+        viewerRevision: s.viewerRevision + 1,
         phase: result.scene_url ? "preparing" : "review",
         finishedAt: result.scene_url ? null : Date.now(),
       }));
@@ -198,6 +202,45 @@ export function useMultiview(api: WorkbenchApi) {
           error instanceof Error ? error.message : "多图处理未完成，请重试。",
         finishedAt: Date.now(),
       }));
+    }
+  }
+  async function restore(identifier: string) {
+    if (active(current.current.phase)) return;
+    if (!/^[a-f0-9]{32}$/.test(identifier)) {
+      setState((s) => ({ ...s, error: "请填写有效的多图任务 ID。" }));
+      return;
+    }
+    const token = ++generation.current;
+    controller.current?.abort();
+    const abort = new AbortController();
+    controller.current = abort;
+    setState((s) => ({ ...s, phase: "processing", error: null }));
+    try {
+      const job = await api.getMultiJob(identifier, abort.signal);
+      if (token !== generation.current) return;
+      if (!job.result || !["succeeded", "needs_review"].includes(job.status))
+        throw new Error("多图结果尚未就绪。");
+      const capture = await api.getCapture(job.capture_id, abort.signal);
+      if (token !== generation.current) return;
+      setState({
+        ...initial,
+        capture,
+        job,
+        result: job.result,
+        viewerRevision: current.current.viewerRevision + 1,
+        mode: job.result.model.mode === "manual" ? "manual" : "automatic",
+        phase: job.result.scene_url ? "preparing" : "review",
+      });
+    } catch (reason) {
+      if (token === generation.current && !abort.signal.aborted)
+        setState((s) => ({
+          ...s,
+          phase: "error",
+          error:
+            reason instanceof Error
+              ? reason.message
+              : "多图处理未完成，请重试。",
+        }));
     }
   }
   const cancel = useCallback(() => {
@@ -220,6 +263,7 @@ export function useMultiview(api: WorkbenchApi) {
   );
   return {
     state,
+    restore,
     selectFiles,
     removeFile,
     start: () => run(),

@@ -7,6 +7,15 @@ import {
   Group,
   HemisphereLight,
   Mesh,
+  BufferGeometry,
+  Float32BufferAttribute,
+  Line,
+  LineBasicMaterial,
+  SphereGeometry,
+  MeshBasicMaterial,
+  CanvasTexture,
+  Sprite,
+  SpriteMaterial,
   Points,
   PerspectiveCamera,
   Raycaster,
@@ -26,6 +35,11 @@ import {
 } from "../core/sceneState";
 import type { ComponentBindings } from "../core/sceneState";
 import { useI18n } from "../i18n";
+import type { PickedPoint } from "../api/types";
+import {
+  pointFromHit,
+  rememberMeasurementTransforms,
+} from "../core/measurement";
 
 type Props = {
   sceneUrl: string;
@@ -39,6 +53,9 @@ type Props = {
   onReady: () => void;
   onError?: (error: string) => void;
   pointSize?: number;
+  pickPoints?: boolean;
+  measurementPoints?: PickedPoint[];
+  onPickPoint?: (point: PickedPoint) => void;
 };
 
 export function SceneViewer(props: Props) {
@@ -47,6 +64,9 @@ export function SceneViewer(props: Props) {
   const propsRef = useRef(props);
   propsRef.current = props;
   const bindingsRef = useRef<ComponentBindings>(new Map());
+  const measurementRef = useRef<
+    ((points: PickedPoint[], visible: boolean) => void) | null
+  >(null);
   const resetRef = useRef<(() => void) | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -129,6 +149,7 @@ export function SceneViewer(props: Props) {
     };
     const onUp = (event: PointerEvent) => {
       if (
+        event.button !== 0 ||
         Math.hypot(
           event.clientX - pointerDown.x,
           event.clientY - pointerDown.y,
@@ -146,7 +167,11 @@ export function SceneViewer(props: Props) {
       for (const hit of raycaster.intersectObject(root, true)) {
         const id = componentIdFromObject(hit.object, ids);
         if (id && !propsRef.current.hiddenIds.has(id)) {
-          propsRef.current.onSelect(id);
+          if (propsRef.current.pickPoints) {
+            if (propsRef.current.explosion !== 0) return;
+            const point = pointFromHit(hit.object, hit.index, id);
+            if (point) propsRef.current.onPickPoint?.(point);
+          } else propsRef.current.onSelect(id);
           break;
         }
       }
@@ -174,6 +199,7 @@ export function SceneViewer(props: Props) {
           fail("结构文件缺少组件标识，请重新生成。");
           return;
         }
+        rememberMeasurementTransforms(root);
         const center = bounds.getCenter(new Vector3());
         const size = bounds.getSize(new Vector3());
         const displayGroup = new Group();
@@ -184,6 +210,67 @@ export function SceneViewer(props: Props) {
         raycaster.params.Points.threshold = maxSize * 0.006;
         floor.position.y = -size.y / 2 - maxSize * 0.015;
         floor.scale.setScalar(maxSize / 3);
+        const markerGroup = new Group();
+        displayGroup.add(markerGroup);
+        measurementRef.current = (points, visible) => {
+          disposeObject(markerGroup);
+          markerGroup.clear();
+          markerGroup.visible = visible;
+          if (!visible) return;
+          for (const [i, point] of points.entries()) {
+            const color = i === 0 ? "#ffb547" : "#18c5ac";
+            const dot = new Mesh(
+              new SphereGeometry(maxSize * 0.009, 12, 10),
+              new MeshBasicMaterial({ color, depthTest: false }),
+            );
+            dot.position.fromArray(point.position);
+            dot.renderOrder = 100;
+            markerGroup.add(dot);
+            const label = document.createElement("canvas");
+            label.width = 64;
+            label.height = 64;
+            const context = label.getContext("2d");
+            if (context) {
+              context.fillStyle = "#102d31";
+              context.beginPath();
+              context.arc(32, 32, 28, 0, Math.PI * 2);
+              context.fill();
+              context.fillStyle = color;
+              context.font = "bold 38px sans-serif";
+              context.textAlign = "center";
+              context.textBaseline = "middle";
+              context.fillText(i === 0 ? "A" : "B", 32, 33);
+              const sprite = new Sprite(
+                new SpriteMaterial({
+                  map: new CanvasTexture(label),
+                  depthTest: false,
+                }),
+              );
+              sprite.position
+                .fromArray(point.position)
+                .add(new Vector3(0, maxSize * 0.035, 0));
+              sprite.scale.setScalar(maxSize * 0.05);
+              sprite.renderOrder = 101;
+              markerGroup.add(sprite);
+            }
+          }
+          if (points.length === 2) {
+            const geometry = new BufferGeometry();
+            geometry.setAttribute(
+              "position",
+              new Float32BufferAttribute(
+                points.flatMap((p) => p.position),
+                3,
+              ),
+            );
+            const line = new Line(
+              geometry,
+              new LineBasicMaterial({ color: "#164b51", depthTest: false }),
+            );
+            line.renderOrder = 99;
+            markerGroup.add(line);
+          }
+        };
         const reset = () => {
           const fitHeight =
             maxSize / (2 * Math.tan((camera.fov * Math.PI) / 360));
@@ -212,6 +299,10 @@ export function SceneViewer(props: Props) {
           current.wireframe,
           current.pointSize,
         );
+        measurementRef.current(
+          current.measurementPoints ?? [],
+          current.explosion === 0,
+        );
         renderer.render(scene, camera);
         setLoading(false);
         current.onReady();
@@ -231,6 +322,7 @@ export function SceneViewer(props: Props) {
       renderer.domElement.remove();
       bindingsRef.current.clear();
       resetRef.current = null;
+      measurementRef.current = null;
     };
   }, [props.sceneUrl, idsKey]);
 
@@ -258,11 +350,20 @@ export function SceneViewer(props: Props) {
     props.pointSize,
   ]);
   useEffect(() => {
+    measurementRef.current?.(
+      props.measurementPoints ?? [],
+      props.explosion === 0,
+    );
+  }, [props.measurementPoints, props.explosion]);
+  useEffect(() => {
     resetRef.current?.();
   }, [props.resetKey]);
   return (
     <div className="scene-viewer">
-      <div ref={hostRef} className="canvas-host" />
+      <div
+        ref={hostRef}
+        className={`canvas-host ${props.pickPoints ? "measurement-picking" : ""}`}
+      />
       {loading && (
         <div className="viewer-loading">
           <LoaderCircle size={24} className="spin" />
@@ -289,12 +390,20 @@ export function SceneViewer(props: Props) {
 
 function disposeObject(object: Group | Scene) {
   object.traverse((child) => {
-    if (child instanceof Mesh || child instanceof Points) {
-      child.geometry.dispose();
+    if (
+      child instanceof Mesh ||
+      child instanceof Points ||
+      child instanceof Line ||
+      child instanceof Sprite
+    ) {
+      if (!(child instanceof Sprite)) child.geometry.dispose();
       const materials = Array.isArray(child.material)
         ? child.material
         : [child.material];
-      for (const material of materials) material.dispose();
+      for (const material of materials) {
+        if (material instanceof SpriteMaterial) material.map?.dispose();
+        material.dispose();
+      }
     }
   });
 }

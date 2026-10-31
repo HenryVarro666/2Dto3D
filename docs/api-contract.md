@@ -110,3 +110,22 @@ type MultiJob = {
 GLB的mesh primitive mode为0（POINTS），组件节点`extras.component_id`，背景ID`__context__`；asset.extras记录表示、尺度、Y-up和索引映射。PLY为binary little endian，每点`x/y/z:float32, red/green/blue:uint8, component_index:uint32`；0背景，其余按result.components顺序从1开始。服务端另存component-map.json，API结果列表和GLB extras给出相同映射。颜色是RGB，显示高亮／分解不会改导出数据。
 
 多图适配器内部调用 `detect(...,retain_masks=True)` 取完整自动SAM rasters，立即保存为服务端Refinement；二值数组不进入公共API。单图默认 `retain_masks=False`，沿用原检测轮廓契约。
+
+## Known-length measurement receipts (V3 extension)
+
+Single-photo schematics remain ineligible. Routes are registered before the multi-view artifact wildcard and resolve actual completed point-cloud GLB geometry.
+
+| Method / path under `/api/multiview/jobs/{job_id}` | Behavior |
+|---|---|
+| `GET /measurements` | Current SHA256/source ID, immutable history, stale-record count |
+| `POST /measurements/calibrations` | `{geometry_sha256, points:[{component_id,point_index},...two], known_length, unit, source_note, label?}` → reference receipt (201) |
+| `POST /measurements` | `{geometry_sha256, points, calibration_id?, validation?:{known_length,unit,source_note}, label?}` → relative or calibrated receipt (201) |
+| `GET /measurements/export.json` | Session JSON attachment, including historical fingerprints |
+
+Accept only mm/cm/m, finite known lengths `0.000001–1000000`, valid indices, explicit sources. Extra client coordinates/provenance are rejected. POSITION order and original world transforms determine coordinates; display camera/centering/explosion never enter calculation. Zero-distance endpoints are rejected. `__context__` points are supported.
+
+Missing job → 404; unavailable/changed geometry → 409; invalid endpoints/units/lengths, mismatched calibration, reference/reversed/coordinate-duplicate held-out check → 422. Validation requires a calibration. Nearby points and physical-semantic independence still need human confirmation.
+
+Calibrations save `mm_per_unit`, source, raw points, job/source geometry, SHA and UTC time. Measurements save `distance_units`, nullable `distance_mm`, `relative_estimate`/`reference_calibrated`, calibration ID and optional signed/absolute/relative error. Validation has `used_for_calibration=false` and never changes scale. Records append; there is no overwrite/delete endpoint.
+
+Legacy `MultiResult.metric_scale_status` and GLB/PLY stay unknown/relative. A manual derivative needs recalibration even when `geometry_job_id` is reused, because export indexing may change. [Measurement guide](measurement/README.md) covers migration and accuracy limits.

@@ -124,6 +124,22 @@ export const multiCompleted: MultiJob = {
 
 export function fakeApi(overrides: Partial<WorkbenchApi> = {}): WorkbenchApi {
   return {
+    getMeasurements: async (id) => ({
+      schema_version: 1,
+      job_id: id,
+      geometry_job_id: id,
+      geometry_sha256: "a".repeat(64),
+      raw_geometry_scale_status: "unknown",
+      calibrations: [],
+      measurements: [],
+      stale_record_count: 0,
+    }),
+    calibrate: async () => {
+      throw new Error("Not configured in this test");
+    },
+    measure: async () => {
+      throw new Error("Not configured in this test");
+    },
     createCapture: async (assetIds) => ({
       ...capture,
       assets: assetIds.map((id) => ({ ...asset, id })),

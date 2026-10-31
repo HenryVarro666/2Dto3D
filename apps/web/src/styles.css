@@ -2830,3 +2830,244 @@ input[type="range"] {
     animation: none;
   }
 }
+
+/* Scale records share the workbench's calm paper/teal palette. */
+.restore-job {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1px solid var(--line, #d9e0dc);
+  border-radius: 12px;
+  margin: 12px 0;
+  background: #fff;
+}
+.restore-job label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  flex: 1 1 280px;
+}
+.restore-job input {
+  min-width: 0;
+  font-family: monospace;
+}
+.restore-job small {
+  flex-basis: 100%;
+  color: #697873;
+}
+.measurement-panel {
+  margin: 20px 0;
+  border: 1px solid #cadad4;
+  border-radius: 16px;
+  padding: 24px;
+  background: #fff;
+  color: #203e3b;
+}
+.measurement-heading,
+.measurement-heading > div,
+.measurement-actions,
+.measurement-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.measurement-heading {
+  justify-content: space-between;
+}
+.measurement-heading h2 {
+  font-size: 19px;
+  margin: 0;
+}
+.measurement-scale-badge {
+  border-radius: 20px;
+  padding: 7px 12px;
+  background: #f6ead0;
+  color: #795311;
+  font-size: 12px;
+}
+.measurement-scale-badge.calibrated {
+  background: #e3f3ed;
+  color: #156650;
+}
+.measurement-limit,
+.measurement-instruction,
+.measurement-footer {
+  color: #61716d;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.measurement-actions {
+  margin-top: 18px;
+}
+.measurement-points {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.measurement-points li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #f2f6f3;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.measurement-points b {
+  background: #dbece4;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+}
+.measurement-points code {
+  overflow-wrap: anywhere;
+}
+.measurement-points span {
+  color: #6d7c76;
+}
+.measurement-reading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 16px;
+  background: #f3f7f5;
+  border-left: 3px solid #bd8b32;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.metric-reading {
+  color: #086b56;
+}
+.measurement-label,
+.measurement-forms label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.measurement-panel input:not([type="checkbox"]),
+.measurement-panel select,
+.restore-job input {
+  border: 1px solid #ccd9d1;
+  border-radius: 7px;
+  background: #fff;
+  color: #203e3b;
+  padding: 10px 11px;
+  font-size: 13px;
+  width: 100%;
+  min-width: 0;
+}
+.measurement-panel input:focus,
+.measurement-panel select:focus {
+  outline: 2px solid #29a98d;
+  outline-offset: 2px;
+}
+.measurement-forms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+.measurement-forms fieldset {
+  min-width: 0;
+  border: 1px solid #d7e1db;
+  border-radius: 10px;
+  padding: 12px 18px 18px;
+}
+.measurement-forms legend {
+  padding: 0 8px;
+  font-weight: 600;
+  font-size: 15px;
+}
+.measurement-forms p,
+.reference-evidence {
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.length-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 80px;
+  gap: 8px;
+}
+.measurement-forms label.inline-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.measurement-history h3 {
+  font-size: 15px;
+  margin: 22px 0 12px;
+}
+.measurement-table-wrap {
+  overflow-x: auto;
+}
+.measurement-history table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+  text-align: left;
+}
+.measurement-history th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: #f1f6f3;
+}
+.measurement-history th,
+.measurement-history td {
+  padding: 12px;
+  border-bottom: 1px solid #e2e9e4;
+  vertical-align: top;
+  min-width: 110px;
+}
+.measurement-history td:first-child {
+  min-width: 170px;
+}
+.measurement-history small {
+  display: block;
+  margin-top: 5px;
+  color: #70807a;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.measurement-history .stale-record {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+.measurement-footer {
+  justify-content: space-between;
+  margin-top: 18px;
+  border-top: 1px solid #e2e9e4;
+  padding-top: 14px;
+}
+.measurement-picking canvas {
+  cursor: crosshair;
+}
+@media (max-width: 700px) {
+  .measurement-panel {
+    padding: 16px;
+  }
+  .measurement-forms {
+    grid-template-columns: 1fr;
+  }
+}
+
+.measurement-history td > button {
+  display: block;
+  margin: 6px 0;
+  font-size: 11px;
+}
+.reference-evidence > button {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+}

@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it, vi } from "vitest";
 import App from "../App";
+import { MultiviewWorkbench } from "./MultiviewWorkbench";
 import {
   capture,
   fakeApi,
@@ -144,4 +145,33 @@ it("runs guided correction against the active photo and blocks changing views du
   expect(
     screen.getByRole("button", { name: "照片 1：front.png" }),
   ).toBeEnabled();
+});
+
+it("reopening the same saved result releases the workspace lock", async () => {
+  const id = "a".repeat(32);
+  const defaults = fakeApi();
+  const getMeasurements = vi.fn(defaults.getMeasurements);
+  const api = fakeApi({
+    getMeasurements,
+    getMultiJob: vi.fn(async () => ({
+      ...multiCompleted,
+      id,
+      result: {
+        ...multiResult,
+        job_id: id,
+        scene_url: `/api/multiview/jobs/${id}/cloud.glb`,
+      },
+    })),
+    getCapture: async () => capture,
+  });
+  const user = userEvent.setup();
+  render(<MultiviewWorkbench apiClient={api} onBusyChange={vi.fn()} />);
+  await user.type(screen.getByLabelText("多图任务 ID"), id);
+  const open = screen.getByRole("button", { name: "打开已有结果" });
+  await user.click(open);
+  await waitFor(() => expect(open).toBeEnabled());
+  await user.click(open);
+  await waitFor(() => expect(api.getMultiJob).toHaveBeenCalledTimes(2));
+  await waitFor(() => expect(open).toBeEnabled(), { timeout: 600 });
+  await waitFor(() => expect(getMeasurements).toHaveBeenCalledTimes(2));
 });

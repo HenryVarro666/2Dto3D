@@ -1,4 +1,12 @@
 # Changelog
+
+## Unreleased — reference calibration and bilingual visual documentation
+
+- Add immutable known-length calibrations and two-point measurements over actual multi-view GLB point indices/world coordinates, separating relative estimates and reference-calibrated lengths.
+- Record held-out sources and absolute/relative errors; reject reference reuse, geometry changes and cross-job calibration. Keep raw GLB/PLY and single-photo schematic scale unchanged.
+- Persist/export receipts; restore old jobs and reopen the same job without locking UI. Add A/B markers/lines and trilingual controls.
+- Add model-free analytic demo and matching Chinese/English READMEs with authored diagrams and authentic screenshots. Analytic and compatibility checks do not establish field precision; existing geometry issues remain in the ledger.
+
 ## 未发布：真实光伏多视角回归修复
 
 - 增加带深度/有效性/歧义检查的主机双向掩码重投影关联，保留同图互斥与人工ID。

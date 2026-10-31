@@ -1,5 +1,173 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  查看参照端点: ["Show reference endpoints", "Ver extremos de referencia"],
+  查看端点: ["Show endpoints", "Ver extremos"],
+  标定与测距: ["Calibration & measurement", "Calibración y medición"],
+  "参照校准 · 几何仍为估算": [
+    "Reference calibrated · Geometry remains estimated",
+    "Calibrada con referencia · Geometría estimada",
+  ],
+  "估算几何 · 尺度未知": [
+    "Estimated geometry · Scale unknown",
+    "Geometría estimada · Escala desconocida",
+  ],
+  "一个已知长度只校准比例，不修正形变。请用另一条独立实测长度验证；结果不作为工程验收尺寸。":
+    [
+      "One known length calibrates scale, not shape. Check another independently measured length; these dimensions are not for engineering acceptance.",
+      "Una longitud conocida calibra la escala, no la forma. Verifique otra longitud medida de forma independiente; no son dimensiones de aceptación técnica.",
+    ],
+  结束选点: ["Finish picking", "Terminar selección"],
+  "在点云中选择 A / B": ["Pick A / B in the cloud", "Elegir A / B en la nube"],
+  清除选点: ["Clear points", "Borrar puntos"],
+  "已选 {count}/2 个点": [
+    "{count}/2 points selected",
+    "{count}/2 puntos seleccionados",
+  ],
+  "点击可见表面的实际点。A、B 标记和连线使用原始坐标；选点时关闭组件分解。": [
+    "Click actual points on visible surfaces. A/B markers and the line use original coordinates; exploded view is disabled while picking.",
+    "Pulse puntos reales de superficies visibles. A/B y la línea usan coordenadas originales; la vista explosionada se desactiva al seleccionar.",
+  ],
+  "相对距离：{distance} u": [
+    "Relative distance: {distance} u",
+    "Distancia relativa: {distance} u",
+  ],
+  "校准尺寸：{distance} mm": [
+    "Calibrated length: {distance} mm",
+    "Longitud calibrada: {distance} mm",
+  ],
+  测量备注: ["Measurement note", "Nota de medición"],
+  已知尺寸标定: [
+    "Known-length calibration",
+    "Calibración con longitud conocida",
+  ],
+  已知长度: ["Known length", "Longitud conocida"],
+  标定单位: ["Calibration unit", "Unidad de calibración"],
+  "长度来源 / 端点说明": [
+    "Length source / endpoints",
+    "Fuente de longitud / extremos",
+  ],
+  "例如：卷尺测得正面 A–B；记录拍摄或实测依据": [
+    "e.g. tape-measured front A–B; record the measurement evidence",
+    "Ej.: A–B frontal medido con cinta; registre la evidencia",
+  ],
+  保存标定: ["Save calibration", "Guardar calibración"],
+  两点直线距离: ["Straight-line distance", "Distancia en línea recta"],
+  尺度依据: ["Scale basis", "Base de escala"],
+  "未标定：仅相对单位": [
+    "Uncalibrated: relative units only",
+    "Sin calibrar: solo unidades relativas",
+  ],
+  当前参照: ["Active reference", "Referencia activa"],
+  加入独立验证长度: [
+    "Add a held-out length",
+    "Añadir longitud de validación independiente",
+  ],
+  独立实测长度: [
+    "Independently measured length",
+    "Longitud medida independientemente",
+  ],
+  验证单位: ["Validation unit", "Unidad de validación"],
+  验证长度来源: [
+    "Validation length source",
+    "Fuente de longitud de validación",
+  ],
+  "确认这条长度未用于标定。换点重画同一标定线仍不构成独立验证。": [
+    "Confirm this length was not used for calibration. Redrawing the reference with nearby points is still not an independent check.",
+    "Confirme que esta longitud no se usó para calibrar. Redibujar la referencia con puntos cercanos no es una validación independiente.",
+  ],
+  "保存测距 / 验证": [
+    "Save distance / validation",
+    "Guardar distancia / validación",
+  ],
+  "正在读取或保存测量记录…": [
+    "Loading or saving measurement records…",
+    "Leyendo o guardando mediciones…",
+  ],
+  重新载入记录: ["Reload records", "Recargar registros"],
+  "部分记录对应旧几何，已保留但不能用于当前点云。": [
+    "Some records belong to older geometry. They are retained but cannot calibrate this cloud.",
+    "Algunos registros pertenecen a geometría anterior. Se conservan pero no pueden calibrar esta nube.",
+  ],
+  测距与验证记录: [
+    "Distances & held-out checks",
+    "Distancias y comprobaciones independientes",
+  ],
+  距离: ["Distance", "Distancia"],
+  "独立验证 / 误差": [
+    "Held-out validation / error",
+    "Validación independiente / error",
+  ],
+  参照校准: ["Reference calibrated", "Calibrada con referencia"],
+  相对估算: ["Relative estimate", "Estimación relativa"],
+  独立验证: ["Held-out validation", "Validación independiente"],
+  "原始 GLB / PLY 保持相对尺度；校准与误差保存在独立记录中。": [
+    "Raw GLB / PLY stay at relative scale; calibration and errors are stored in a separate receipt.",
+    "GLB / PLY conservan escala relativa; la calibración y los errores se guardan en un registro aparte.",
+  ],
+  导出测量记录: ["Export measurement receipt", "Exportar registro de medición"],
+  "原始几何 · 相对尺度": [
+    "Raw geometry · Relative scale",
+    "Geometría original · Escala relativa",
+  ],
+  恢复已有点云任务: [
+    "Restore a point-cloud job",
+    "Restaurar tarea de nube de puntos",
+  ],
+  "多图任务 ID": ["Multi-view job ID", "ID de tarea multivista"],
+  打开已有结果: ["Open saved result", "Abrir resultado guardado"],
+  "任务编号仅访问本机已有结果。照片与测量数据不会自动跨机器复制。": [
+    "Job IDs open results already on this service. Photos and measurement data are not automatically copied between machines.",
+    "Los ID abren resultados de este servicio. Las fotos y mediciones no se copian automáticamente entre equipos.",
+  ],
+  "请填写有效的多图任务 ID。": [
+    "Enter a valid multi-view job ID.",
+    "Introduzca un ID de tarea multivista válido.",
+  ],
+  "标定线不能作为独立验证线。请选择另一条未参与标定的实测长度。": [
+    "The calibration segment cannot be a held-out check. Select another independently measured length.",
+    "El segmento de calibración no puede usarse para validación. Elija otra longitud medida independientemente.",
+  ],
+  "点云已变化，请重新载入结果并重新标定。": [
+    "The point cloud changed. Reload the result and calibrate again.",
+    "La nube cambió. Recargue el resultado y vuelva a calibrar.",
+  ],
+  "所选点不存在于该点云，请重新选点。": [
+    "The selected point is not in this cloud. Pick again.",
+    "El punto seleccionado no existe en esta nube. Seleccione de nuevo.",
+  ],
+  "请选择两个不同位置的点。": [
+    "Select two points at different positions.",
+    "Seleccione dos puntos en posiciones distintas.",
+  ],
+  "标定记录与当前任务或几何不匹配。": [
+    "The calibration does not match this job or geometry.",
+    "La calibración no corresponde a esta tarea o geometría.",
+  ],
+  "请填写已知长度的来源。": [
+    "Provide the known length source.",
+    "Indique la fuente de la longitud conocida.",
+  ],
+  "独立验证需要先选择有效标定。": [
+    "Select a valid calibration before a held-out check.",
+    "Seleccione una calibración válida antes de una comprobación independiente.",
+  ],
+  "测量记录未能载入，请重试。": [
+    "Measurement records could not be loaded. Retry.",
+    "No se pudieron cargar las mediciones. Reinténtelo.",
+  ],
+  "测量记录保存失败，请重试。": [
+    "The measurement was not saved. Retry.",
+    "No se guardó la medición. Reinténtelo.",
+  ],
+  "当前任务没有可测量的点云。": [
+    "This job has no measurable point cloud.",
+    "Esta tarea no tiene una nube medible.",
+  ],
+  "找不到可测量的多图任务。": [
+    "The multi-view measurement job was not found.",
+    "No se encontró la tarea de medición multivista.",
+  ],
+
   "自动分割未得到框内区域，保留候选框供人工修正。": [
     "Automatic segmentation found no region inside the box. The candidate box remains for manual correction.",
     "La segmentación automática no encontró una región dentro del recuadro. Se conserva el recuadro para corregirlo manualmente.",

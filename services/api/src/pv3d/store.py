@@ -36,6 +36,10 @@ class Store:
                 CREATE TABLE IF NOT EXISTS captures (
                     id TEXT PRIMARY KEY, asset_ids_json TEXT NOT NULL, created_at TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS measurement_records (
+                    id TEXT PRIMARY KEY, job_id TEXT NOT NULL, kind TEXT NOT NULL, payload_json TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS measurement_job ON measurement_records(job_id);
                 CREATE TABLE IF NOT EXISTS multiview_jobs (
                     id TEXT PRIMARY KEY, capture_id TEXT NOT NULL REFERENCES captures(id),
                     payload_json TEXT NOT NULL
@@ -193,3 +197,17 @@ class Store:
                 "UPDATE jobs SET status=?,stage=?,elapsed_ms=?,error=?,result_json=? WHERE id=?",
                 (status, stage, elapsed_ms, error, serialized, identifier),
             )
+
+    def add_measurement_record(self, job_id, kind, record):
+        with self._connect() as connection:
+            connection.execute(
+                "INSERT INTO measurement_records VALUES (?,?,?,?)",
+                (record["id"], job_id, kind, json.dumps(record, allow_nan=False)),
+            )
+
+    def get_measurement_records(self, job_id):
+        with self._connect() as connection:
+            rows = connection.execute(
+                "SELECT kind,payload_json FROM measurement_records WHERE job_id=? ORDER BY rowid", (job_id,)
+            ).fetchall()
+        return [(row["kind"], json.loads(row["payload_json"])) for row in rows]

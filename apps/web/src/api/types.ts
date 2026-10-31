@@ -1,4 +1,11 @@
-export type Category = "cabinet" | "bracket" | "pole" | "cables" | "connector" | "cable_tray" | "unknown";
+export type Category =
+  | "cabinet"
+  | "bracket"
+  | "pole"
+  | "cables"
+  | "connector"
+  | "cable_tray"
+  | "unknown";
 export type SceneMode = "single" | "multiple";
 export type BBox = [number, number, number, number];
 export type Point = [number, number];
@@ -104,6 +111,20 @@ export type Refinement = RefinementInput & {
   warnings: string[];
 };
 export interface WorkbenchApi {
+  getMeasurements(
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<MeasurementSession>;
+  calibrate(
+    id: string,
+    input: CalibrationInput,
+    signal?: AbortSignal,
+  ): Promise<Calibration>;
+  measure(
+    id: string,
+    input: MeasurementInput,
+    signal?: AbortSignal,
+  ): Promise<Measurement>;
   refine(input: RefinementInput, signal?: AbortSignal): Promise<Refinement>;
   health(signal?: AbortSignal): Promise<Health>;
   uploadAsset(file: File, signal?: AbortSignal): Promise<Asset>;
@@ -167,4 +188,64 @@ export type MultiJobInput = {
     asset_id: string;
     component_id?: string;
   })[];
+};
+
+export type PointRef = { component_id: string; point_index: number };
+export type PickedPoint = PointRef & { position: [number, number, number] };
+export type LengthUnit = "mm" | "cm" | "m";
+export type KnownLength = {
+  known_length: number;
+  unit: LengthUnit;
+  source_note: string;
+};
+export type SegmentInput = {
+  geometry_sha256: string;
+  points: PointRef[];
+  label?: string;
+};
+export type CalibrationInput = SegmentInput & KnownLength;
+export type MeasurementInput = SegmentInput & {
+  calibration_id?: string;
+  validation?: KnownLength;
+};
+export type SegmentRecord = SegmentInput & {
+  id: string;
+  job_id: string;
+  geometry_job_id: string;
+  coordinate_frame: string;
+  points: PickedPoint[];
+  distance_units: number;
+  created_at: string;
+};
+export type Calibration = SegmentRecord &
+  KnownLength & {
+    scale_status: "reference_calibrated";
+    known_length_mm: number;
+    mm_per_unit: number;
+    reference_kind: "user_supplied";
+  };
+export type Measurement = SegmentRecord & {
+  scale_status: "relative_estimate" | "reference_calibrated";
+  calibration_id: string | null;
+  distance_mm: number | null;
+  validation:
+    | (KnownLength & {
+        known_length_mm: number;
+        absolute_error_mm: number;
+        signed_error_mm: number;
+        relative_error_pct: number;
+        reference_kind: "user_supplied";
+        used_for_calibration: false;
+      })
+    | null;
+};
+export type MeasurementSession = {
+  schema_version: 1;
+  job_id: string;
+  geometry_job_id: string;
+  geometry_sha256: string;
+  raw_geometry_scale_status: "unknown";
+  calibrations: Calibration[];
+  measurements: Measurement[];
+  stale_record_count: number;
 };

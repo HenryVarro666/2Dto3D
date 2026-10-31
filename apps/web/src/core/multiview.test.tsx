@@ -1,7 +1,14 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { useMultiview } from "./multiview";
-import { asset, fakeApi, multiCompleted, multiRunning } from "../test/fixtures";
+import {
+  asset,
+  capture,
+  multiResult,
+  fakeApi,
+  multiCompleted,
+  multiRunning,
+} from "../test/fixtures";
 import type { Asset, MultiJobInput } from "../api/types";
 
 const photos = ["front", "side"].map(
@@ -99,4 +106,26 @@ it("cancellation ignores a late upload and preserves a newer group", async () =>
   });
   expect(result.current.state.files[0].name).toBe("side.png");
   expect(result.current.state.capture).toBeNull();
+});
+
+it("restores a completed capture with no local File objects and allows manual geometry reuse", async () => {
+  const id = "a".repeat(32);
+  const api = fakeApi({
+    getMultiJob: async () => ({ ...multiCompleted, id }),
+    getCapture: async () => capture,
+  });
+  const { result } = renderHook(() => useMultiview(api));
+  await act(async () => {
+    await result.current.restore(id);
+  });
+  expect(result.current.state.result?.job_id).toBe(multiResult.job_id);
+  expect(result.current.state.capture?.assets).toHaveLength(2);
+  expect(result.current.state.files).toEqual([]);
+  act(() => {
+    result.current.viewerReady();
+  });
+  await act(async () => {
+    await result.current.rebuild(multiResult.observations);
+  });
+  expect(result.current.state.error).toBeNull();
 });

@@ -45,6 +45,12 @@ Use `docs/plan.md` for the approved design and docs/implementation-phase1.md for
 
 The repository is private by default. No external communication or raw-data publication is implied by maintaining this repository.
 
+## Measurement and README maintenance
+
+Read `docs/measurement/README.md` before changing scale/picking. Immutable receipts bind job, GLB SHA256 and point order. Raw GLB/PLY remain relative. Use original world coordinates, never display offsets. Require independent held-out lengths; analytic tests do not establish field precision. Regenerated/manual derivative jobs require recalibration.
+
+Maintain `README.md` (Chinese) and `README.en.md` together, including claims, commands and links. Read `docs/assets/README.md`: diagrams explain, authentic screenshots document actual UI with provenance. Do not publish ignored raw photos/weights/databases as README assets.
+
 ## Mandatory issue and improvement handoff
 
 Before every nontrivial change or evaluation, read `docs/quality/README.md`, `docs/quality/issues.md` and `docs/quality/experiments.md`. Every discovered problem, failed hypothesis, regression and improvement must be recorded with a stable issue ID, input/version evidence, root cause, implementation decision, validation and remaining limits. Backfill relevant older evidence; do not leave findings only in chat or overwrite historical run reports. Before calling work complete, update the issue status and experiment index, link before/after local artifacts and checks, and explicitly list new errors and unverified scope. Keep prose/tests/code in Git; raw data and model artifacts remain ignored. These requirements apply to future sessions as well as the current one.

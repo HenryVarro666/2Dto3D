@@ -9,6 +9,18 @@ const storageKey = "pv3d.locale";
 type Params = Record<string, string | number>;
 
 const serverMessages: Record<string, MessageKey> = {
+  MEASUREMENT_REFERENCE_REUSED:
+    "标定线不能作为独立验证线。请选择另一条未参与标定的实测长度。",
+  MEASUREMENT_GEOMETRY_CHANGED: "点云已变化，请重新载入结果并重新标定。",
+  MEASUREMENT_POINT_INVALID: "所选点不存在于该点云，请重新选点。",
+  MEASUREMENT_POINTS_TOO_CLOSE: "请选择两个不同位置的点。",
+  MEASUREMENT_CALIBRATION_MISMATCH: "标定记录与当前任务或几何不匹配。",
+  MEASUREMENT_SOURCE_REQUIRED: "请填写已知长度的来源。",
+  MEASUREMENT_CALIBRATION_REQUIRED: "独立验证需要先选择有效标定。",
+  MEASUREMENT_LOAD_FAILED: "测量记录未能载入，请重试。",
+  MEASUREMENT_SAVE_FAILED: "测量记录保存失败，请重试。",
+  MEASUREMENT_GEOMETRY_UNAVAILABLE: "当前任务没有可测量的点云。",
+  MEASUREMENT_JOB_NOT_FOUND: "找不到可测量的多图任务。",
   "Multi-view processing failed. Check local model setup, retry, or return to single-photo mode.":
     "多图处理失败，请检查模型安装后重试，或使用单图模式。",
   "Use different views, not repeated copies of the same photo.":

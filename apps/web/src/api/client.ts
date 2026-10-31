@@ -8,6 +8,9 @@ import type {
   WorkbenchApi,
   Capture,
   MultiJob,
+  MeasurementSession,
+  Calibration,
+  Measurement,
 } from "./types";
 
 export function createApi(): WorkbenchApi {
@@ -38,6 +41,31 @@ export function createApi(): WorkbenchApi {
     return response.json() as Promise<T>;
   }
   return {
+    getMeasurements: (id, signal) =>
+      request<MeasurementSession>(
+        `/multiview/jobs/${encodeURIComponent(id)}/measurements`,
+        { signal },
+      ),
+    calibrate: (id, input, signal) =>
+      request<Calibration>(
+        `/multiview/jobs/${encodeURIComponent(id)}/measurements/calibrations`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+          signal,
+        },
+      ),
+    measure: (id, input, signal) =>
+      request<Measurement>(
+        `/multiview/jobs/${encodeURIComponent(id)}/measurements`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+          signal,
+        },
+      ),
     createCapture: (assetIds, signal) =>
       request<Capture>("/captures", {
         method: "POST",

@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Download, Layers3, RotateCcw, Upload, X } from "lucide-react";
 import type {
   BBox,
+  PickedPoint,
   EditableComponent,
   ViewObservation,
   WorkbenchApi,
@@ -12,6 +13,7 @@ import { useI18n } from "../i18n";
 import type { MessageKey } from "../i18n/messages";
 import { PhotoPanel } from "./PhotoPanel";
 import { AnnotationPanel } from "./AnnotationPanel";
+import { MeasurementPanel } from "./MeasurementPanel";
 import { ComponentList } from "./ComponentList";
 
 const SceneViewer = lazy(() =>
@@ -66,6 +68,14 @@ export function MultiviewWorkbench({
   const [pointSize, setPointSize] = useState(2);
   const [explosion, setExplosion] = useState(0);
   const [resetKey, setResetKey] = useState(0);
+  const [pickMode, setPickMode] = useState(false);
+  const [picked, setPicked] = useState<{
+    jobId: string;
+    points: PickedPoint[];
+  }>({ jobId: "", points: [] });
+  const [restoreId, setRestoreId] = useState("");
+  const pickedPoints =
+    picked.jobId === state.result?.job_id ? picked.points : [];
   const [viewerError, setViewerError] = useState<string | null>(null);
   const active = ["uploading", "processing", "preparing"].includes(state.phase);
   const locked = active || Boolean(annotation.draft) || drawing;
@@ -111,6 +121,8 @@ export function MultiviewWorkbench({
     setDirty(false);
     setHidden(new Set());
     setExplosion(0);
+    setPickMode(false);
+    setPicked({ jobId: state.result.job_id, points: [] });
   }, [state.result]);
   const asset = state.capture?.assets[view] ?? null;
   const currentObservations = observations.filter(
@@ -343,6 +355,36 @@ export function MultiviewWorkbench({
           e.currentTarget.value = "";
         }}
       />
+      <form
+        className="restore-job"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!locked) {
+            setViewerError(null);
+            void flow.restore(restoreId.trim());
+          }
+        }}
+      >
+        <label>
+          {t("恢复已有点云任务")}
+          <input
+            aria-label={t("多图任务 ID")}
+            value={restoreId}
+            onChange={(e) => setRestoreId(e.target.value)}
+            disabled={locked}
+            placeholder="32-character job ID"
+          />
+        </label>
+        <button
+          className="button secondary small"
+          disabled={locked || !restoreId.trim()}
+        >
+          {t("打开已有结果")}
+        </button>
+        <small>
+          {t("任务编号仅访问本机已有结果。照片与测量数据不会自动跨机器复制。")}
+        </small>
+      </form>
       <div className="capture-guide">
         <Layers3 size={20} />
         <p>
@@ -352,9 +394,15 @@ export function MultiviewWorkbench({
         </p>
         <span>{t("相对尺度 · 可见表面 · 需人工核对")}</span>
       </div>
-      {state.files.length > 0 && (
+      {(state.files.length > 0 || state.capture) && (
         <div className="photo-strip" aria-label={t("照片组")}>
-          {state.files.map((file, i) => (
+          {(
+            state.capture?.assets.map((a, i) => ({
+              name: state.files[i]?.name ?? `${a.id.slice(0, 8)}.jpg`,
+              url: a.image_url,
+            })) ??
+            state.files.map((f, i) => ({ name: f.name, url: previews[i] }))
+          ).map((file, i) => (
             <div
               className={`photo-thumb ${view === i ? "selected" : ""}`}
               key={`${i}-${file.name}`}
@@ -372,7 +420,7 @@ export function MultiviewWorkbench({
                   setDrawing(false);
                 }}
               >
-                {previews[i] && <img src={previews[i]} alt="" />}
+                {file.url && <img src={file.url} alt="" />}
                 <span>
                   {String(i + 1).padStart(2, "0")} · {file.name}
                 </span>
@@ -496,7 +544,9 @@ export function MultiviewWorkbench({
                 <span className="panel-index">02</span>
                 <h2 id="multi-model-title">{t("融合点云")}</h2>
               </div>
-              <span className="schematic-badge">{t("尺寸未标定")}</span>
+              <span className="schematic-badge">
+                {t("原始几何 · 相对尺度")}
+              </span>
             </header>
             <div className="model-stage">
               {state.result?.scene_url ? (
@@ -508,6 +558,7 @@ export function MultiviewWorkbench({
                   }
                 >
                   <SceneViewer
+                    key={state.viewerRevision}
                     sceneUrl={state.result.scene_url}
                     componentIds={sceneIds}
                     selectedId={selectedPart}
@@ -516,6 +567,19 @@ export function MultiviewWorkbench({
                     wireframe={false}
                     resetKey={resetKey}
                     pointSize={pointSize}
+                    pickPoints={pickMode && !locked}
+                    measurementPoints={pickedPoints}
+                    onPickPoint={(point) => {
+                      if (!state.result || locked) return;
+                      setPicked((old) => ({
+                        jobId: state.result!.job_id,
+                        points:
+                          old.jobId === state.result!.job_id &&
+                          old.points.length === 1
+                            ? [...old.points, point]
+                            : [point],
+                      }));
+                    }}
                     onSelect={selectPart}
                     onReady={flow.viewerReady}
                     onError={(message) => {
@@ -574,6 +638,7 @@ export function MultiviewWorkbench({
                   max="1"
                   step="0.01"
                   value={explosion}
+                  disabled={pickMode}
                   onChange={(e) => setExplosion(Number(e.target.value))}
                 />
               </label>
@@ -584,6 +649,26 @@ export function MultiviewWorkbench({
           </section>
         </div>
       </div>
+      {state.result?.scene_url && (
+        <MeasurementPanel
+          key={`${state.result.job_id}:${state.viewerRevision}`}
+          apiClient={apiClient}
+          jobId={state.result.job_id}
+          points={pickedPoints}
+          pickMode={pickMode}
+          disabled={locked || Boolean(viewerError)}
+          onPickMode={(enabled) => {
+            setPickMode(enabled);
+            if (enabled) setExplosion(0);
+          }}
+          onClear={() => setPicked({ jobId: state.result!.job_id, points: [] })}
+          onShowPoints={(points) => {
+            setExplosion(0);
+            setPickMode(false);
+            setPicked({ jobId: state.result!.job_id, points });
+          }}
+        />
+      )}
       <div className="details-grid">
         <section className="components-panel" aria-label={t("当前照片的组件")}>
           <header className="components-heading">

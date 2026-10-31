@@ -112,3 +112,13 @@ uv run --extra ml python -m pv3d.perception photos/string_inverters/candidate_en
 下一阶段见 [设备扩展路线](roadmap.md)，一期设计见 [计划书](plan.md)。
 
 多语言维护和名称／导出边界见 [多语言说明](i18n.md)。
+
+## 已知长度标定与无模型演示
+
+按 [README](../README.md#先运行不下载模型的演示) 创建解析点云，再按脚本 Job ID 恢复。此流程只需 `uv sync --frozen --extra dev` 和前端依赖，不下载/调用模型。`.venv/bin/python scripts/measurement_demo.py --evaluate` 追加记录，不覆盖历史；不要使用缺少 FastAPI 的系统 Python。
+
+真实多图结果也能选点/标定/验证。GLB/PLY 不改变，测量 JSON 单独下载；详见[测量指南](measurement/README.md)。来源、备注、ID 与数值不随界面语言改写。
+
+启动前指定 `PV3D_DATA_DIR`；不同目录有不同任务和测量历史。克隆不复制 ignored 数据库/照片/GLB，继续同一实验需停止写入后私下迁移完整运行目录。测量 JSON 不能独自重建场景。
+
+并行开发可用 `PV3D_API_URL=http://127.0.0.1:8002 npm --prefix apps/web run dev -- --port 5175 --strictPort`，API 另用 uvicorn `--port 8002`，保留其他会话的 8000/5173。生产检查 `make build` 后 `make serve`。本次 Three.js 独立 bundle 超过 Vite 500 kB 提示阈值，构建成功；未隐藏提示，也未据此声称加载性能合格。

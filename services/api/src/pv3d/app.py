@@ -437,7 +437,9 @@ def create_app(data_dir: Path | None = None, detector=None, reconstructor=None) 
 
     # Prevent unknown API URLs from falling through into the optional web app.
     from .captures import register_capture_routes
+    from .measurement import register_measurement_routes
 
+    register_measurement_routes(application)
     register_capture_routes(application, configured_dir, require_asset, require_refinement)
 
     @application.api_route(
