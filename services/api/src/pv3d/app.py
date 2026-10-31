@@ -264,6 +264,10 @@ class JobRunner:
 def create_app(data_dir: Path | None = None, detector=None, reconstructor=None) -> FastAPI:
     """Create an isolated service; only the slow model boundary is injectable for tests."""
     configured_dir = Path(data_dir or os.environ.get("PV3D_DATA_DIR", ROOT / "data" / "runtime")).resolve()
+    if reconstructor is None:
+        from .reconstruction import VggtReconstructor
+
+        reconstructor = VggtReconstructor()
     if detector is None:
         from .perception import GroundingDetector
 
@@ -356,7 +360,7 @@ def create_app(data_dir: Path | None = None, detector=None, reconstructor=None) 
                 "device": "unknown",
                 "error": "Model status unavailable.",
             }
-        return {"status": "ok", "model": model_status}
+        return {"status": "ok", "model": model_status, "multiview": reconstructor.status()}
 
     @application.post("/api/assets", response_model=Asset, status_code=201)
     async def upload_asset(file: Annotated[UploadFile, File()]):
