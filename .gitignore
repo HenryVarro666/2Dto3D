@@ -49,4 +49,6 @@ coverage/
 .idea/
 .vscode/
 .code-review-graph/
+/.worktrees/
+/.superpowers/
 *.log
