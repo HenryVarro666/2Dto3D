@@ -55,7 +55,17 @@ def register_capture_routes(app, data_dir, require_asset, require_refinement):
             base = require_job(request.base_job_id)
             if base["capture_id"] != request.capture_id:
                 raise HTTPException(400, "The base job must belong to the same capture.")
-            require_result(request.base_job_id)
+            result = require_result(request.base_job_id)
+            previous = {o["id"]: o for o in result.get("observations", [])}
+            semantics = {}
+            for observation in request.observations:
+                old = previous.get(observation.id)
+                if old and old["asset_id"] != observation.asset_id:
+                    raise HTTPException(400, "An observation ID cannot move to a different photo.")
+                if observation.component_id:
+                    meaning = (observation.category, observation.label)
+                    if semantics.setdefault(observation.component_id, meaning) != meaning:
+                        raise HTTPException(400, "Linked observations must use the same component name and category.")
         return app.state.runner.submit_multiview(request, len(assets))
 
     @app.get("/api/multiview/jobs/{identifier}", response_model=MultiJob)

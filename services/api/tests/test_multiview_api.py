@@ -3,10 +3,28 @@
 import json
 import time
 
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 from pv3d.app import create_app
 from test_api import DetectorDouble, picture, upload
+
+
+class GeometryBoundary:
+    calls = 0
+
+    def status(self):
+        return {"state": "available"}
+
+    def reconstruct(self, image_paths, folder, on_progress):
+        from test_pointcloud import geometry
+
+        self.calls += 1
+        on_progress("estimating_geometry")
+        np.savez_compressed(folder / "geometry.npz", **geometry())
+        meta = {"model": {"model_id": "analytic-test-boundary"}, "timings": {}}
+        (folder / "geometry.json").write_text(json.dumps(meta))
+        return meta
 
 
 def pair(client):
@@ -147,3 +165,55 @@ def test_manual_capture_rejects_cross_group_base_and_cross_photo_refinement(tmp_
                 json={**request, "capture_id": group["id"], "observations": [observation]},
             )
             assert response.status_code == 400, response.text
+
+
+def test_real_job_fusion_artifacts_and_manual_reuse_preserve_observation_identity(tmp_path):
+    model = GeometryBoundary()
+    detector = DetectorDouble([{"category": "cabinet", "label": "Cabinet", "bbox": [0.1, 0.2, 0.6, 0.8],
+                                "score": 0.8, "source": "grounding_dino"}])
+    with TestClient(create_app(tmp_path, detector, reconstructor=model)) as client:
+        group = capture(client)
+        queued = client.post("/api/multiview/jobs", json={"capture_id": group["id"]}).json()
+        job = multi_terminal(client, queued["id"])
+        assert job["status"] == "succeeded", job
+        result = job["result"]
+        assert result["point_count"] > 0 and len(result["observations"]) == 2
+        assert result["geometry_job_id"] == job["id"]
+        assert client.get(result["scene_url"]).content[:4] == b"glTF"
+        assert client.get(result["ply_url"]).content[:3] == b"ply"
+        assert client.get(result["json_url"]).json() == result
+        observations = [{k: o[k] for k in ("id", "asset_id", "category", "label", "bbox", "component_id")}
+                        for o in result["observations"]]
+        request = {"capture_id": group["id"], "mode": "manual", "base_job_id": job["id"],
+                   "observations": observations}
+        # Reusing an observation ID on another view must not inherit the first view's mask evidence.
+        bad = [{**observations[0], "asset_id": group["assets"][1]["id"]}]
+        assert client.post("/api/multiview/jobs", json={**request, "observations": bad}).status_code == 400
+        for o in observations:
+            o.update(label="Confirmed housing", category="unknown", component_id="part-confirmed")
+        response = client.post("/api/multiview/jobs", json=request)
+        assert response.status_code == 202, response.text
+        edited = multi_terminal(client, response.json()["id"])["result"]
+        assert model.calls == 1
+        assert edited["geometry_job_id"] == job["id"]
+        assert edited["model"]["geometry_reused"] is True
+        assert edited["timings"]["geometry_ms"] == 0
+        assert edited["components"][0]["id"] == "part-confirmed"
+        assert edited["components"][0]["label"] == "Confirmed housing"
+        assert {o["id"] for o in edited["observations"]} == {o["id"] for o in observations}
+        observations[1]["label"] = "Conflicting label"
+        assert client.post("/api/multiview/jobs", json=request).status_code == 400
+
+
+def test_model_failure_is_sanitized_and_retains_capture_for_retry(tmp_path):
+    class BrokenGeometry(GeometryBoundary):
+        def reconstruct(self, *args):
+            raise RuntimeError(f"private path: {tmp_path}")
+
+    with TestClient(create_app(tmp_path, DetectorDouble(), reconstructor=BrokenGeometry())) as client:
+        group = capture(client)
+        queued = client.post("/api/multiview/jobs", json={"capture_id": group["id"]}).json()
+        job = multi_terminal(client, queued["id"])
+        assert job["status"] == "failed" and job["result"] is None
+        assert str(tmp_path) not in json.dumps(job)
+        assert client.get(f"/api/captures/{group['id']}").json() == group
