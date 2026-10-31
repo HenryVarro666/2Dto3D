@@ -14,6 +14,10 @@
 
 `Job={id,asset_id,status,stage,created_at,elapsed_ms,error:string|null,result:Result|null}`，status 为 `queued|running|succeeded|needs_review|failed|interrupted`。启动时将未结束的旧任务标 interrupted；初期单 worker。不存在资源 404，验证失败 400／413／422，内部模型失败不回传栈或主机路径。
 
+`stage` 由实际执行位置写入 SQLite，自动流程依次可能出现 `queued → starting → loading_model → detecting → loading_segmentation → segmenting → geometry → exporting → complete`。已加载模型会直接进入推理阶段；可选分割关闭或不可用时不伪造区域完成，结果 `model.segmentation_state` 说明仅使用候选框。人工流程为 `queued → manual_components → geometry → exporting → complete`。失败保留失败前阶段；服务重启的中断阶段为 `interrupted`。
+
+前端将这些状态映射为六阶段或人工三阶段进度，`complete` 仅表示服务产物就绪；GLB 在浏览器载入成功后才完成最后一段。进度是阶段完成数，不是模型内部百分比。客户端单独计入上传、排队与查看器载入的实际时间；超过十秒不会自动失败。短暂阶段可能在相邻轮询间完成，不人为延长等待。
+
 ## Result
 
 ```typescript
@@ -40,6 +44,6 @@ type Result = {
 
 ## 模型适配器边界
 
-root 维护 `pv3d.perception.GroundingDetector`，构造 `GroundingDetector(cache_dir:Path,device='auto')`，同步 `detect(image:PIL.Image.Image)->dict`、`status()->dict`。API 允许通过 `create_app(data_dir:Path, detector=...)` 注入慢模型替身用于边界测试，生产仅用真实模型。
+`pv3d.perception.GroundingDetector` 构造为 `GroundingDetector(cache_dir:Path,device='auto')`，提供同步 `detect(image:PIL.Image.Image, on_progress:Callable[[str],None]|None=None)->dict`、`status()->dict`。适配器在模型加载、检测、分割加载和分割执行前调用 `on_progress(stage)`；任务层负责持久化。API 允许通过 `create_app(data_dir:Path, detector=...)` 注入慢模型替身用于边界测试，生产仅用真实模型。
 
 `detect` 返回 `{detections:[{category,label,bbox,score,source:'grounding_dino',mask_polygon?:...}], model:{model_id,revision,device,...}, timings:{...}, warnings:[...]}`。全部框为上述比例坐标。`status()` 只报告状态，不在健康查询中下载权重。首次识别可以懒加载，前端显示模型加载状态；异常交给任务层转成可见失败。生产环境禁止固定样例检测结果替代任意上传图片。

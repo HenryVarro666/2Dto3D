@@ -9,7 +9,7 @@ Use `docs/plan.md` for the approved design and docs/implementation-phase1.md for
 ## Confirmed requirements
 
 - Use one photo first; request extra captured views only when needed.
-- Target a first rotatable schematic 3D result within 10 seconds of submission. This includes upload, processing, delivery, and viewer loading. It is a target, not a measured capability.
+- The user accepts processing longer than 10 seconds. Show actual processing stages and elapsed time; do not invent time-based percentages or time remaining. Optimize latency and report cold/warm end-to-end time, including upload, processing, delivery, and viewer loading.
 - The user accepts simplified boxes, rods, and bases first, with background geometry refinement later.
 - Phase 1 is confirmed as string inverters and their external mounting structures. Document later expansion to compact substations, transformers, and other equipment; do not silently make all categories part of Phase 1.
 - The user has an NVIDIA RTX 5080; the fallback is an M4 Pro MacBook Pro. This execution host is M4 Pro with 24GB memory and MPS available; actual model calls ran here. RTX 5080 OS/driver/available VRAM and performance remain unverified. Use `docs/hardware.md` for resource-aware planning.

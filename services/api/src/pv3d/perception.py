@@ -9,6 +9,7 @@ import math
 import os
 import threading
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 MODEL_ID = "IDEA-Research/grounding-dino-tiny"
@@ -187,12 +188,16 @@ class GroundingDetector:
                 self._load_segmenter()
             return self.status()
 
-    def _segment(self, image, detections) -> None:
+    def _segment(self, image, detections, on_progress=None) -> None:
+        if on_progress:
+            on_progress("loading_segmentation" if self._sam is None else "segmenting")
         import cv2
         import numpy as np
         import torch
 
         self._load_segmenter()
+        if on_progress:
+            on_progress("segmenting")
         boxes = [
             [v * side for v, side in zip(d["bbox"], [image.width, image.height, image.width, image.height])]
             for d in detections
@@ -221,16 +226,20 @@ class GroundingDetector:
             ]
         self._segmentation_state = "ready"
 
-    def detect(self, image) -> dict:
-        import torch
-
+    def detect(self, image, on_progress: Callable[[str], None] | None = None) -> dict:
         with self._lock:
             started = time.perf_counter()
             cold = self._model is None
             warnings = []
             try:
+                if on_progress:
+                    on_progress("loading_model" if cold else "detecting")
+                import torch
+
                 self._load()
                 loaded = time.perf_counter()
+                if on_progress:
+                    on_progress("detecting")
                 inputs = self._processor(images=image, text=PROMPT, return_tensors="pt").to(self.device)
                 try:
                     with torch.inference_mode():
@@ -258,7 +267,7 @@ class GroundingDetector:
                 detected = time.perf_counter()
                 if detections and os.environ.get("PV3D_SEGMENT", "1") == "1":
                     try:
-                        self._segment(image, detections)
+                        self._segment(image, detections, on_progress=on_progress)
                     except Exception:
                         # A segmentation failure must not turn genuine detector boxes into fake masks.
                         log.exception("Optional SAM2 segmentation unavailable; retaining detector boxes")

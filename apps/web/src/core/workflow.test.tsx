@@ -149,9 +149,15 @@ describe("photo-to-scene workflow", () => {
       ],
     });
     expect(result.current.state.phase).toBe("preparing");
+    expect(result.current.state.mode).toBe("manual");
+    act(() => {
+      void result.current.rebuild();
+    });
+    await flush();
+    expect(result.current.state.mode).toBe("automatic");
   });
 
-  it("continues showing actual elapsed time after the ten-second target", async () => {
+  it("continues showing actual elapsed time after ten seconds", async () => {
     const { result } = renderHook(() =>
       useWorkbench(fakeApi({ getJob: async () => running })),
     );

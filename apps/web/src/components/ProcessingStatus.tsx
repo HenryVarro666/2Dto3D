@@ -7,13 +7,18 @@ import {
   X,
 } from "lucide-react";
 import type { WorkbenchState } from "../core/workflow";
+import { TaskProgress } from "./TaskProgress";
 
 const stageLabels: Record<string, string> = {
   queued: "任务已排队",
+  starting: "正在准备识别任务",
+  manual_components: "正在应用组件校正",
   loading: "正在载入识别模型",
   loading_model: "正在载入识别模型",
   detecting: "正在识别可见组件",
+  recognition: "正在识别可见组件",
   grounding: "正在识别可见组件",
+  loading_segmentation: "正在载入区域分割模型",
   segmenting: "正在提取组件区域",
   segmentation: "正在提取组件区域",
   geometry: "正在构建结构示意",
@@ -44,8 +49,17 @@ export function ProcessingStatus({
     subtitle = "正在检查格式、图像大小与方向。";
   }
   if (state.phase === "processing") {
-    title = stageLabels[state.job?.stage || ""] || "正在识别并构建组件";
-    subtitle = "首次运行需要载入模型，冷启动可能超过 10 秒。";
+    title =
+      stageLabels[state.job?.stage || ""] ||
+      (state.mode === "manual" ? "正在应用组件校正" : "正在准备识别任务");
+    subtitle =
+      state.mode === "manual"
+        ? "根据校正后的组件重新构建结构，保留对应关系。"
+        : ["loading", "loading_model", "loading_segmentation"].includes(
+              state.job?.stage || "",
+            )
+          ? "首次载入或下载模型可能较久，准备完成后将自动继续。"
+          : "各阶段耗时随图片和设备变化，处理进度会持续更新。";
   }
   if (state.phase === "preparing") {
     title = "正在载入三维结构";
@@ -68,59 +82,60 @@ export function ProcessingStatus({
     subtitle = state.error || "请重试，或在照片上人工框选组件。";
   }
   return (
-    <div
-      className={`processing-status status-${state.phase}`}
-      role={state.phase === "error" ? "alert" : "status"}
-      aria-live="polite"
-    >
-      <div className="processing-symbol">
-        {active ? (
-          <LoaderCircle className="spin" size={20} />
-        ) : state.phase === "ready" && !viewerError ? (
-          <Check size={20} />
-        ) : ["error", "review"].includes(state.phase) || viewerError ? (
-          <AlertCircle size={20} />
-        ) : (
-          <ScanLine size={20} />
-        )}
-      </div>
-      <div className="processing-copy">
-        <strong>{title}</strong>
-        <p>{subtitle}</p>
-      </div>
-      <div className="processing-time">
-        <span>
-          <Clock3 size={14} />
-          {state.startedAt === null
-            ? "首个结构目标 < 10 秒"
-            : `已用 ${(elapsedMs / 1000).toFixed(1)} 秒`}
-        </span>
-        <small>
-          {state.startedAt === null
-            ? "包含上传、推理与视图载入"
-            : elapsedMs >= 10_000 && active
-              ? "超过目标，仍在继续处理"
+    <>
+      <div
+        className={`processing-status status-${state.phase}`}
+        role={state.phase === "error" ? "alert" : "status"}
+        aria-live="polite"
+      >
+        <div className="processing-symbol">
+          {active ? (
+            <LoaderCircle className="spin" size={20} />
+          ) : state.phase === "ready" && !viewerError ? (
+            <Check size={20} />
+          ) : ["error", "review"].includes(state.phase) || viewerError ? (
+            <AlertCircle size={20} />
+          ) : (
+            <ScanLine size={20} />
+          )}
+        </div>
+        <div className="processing-copy">
+          <strong>{title}</strong>
+          <p>{subtitle}</p>
+        </div>
+        <div className="processing-time">
+          <span>
+            <Clock3 size={14} />
+            {state.startedAt === null
+              ? "按阶段显示处理进度"
+              : `已用 ${(elapsedMs / 1000).toFixed(1)} 秒`}
+          </span>
+          <small>
+            {state.startedAt === null
+              ? "包含上传、推理与视图载入"
               : active
-                ? "包含上传、推理与视图载入"
+                ? "正在持续处理"
                 : "本次端到端用时"}
-        </small>
-      </div>
-      {active && (
-        <button
-          className="icon-button"
-          aria-label="停止等待任务"
-          title="停止等待"
-          onClick={onCancel}
-        >
-          <X size={17} />
-        </button>
-      )}
-      {["error", "cancelled", "review"].includes(state.phase) &&
-        state.asset && (
-          <button className="button small secondary" onClick={onRetry}>
-            重新识别
+          </small>
+        </div>
+        {active && (
+          <button
+            className="icon-button"
+            aria-label="停止等待任务"
+            title="停止等待"
+            onClick={onCancel}
+          >
+            <X size={17} />
           </button>
         )}
-    </div>
+        {["error", "cancelled", "review"].includes(state.phase) &&
+          state.asset && (
+            <button className="button small secondary" onClick={onRetry}>
+              重新识别
+            </button>
+          )}
+      </div>
+      <TaskProgress state={state} viewerError={viewerError} />
+    </>
   );
 }

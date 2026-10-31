@@ -18,6 +18,7 @@ export type Phase =
   | "cancelled";
 export type WorkbenchState = {
   phase: Phase;
+  mode: "automatic" | "manual";
   asset: Asset | null;
   job: Job | null;
   result: Result | null;
@@ -27,6 +28,7 @@ export type WorkbenchState = {
 };
 const initialState: WorkbenchState = {
   phase: "idle",
+  mode: "automatic",
   asset: null,
   job: null,
   result: null,
@@ -182,6 +184,7 @@ export function useWorkbench(api: WorkbenchApi) {
     setState((current) => ({
       ...current,
       phase: "processing",
+      mode: components ? "manual" : "automatic",
       job: null,
       error: null,
       startedAt,

@@ -113,3 +113,42 @@ it("locks component mutations while a submitted manual rebuild is pending", asyn
     screen.getByRole("button", { name: "选择 安装支架" }),
   ).toBeInTheDocument();
 });
+
+it("keeps progress incomplete when the viewer fails again after a manual rebuild", async () => {
+  // JSDOM has no WebGL. Use the actual viewer failure path, not a success stub.
+  const user = userEvent.setup();
+  render(
+    <App
+      apiClient={fakeApi({
+        createJob: async (input) =>
+          input.mode === "manual"
+            ? {
+                ...completed,
+                id: "manual-viewer-failure",
+                result: {
+                  ...result,
+                  job_id: "manual-viewer-failure",
+                  scene_url: "/api/jobs/manual-viewer-failure/scene.glb",
+                },
+              }
+            : completed,
+      })}
+    />,
+  );
+  await user.upload(
+    screen.getByLabelText("选择设备照片"),
+    new File(["image"], "inverter.png", { type: "image/png" }),
+  );
+  await screen.findByText(/此浏览器无法使用 WebGL/);
+  expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "5");
+  await user.click(screen.getByRole("button", { name: "重新生成结构" }));
+  await waitFor(() =>
+    expect(screen.getByRole("button", { name: "重新生成结构" })).toBeEnabled(),
+  );
+  expect(screen.getByText(/此浏览器无法使用 WebGL/)).toBeInTheDocument();
+  expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuemax", "3");
+  expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "2");
+  expect(
+    screen.getByText("结构文件已生成，查看器暂不可用"),
+  ).toBeInTheDocument();
+});

@@ -71,7 +71,6 @@ export default function App({ apiClient = api }: { apiClient?: WorkbenchApi }) {
     setSelectedId(null);
     setDirty(false);
     setExplosion(0);
-    setViewerError(null);
   }, [state.result]);
 
   function chooseFile(file: File) {

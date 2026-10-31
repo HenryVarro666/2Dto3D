@@ -13,7 +13,7 @@
 ## Global constraints
 
 - 一期限定组串式逆变器及外部安装结构；单图优先。
-- 首个可旋转结构示意的 10 秒是待测目标，计入上传与加载；冷启动另报。
+- 用户已接受超过 10 秒；提供真实阶段进度和已用时间，冷启动／暖机另报，端到端计入上传与加载。
 - 本轮获准搭建并同步 GitHub；用户指定当前根目录，使用当前目录的功能分支，避免把运行数据迁出。
 - 原始照片、权重、SQLite 和生成 GLB 不入 Git。所有示意几何标相对尺度、未标定。
 - 输入检测框和区域是识别候选，几何深度来自先验；完整真实 BOM 与后台生成式高精模型不属于本次切片。
@@ -30,7 +30,7 @@
 
 Files: `services/api/src/pv3d/{app,schemas,store,geometry}.py`、`services/api/tests/test_api.py`、`test_geometry.py`。
 
-Consumes: `GroundingDetector.detect(PIL.Image) -> Recognition dict`（见下方契约）；目录由环境 `PV3D_DATA_DIR` 控制，默认根 `data/runtime`。
+Consumes: `GroundingDetector.detect(PIL.Image, on_progress=report) -> Recognition dict`（见下方契约）；阶段回调写入任务表，目录由环境 `PV3D_DATA_DIR` 控制，默认根 `data/runtime`。
 
 Produces: `/api/assets`、`/api/jobs`、任务状态和结果、规范化照片、场景 GLB／JSON，详见 [API 契约](api-contract.md)。
 

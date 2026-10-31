@@ -109,20 +109,24 @@ class JobRunner:
     def _run(self, job, request):
         started = time.perf_counter()
         job_id = job["id"]
+        current_stage = "manual_components" if request.mode == "manual" else "starting"
+
+        def report(stage):
+            nonlocal current_stage
+            current_stage = stage
+            self.store.update_job(
+                job_id, status="running", stage=stage, elapsed_ms=(time.perf_counter() - started) * 1000
+            )
+
         try:
-            self.store.update_job(job_id, status="running", stage="recognition", elapsed_ms=0)
+            report(current_stage)
             asset = self.store.get_asset(job["asset_id"])
             if request.mode == "manual":
                 recognition = self._manual_recognition(request)
             else:
                 with Image.open(self.store.data_dir / "assets" / asset["id"] / "image.jpg") as source:
-                    recognition = self.detector.detect(source.convert("RGB"))
-            self.store.update_job(
-                job_id,
-                status="running",
-                stage="geometry",
-                elapsed_ms=(time.perf_counter() - started) * 1000,
-            )
+                    recognition = self.detector.detect(source.convert("RGB"), on_progress=report)
+            report("geometry")
             geometry_started = time.perf_counter()
             components, geometry_warnings = build_components(
                 recognition["detections"],
@@ -131,6 +135,7 @@ class JobRunner:
             folder = self.store.data_dir / "jobs" / job_id
             folder.mkdir(parents=True, exist_ok=True)
             if components:
+                report("exporting")
                 export_scene(components, folder / "scene.glb")
             elapsed = (time.perf_counter() - started) * 1000
             result = Result(
@@ -162,7 +167,7 @@ class JobRunner:
             self.store.update_job(
                 job_id,
                 status="failed",
-                stage="failed",
+                stage=current_stage,
                 elapsed_ms=(time.perf_counter() - started) * 1000,
                 error="Processing failed. Check local server logs, retry, or use manual components.",
             )

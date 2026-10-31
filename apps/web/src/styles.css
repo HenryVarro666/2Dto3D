@@ -439,6 +439,113 @@ input[type="range"] {
 .status-review .processing-copy p {
   color: #9a8566;
 }
+.task-progress {
+  margin: -10px 0 20px;
+  padding: 13px 16px;
+  border: 1px solid #dfe5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #63765e;
+}
+.task-progress-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+}
+.task-progress-heading strong {
+  font-weight: 500;
+}
+.task-progress-heading > span {
+  font-size: 10px;
+  color: #6d7666;
+}
+.task-progress-track {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0;
+}
+.task-progress-track > span {
+  height: 6px;
+  border-radius: 4px;
+  background: #ebeee7;
+}
+.task-progress-track .complete {
+  background: #68987a;
+}
+.task-progress-track .skipped {
+  background: #d7d8cb;
+}
+.task-progress-track .attention {
+  background: #cda96b;
+}
+.task-progress-track .current {
+  background: linear-gradient(100deg, #8baf92 25%, #d5e6cd 50%, #8baf92 75%);
+  background-size: 200% 100%;
+  animation: task-running 1.6s linear infinite;
+}
+@keyframes task-running {
+  to {
+    background-position: -200% 0;
+  }
+}
+.task-progress-steps {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  list-style: none;
+  padding: 0;
+  gap: 12px;
+}
+.task-progress-steps.manual {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.task-progress-steps li {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  font-size: 11px;
+}
+.task-progress-steps svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.task-progress-steps small {
+  display: block;
+  font-size: 10px;
+  margin-top: 4px;
+  color: #6d7666;
+}
+.task-progress-steps .complete {
+  color: #447251;
+}
+.task-progress-steps .pending {
+  color: #6d7666;
+}
+.task-progress-steps .skipped {
+  color: #73725f;
+}
+.task-progress-steps .current {
+  color: #3c6e50;
+  font-weight: 500;
+}
+@media (max-width: 760px) {
+  .task-progress-steps.automatic {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .task-progress-heading {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+}
+@media (max-width: 420px) {
+  .task-progress-steps {
+    gap: 12px 6px;
+  }
+  .task-progress-steps li {
+    gap: 4px;
+  }
+}
 .workbench-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2209,7 +2316,8 @@ input[type="range"] {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-  .spin {
+  .spin,
+  .task-progress-track .current {
     animation: none;
   }
 }

@@ -21,7 +21,7 @@ class DetectorDouble:
     def status(self):
         return {"state": "ready", "model_id": "boundary-only", "device": "cpu"}
 
-    def detect(self, image):
+    def detect(self, image, on_progress=None):
         if self.release is not None:
             assert self.release.wait(5), "test did not release detector"
         if self.failure:
@@ -131,6 +131,51 @@ def test_running_job_is_pollable_and_result_is_409(tmp_path):
             assert terminal(client, job_id)["status"] == "needs_review"
     finally:
         release.set()
+
+
+def test_real_stage_reports_are_pollable_before_the_model_returns(tmp_path):
+    stages = ["loading_model", "detecting", "loading_segmentation", "segmenting"]
+    entered = {stage: threading.Event() for stage in stages}
+    release = {stage: threading.Event() for stage in stages}
+
+    class StagedDetector(DetectorDouble):
+        def detect(self, image, on_progress=None):
+            assert callable(on_progress), "the runner must forward real model progress"
+            for stage in stages:
+                on_progress(stage)
+                entered[stage].set()
+                assert release[stage].wait(5)
+            return super().detect(image)
+
+    with TestClient(factory(tmp_path, StagedDetector())) as client:
+        asset = upload(client)
+        job_id = client.post("/api/jobs", json={"asset_id": asset["id"]}).json()["id"]
+        try:
+            for stage in stages:
+                assert entered[stage].wait(2), client.get(f"/api/jobs/{job_id}").json()
+                job = client.get(f"/api/jobs/{job_id}").json()
+                assert job["status"] == "running"
+                assert job["stage"] == stage
+                release[stage].set()
+            assert terminal(client, job_id)["status"] == "needs_review"
+        finally:
+            for gate in release.values():
+                gate.set()
+
+
+def test_failed_job_retains_the_actual_processing_stage(tmp_path):
+    class FailingDetector(DetectorDouble):
+        def detect(self, image, on_progress=None):
+            if on_progress:
+                on_progress("detecting")
+            raise RuntimeError("transient model failure")
+
+    with TestClient(factory(tmp_path, FailingDetector())) as client:
+        asset = upload(client)
+        job_id = client.post("/api/jobs", json={"asset_id": asset["id"]}).json()["id"]
+        job = terminal(client, job_id)
+        assert job["status"] == "failed"
+        assert job["stage"] == "detecting"
 
 
 def test_model_failure_is_durable_and_does_not_leak_internal_paths(tmp_path):
