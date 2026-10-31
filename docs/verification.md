@@ -6,6 +6,18 @@
 
 历史、当前及未来问题统一从[质量交接入口](quality/README.md)、[问题台账](quality/issues.md)和[实验索引](quality/experiments.md)接续。下面V1/V2/V3章节保留当时版本与范围，不能当作当前所有能力已验收。
 
+### E04真实多视角修复回归（2026-10-31，0522a85→237f796）
+
+- 同4组9张：4次真实VGGT多图＋18次single/multiple单图；另外10张×2模式20任务覆盖原13图保护（Toyota3张复用本次单图结果）。最终42个模型任务；中间9c202d1的22任务另存，4组固定旧mask/几何后处理回放不算模型任务。
+- 参考主机ID：Toyota3→1，Bizen/SH早期/SH后期均2→1。Bizen第一与第二台各自归并且两ID不同，没有同图邻机自动合并。参考是代理目视对应，非序列号或专家gold；Bizen默认single前后都选第二台，不能拿它作为第一台主机真值。
+- 实际新线缆点：1686→6482、516→1129、1504→3151、2044→2007；固定旧mask/几何回放为1686→4599、516→1161、1504→3305、2044→5869。后者证明保留路径收益，不能替代新语义质量结论；新推理Later略降必须保留。四组VGGT原数组逐值完全相同，几何空洞/遮挡未因合并ID而恢复。
+- SH机底端口与水平槽得到connector/cable_tray类别；新增电池把手/挂耳假connector、工具盒/钻机假tray、墙面假pole。HC05细柱输出7→5为新增回归；Label空槽的2个假cables仍在。Toyota邻箱零点保留，Bizen新增工具盒假tray零点，后者succeeded→needs_review。整轮为部分改善，未验收独立精度或CAD。
+- 初始11项RED及额外无效目标支持反例先失败；独立代码复核发现留白、重复端口上下文、远端inverter抑制本地端口3个P2，另补留白抹去线缆端点，共4个RED。237f796修正后28项针对检查和独立复核通过；最终完整108后端＋60前端、TypeScript/Vite、Ruff、diff通过。测试编辑面板步骤曾误用，已纠正测试而非产品。上游httpx弃用和bundle体积提示保留。
+- 本机[完整前后图](../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/index.html)、[报告](../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/report.md)、[16项证据校验](../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/verification.json)：原747基线及副本未改、raw/normalized输入一致、完整二值mask、4实际＋4回放GLB POINTS/PLY/组件索引与节点/有限坐标一致、42任务导出、对比图与本地链接完整。校验通过不是模型质量全通过。
+- 保存的4个实际点云查看器经隔离headless Chrome验证载入、旋转、背景隐藏、类别色和组件选择，均无pageerror，保存截图；报告入口也验证。初次Playwright bundled shell缺失，改用已安装Chrome临时profile；不下载浏览器、不触碰个人profile，也不将产物查看器检查冒充完整React三语UI验收。
+- 每组VGGT均新worker加载缓存权重，API上传/创建/轮询/下载分别16.406/22.101/27.530/25.034秒；不含socket网络或浏览器载入。DINO/SAM首组冷、之后进程内复用；不称后3组VGGT暖启动，不作时延提升/p95保证。执行环境仍M4 Pro24GB/MPS/336/tiny，5080未测。
+- [问题台账](quality/issues.md)保留旧问题、新错误、失败试验和后续优先项；AGENTS/CONTRIBUTING要求后续每轮同步。照片、权重、数据库和大产物继续ignored，原发布标签/旧报告不改，无远程推送。
+
 ## V3 发布时检查（2026-10-31，0522a85）
 
 - 核心检查：89 项后端、59 项前端（保留 V2 的104项）通过，TypeScript／Vite 构建、Ruff 与 diff 检查通过。覆盖照片组大小／重复／顺序持久化、重启中断、共享队列、跨组／跨图／跨框引用、观察 ID 所属、显式与继承分组语义、几何复用、有限点过滤／留白映射、掩码孔洞与岛、同视角邻居和传递合并保护、确定性点数上限、RGB／Y-up／原生GLB POINTS／PLY索引；前端覆盖批量选择、删除、轮询、取消旧响应、逐图编辑、关联／拆开、正确视角SAM、草稿锁定、语言保持与查看器失败进度。

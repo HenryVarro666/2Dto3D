@@ -95,6 +95,7 @@ flowchart LR
 ## 文档
 
 - [问题与改进交接](docs/quality/README.md)：历史问题台账、每轮实验、失败试验和后续维护要求。
+- [最新真实照片回归记录](docs/quality/experiments.md)：E04同4组修复前后与原13图保护；部分改善，新增细柱漏检和语义误分类仍开放。[本机前后图入口](data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/index.html)（ignored，不随克隆）。
 
 - [项目计划书](docs/plan.md)：范围、技术栈、数据契约、进度反馈和分阶段验收。
 - [扩展路线图](docs/roadmap.md)：从逆变器扩展到箱变、变压器及更多设备的顺序与验收。
