@@ -1,0 +1,321 @@
+"""Local FastAPI boundary for durable photo recognition and schematic jobs."""
+
+import hashlib
+import io
+import json
+import logging
+import os
+import re
+import threading
+import time
+import warnings
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import asynccontextmanager
+from pathlib import Path
+from typing import Annotated
+from uuid import uuid4
+
+from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from PIL import Image, ImageOps, UnidentifiedImageError
+
+from .geometry import build_components, export_scene
+from .schemas import Asset, Job, JobRequest, Result
+from .store import Store
+
+log = logging.getLogger(__name__)
+ROOT = Path(__file__).resolve().parents[4]
+MAX_UPLOAD_BYTES = 20 * 1024 * 1024
+MAX_IMAGE_PIXELS = 25_000_000
+MAX_IMAGE_EDGE = 2048
+MAX_PENDING_JOBS = 8  # Includes the one running job; reject rather than grow an unbounded queue.
+RESOURCE_ID = re.compile(r"^[a-f0-9]{32}$")
+
+
+def _normalized_image(content: bytes) -> Image.Image:
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", Image.DecompressionBombWarning)
+            with Image.open(io.BytesIO(content)) as probe:
+                if probe.format not in {"JPEG", "PNG", "WEBP"}:
+                    raise HTTPException(400, "Use an actual JPEG, PNG, or WebP image.")
+                if probe.width * probe.height > MAX_IMAGE_PIXELS:
+                    raise HTTPException(413, "The decoded image exceeds 25 million pixels.")
+                probe.verify()
+            with Image.open(io.BytesIO(content)) as source:
+                image = ImageOps.exif_transpose(source).convert("RGB")
+                image.thumbnail((MAX_IMAGE_EDGE, MAX_IMAGE_EDGE), Image.Resampling.LANCZOS)
+                # Recreate the image so EXIF and ancillary source metadata are removed.
+                return Image.frombytes("RGB", image.size, image.tobytes())
+    except (Image.DecompressionBombWarning, Image.DecompressionBombError) as error:
+        raise HTTPException(413, "The decoded image is too large.") from error
+    except (UnidentifiedImageError, OSError, SyntaxError, ValueError) as error:
+        raise HTTPException(400, "The file is not a valid supported image.") from error
+
+
+class JobRunner:
+    def __init__(self, store: Store, detector):
+        self.store = store
+        self.detector = detector
+        self.executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="pv3d-worker")
+        self.capacity = threading.BoundedSemaphore(MAX_PENDING_JOBS)
+
+    def submit(self, request: JobRequest):
+        if not self.capacity.acquire(blocking=False):
+            raise HTTPException(409, "The local processing queue is full. Retry after a task finishes.")
+        try:
+            job = self.store.create_job(request.asset_id)
+            self.executor.submit(self._run, job, request)
+            return job
+        except Exception:
+            self.capacity.release()
+            raise
+
+    def _manual_recognition(self, request):
+        base_result = self.store.get_job(request.base_job_id)["result"] if request.base_job_id else None
+        previous = (
+            {component["id"]: component for component in base_result["components"]} if base_result else {}
+        )
+        detections = []
+        for component in request.components:
+            submitted = component.model_dump(mode="json")
+            old = previous.get(component.id)
+            evidence = {"source": "manual", "score": None, "mask_polygon": None}
+            if old is not None:
+                if submitted["bbox"] == old["bbox"]:
+                    evidence["mask_polygon"] = old.get("mask_polygon")
+                if all(submitted[field] == old[field] for field in ("label", "category", "bbox")):
+                    evidence.update({field: old.get(field) for field in ("source", "score", "mask_polygon")})
+            detections.append({**submitted, **evidence})
+        return {
+            "detections": detections,
+            "model": {
+                "mode": "manual",
+                "model_id": None,
+                **(
+                    {"base_job_id": request.base_job_id, "base_model": base_result["model"]}
+                    if base_result
+                    else {}
+                ),
+            },
+            "warnings": [
+                "Manual edits were applied. Unchanged component evidence is retained from the base result."
+            ],
+            "timings": {},
+        }
+
+    def _run(self, job, request):
+        started = time.perf_counter()
+        job_id = job["id"]
+        try:
+            self.store.update_job(job_id, status="running", stage="recognition", elapsed_ms=0)
+            asset = self.store.get_asset(job["asset_id"])
+            if request.mode == "manual":
+                recognition = self._manual_recognition(request)
+            else:
+                with Image.open(self.store.data_dir / "assets" / asset["id"] / "image.jpg") as source:
+                    recognition = self.detector.detect(source.convert("RGB"))
+            self.store.update_job(
+                job_id,
+                status="running",
+                stage="geometry",
+                elapsed_ms=(time.perf_counter() - started) * 1000,
+            )
+            geometry_started = time.perf_counter()
+            components, geometry_warnings = build_components(
+                recognition["detections"],
+                image_size=(asset["width"], asset["height"]),
+            )
+            folder = self.store.data_dir / "jobs" / job_id
+            folder.mkdir(parents=True, exist_ok=True)
+            if components:
+                export_scene(components, folder / "scene.glb")
+            elapsed = (time.perf_counter() - started) * 1000
+            result = Result(
+                job_id=job_id,
+                asset_id=asset["id"],
+                components=components,
+                scene_url=f"/api/jobs/{job_id}/scene.glb" if components else None,
+                json_url=f"/api/jobs/{job_id}/result.json",
+                warnings=list(dict.fromkeys([*recognition.get("warnings", []), *geometry_warnings])),
+                model=recognition.get("model", {}),
+                timings={
+                    **recognition.get("timings", {}),
+                    "geometry_ms": (time.perf_counter() - geometry_started) * 1000,
+                    "processing_ms": elapsed,
+                },
+            ).model_dump(mode="json")
+            temporary = folder / "result.tmp"
+            temporary.write_text(json.dumps(result, ensure_ascii=False, allow_nan=False), encoding="utf-8")
+            temporary.replace(folder / "result.json")
+            self.store.update_job(
+                job_id,
+                status="succeeded" if components else "needs_review",
+                stage="complete",
+                elapsed_ms=elapsed,
+                result=result,
+            )
+        except Exception:
+            log.exception("Job %s failed", job_id)
+            self.store.update_job(
+                job_id,
+                status="failed",
+                stage="failed",
+                elapsed_ms=(time.perf_counter() - started) * 1000,
+                error="Processing failed. Check local server logs, retry, or use manual components.",
+            )
+        finally:
+            self.capacity.release()
+
+    def close(self):
+        self.executor.shutdown(wait=True)
+
+
+def create_app(data_dir: Path | None = None, detector=None) -> FastAPI:
+    """Create an isolated service; only the slow model boundary is injectable for tests."""
+    configured_dir = Path(data_dir or os.environ.get("PV3D_DATA_DIR", ROOT / "data" / "runtime")).resolve()
+    if detector is None:
+        from .perception import GroundingDetector
+
+        detector = GroundingDetector(
+            cache_dir=Path(os.environ.get("PV3D_MODEL_DIR", ROOT / "models" / "huggingface")),
+            device=os.environ.get("PV3D_DEVICE", "auto"),
+        )
+
+    @asynccontextmanager
+    async def lifespan(application):
+        store = Store(configured_dir)
+        store.interrupt_unfinished()
+        runner = JobRunner(store, detector)
+        application.state.store = store
+        application.state.runner = runner
+        try:
+            yield
+        finally:
+            runner.close()
+
+    application = FastAPI(title="PV Component Schematic Workbench", lifespan=lifespan)
+
+    @application.exception_handler(RequestValidationError)
+    async def invalid_request(_request, error):
+        # Do not echo raw input: NaN cannot be JSON-encoded, and body values may be sensitive.
+        details = [
+            {"loc": list(item["loc"]), "msg": item["msg"], "type": item["type"]} for item in error.errors()
+        ]
+        return JSONResponse(status_code=422, content={"detail": details})
+
+    def require_asset(identifier):
+        asset = application.state.store.get_asset(identifier) if RESOURCE_ID.fullmatch(identifier) else None
+        if asset is None:
+            raise HTTPException(404, "Asset not found.")
+        return asset
+
+    def require_job(identifier):
+        job = application.state.store.get_job(identifier) if RESOURCE_ID.fullmatch(identifier) else None
+        if job is None:
+            raise HTTPException(404, "Job not found.")
+        return job
+
+    def require_result(identifier):
+        job = require_job(identifier)
+        if job["status"] not in {"succeeded", "needs_review"} or job["result"] is None:
+            raise HTTPException(409, "The job has no completed result.")
+        return job["result"]
+
+    @application.get("/api/health")
+    def health():
+        try:
+            model_status = dict(detector.status())
+            if model_status.get("error"):
+                model_status["error"] = "Model unavailable. Check local server logs."
+        except Exception:
+            log.exception("Model status failed")
+            model_status = {
+                "state": "failed",
+                "model_id": None,
+                "device": "unknown",
+                "error": "Model status unavailable.",
+            }
+        return {"status": "ok", "model": model_status}
+
+    @application.post("/api/assets", response_model=Asset, status_code=201)
+    async def upload_asset(file: Annotated[UploadFile, File()]):
+        content = bytearray()
+        try:
+            while chunk := await file.read(1024 * 1024):
+                content.extend(chunk)
+                if len(content) > MAX_UPLOAD_BYTES:
+                    raise HTTPException(413, "The upload exceeds 20 MB.")
+        finally:
+            await file.close()
+        image = _normalized_image(bytes(content))
+        identifier = uuid4().hex
+        asset = {
+            "id": identifier,
+            "width": image.width,
+            "height": image.height,
+            "image_url": f"/api/assets/{identifier}/image",
+            "sha256": hashlib.sha256(content).hexdigest(),
+        }
+        folder = configured_dir / "assets" / identifier
+        folder.mkdir(parents=True)
+        (folder / "original.bin").write_bytes(content)
+        image.save(folder / "image.jpg", format="JPEG", quality=94)
+        application.state.store.add_asset(asset)
+        return asset
+
+    @application.get("/api/assets/{identifier}/image")
+    def get_image(identifier: str):
+        asset = require_asset(identifier)
+        path = configured_dir / "assets" / asset["id"] / "image.jpg"
+        if not path.is_file():
+            raise HTTPException(404, "The asset image is unavailable.")
+        return FileResponse(path, media_type="image/jpeg")
+
+    @application.post("/api/jobs", response_model=Job, status_code=202)
+    def start_job(request: JobRequest):
+        require_asset(request.asset_id)
+        if request.base_job_id is not None:
+            base = require_job(request.base_job_id)
+            if base["asset_id"] != request.asset_id:
+                raise HTTPException(400, "The base job must belong to the same image asset.")
+            require_result(request.base_job_id)
+        return application.state.runner.submit(request)
+
+    @application.get("/api/jobs/{identifier}", response_model=Job)
+    def get_job(identifier: str):
+        return require_job(identifier)
+
+    @application.get("/api/jobs/{identifier}/result", response_model=Result)
+    def get_result(identifier: str):
+        return require_result(identifier)
+
+    @application.get("/api/jobs/{identifier}/result.json")
+    def get_result_json(identifier: str):
+        require_result(identifier)
+        path = configured_dir / "jobs" / identifier / "result.json"
+        if not path.is_file():
+            raise HTTPException(409, "The result file is unavailable. Start a new task.")
+        return FileResponse(path, media_type="application/json", filename=f"{identifier}-result.json")
+
+    @application.get("/api/jobs/{identifier}/scene.glb")
+    def get_scene(identifier: str):
+        result = require_result(identifier)
+        path = configured_dir / "jobs" / identifier / "scene.glb"
+        if result["scene_url"] is None or not path.is_file():
+            raise HTTPException(409, "There is no component scene. Add or correct components manually.")
+        return FileResponse(path, media_type="model/gltf-binary", filename=f"{identifier}-scene.glb")
+
+    # Prevent unknown API URLs from falling through into the optional web app.
+    @application.api_route(
+        "/api/{unmatched:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+    )
+    def unknown_api(unmatched: str):
+        raise HTTPException(404, "API route not found.")
+
+    web_dist = ROOT / "apps" / "web" / "dist"
+    if (web_dist / "index.html").is_file():
+        application.mount("/", StaticFiles(directory=web_dist, html=True), name="web")
+    return application

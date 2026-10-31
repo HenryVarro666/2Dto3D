@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pv-structure-workbench"
+version = "0.1.0"
+description = "Local PV photo recognition and component-aware schematic 3D workbench"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "pydantic>=2.10,<3",
+  "python-multipart>=0.0.20,<1", "pillow>=11,<13", "numpy>=2,<3",
+  "trimesh>=4.6,<5", "scipy>=1.15,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "httpx>=0.28,<1", "ruff>=0.13,<1"]
+ml = [
+  "torch>=2.8,<2.9", "torchvision>=0.23,<0.24",
+  "transformers>=4.57,<4.58", "huggingface-hub>=0.34,<1",
+  "opencv-python-headless>=4.11,<5",
+]
+
+[tool.setuptools.packages.find]
+where = ["services/api/src"]
+
+[tool.pytest.ini_options]
+testpaths = ["services/api/tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"

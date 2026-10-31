@@ -1,0 +1,81 @@
+# 一期原型运行说明
+
+代码范围：组串式逆变器照片上传 → Grounding DINO 组件候选 → SAM 2 区域 → 参数化结构示意 → 网页查看与 GLB／JSON 导出。高精单图生成、完整 CAD 和其他设备类别尚未接入。
+
+## 安装与启动
+
+在项目根目录执行：
+
+```bash
+make setup
+make models
+make dev
+```
+
+`make setup` 安装锁定的 Python 与前端依赖。`make models` 使用官方模型缓存机制准备 `IDEA-Research/grounding-dino-tiny` 和 `facebook/sam2.1-hiera-tiny`，不上传照片。首次网络下载可能较慢，需要能访问 Hugging Face。
+
+浏览器打开 `http://127.0.0.1:5173`，API 在 `http://127.0.0.1:8000`。按 Ctrl+C 会关闭此启动器创建的两项服务，不会终止已有端口的其他进程。若端口已有服务，先确认并停止自己的旧实例。
+
+若不使用 Make，也可分别运行：
+
+```bash
+uv sync --frozen --extra dev --extra ml
+npm --prefix apps/web ci
+uv run --extra ml python -m uvicorn pv3d.app:create_app --factory --host 127.0.0.1 --port 8000
+```
+
+另一个终端运行：
+
+```bash
+npm --prefix apps/web run dev
+```
+
+执行 `make build` 后，`make serve` 可以只启动 8000 端口，同时提供静态网页和 API；开发模式有 5173 与 8000 两个服务。
+
+## 页面如何使用
+
+1. 选择或拖入 JPEG／PNG／WebP；服务校验真实文件内容并处理 EXIF 方向，最长边缩至 2048。
+2. 自动任务运行真实模型。第一次服务推理需要加载模型；网页显示模型状态与实际等待时间，超过十秒仍继续明确计时。
+3. 原图上的候选框／区域和三维组件对应。自动模式优先选一个主要柜体及其附近支持组件，不重建整座场站。
+4. 在三维视图中旋转、缩放、选择；用列表隐藏、隔离组件，或调整爆炸视图后恢复。
+5. 对误检或遗漏，改名／改类别、删除或补画框，再重建人工版本。新任务保留已有组件 ID；未改动组件沿用存储的自动来源，只将修改或新建项标为人工。原自动任务仍留在本地数据库。
+6. 下载当前结果 GLB 或 JSON。GLB 导出保持原始布局，不保存查看器的临时爆炸偏移。
+
+## 配置
+
+使用 shell 环境变量，例如 `PV3D_DEVICE=cpu make dev`。
+
+| 变量 | 默认 | 作用 |
+| --- | --- | --- |
+| `PV3D_DEVICE` | `auto` | `cuda` 优先，其次 `mps`，否则 `cpu`；也可显式指定。自动 MPS 推理失败时会尝试 CPU 并记录。 |
+| `PV3D_SEGMENT` | `1` | `0` 跳过 SAM 2，保留真实候选框。SAM 2 失败时明确报告仅框结果。 |
+| `PV3D_MODEL_DIR` | `models/huggingface/` | API 模型缓存目录。CLI 可用 `--cache-dir` 指定同一目录。 |
+| `PV3D_DATA_DIR` | `data/runtime/` | SQLite、规范化图片和每个任务产物；保持在本机。 |
+| `PV3D_TORCH_THREADS` | `4` | PyTorch CPU 线程数。 |
+
+本轮 M4 Pro 为 24GB 内存；已执行 MPS 真实模型调用。5080 尚未接入测试，不能据此宣称其延迟或环境可用。GPU 机器的系统／驱动和服务部署方式见 [硬件方案](hardware.md)。
+
+## 测试与复现
+
+```bash
+make test
+make build
+```
+
+常规 Python 测试用可控检测结果替代慢模型边界，实际校验上传、SQLite、队列、错误和 GLB；前端测试校验轮询、过期响应、编辑和组件状态。它们不证明真实识别精度。真实模型的本地调用可以单独执行：
+
+```bash
+uv run --extra ml python -m pv3d.perception photos/string_inverters/candidate_energetica_sg250hx.png
+```
+
+这里的候选照片不在 Git 中；新克隆请使用自己的图片。两张现有样图不是独立测试集，重复运行也不能当作新增独立样本。模型版本、设备、冷启动状态与分阶段耗时记录在结果 JSON；浏览器首个三维可交互时间还包括上传、轮询和渲染，不能用单次模型耗时替代。
+
+识别权重按适配器中的固定 Hugging Face revision 加载，DINO 与 SAM 2 的版本均写入结果。更换 checkpoint 需要单独验证并更新版本记录，不能只替换目录里的权重文件。
+
+## 当前能力边界
+
+识别结果是开放词表模型的候选，仍可能把邻近结构当作安装件；需要人工核对。SAM 2 区域可改善可见边界，但三维箱体、杆件和线缆束的深度来自类别先验，不是从照片测量。三根示意线只表达线缆束，不表示真实数量或布线。参数化几何保持相对尺度，没有毫米测量或内部结构恢复。
+
+本地任务采用单 worker 和有界队列；满载返回明确状态。服务重启会把未完成任务标为中断，初版通过新任务重试，不自动恢复 GPU 推理。当前没有身份认证、云端托管或多人协作部署，服务默认只监听本机地址。
+
+下一阶段见 [设备扩展路线](roadmap.md)，一期设计见 [计划书](plan.md)。

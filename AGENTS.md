@@ -2,9 +2,9 @@
 
 ## Current state
 
-This is a planning repository for photo-based PV equipment structure visualization. The initial repository contains a project plan and cited research; the local working directory also contains ignored photos and their metadata index. Application code, model inference, and runtime benchmarks have not been implemented.
+This repository now contains a Phase 1 local web prototype: React/Three.js frontend, FastAPI API, real Grounding DINO/SAM2 recognition, SQLite jobs and Trimesh schematic GLB export. Read README.md and docs/running.md for current commands. High-fidelity generative refinement and additional equipment types remain future work. Local photos, weights and results are ignored.
 
-Use `docs/plan.md` for the current design. Research notes retain earlier exploration and are not evidence of implemented behavior. The user originally planned to scaffold application code after discussing the design; follow the current request when implementation begins.
+Use `docs/plan.md` for the approved design and docs/implementation-phase1.md for this implementation slice. Research notes retain earlier exploration and are not evidence of implemented behavior. Current behavior must be checked against code and actual tests.
 
 ## Confirmed requirements
 
@@ -12,7 +12,7 @@ Use `docs/plan.md` for the current design. Research notes retain earlier explora
 - Target a first rotatable schematic 3D result within 10 seconds of submission. This includes upload, processing, delivery, and viewer loading. It is a target, not a measured capability.
 - The user accepts simplified boxes, rods, and bases first, with background geometry refinement later.
 - Phase 1 is confirmed as string inverters and their external mounting structures. Document later expansion to compact substations, transformers, and other equipment; do not silently make all categories part of Phase 1.
-- The user has an NVIDIA RTX 5080; the fallback is an M4 Pro MacBook Pro. Use `docs/hardware.md` for resource-aware planning. Operating system, driver, actual available VRAM, and Mac memory remain unverified.
+- The user has an NVIDIA RTX 5080; the fallback is an M4 Pro MacBook Pro. This execution host is M4 Pro with 24GB memory and MPS available; actual model calls ran here. RTX 5080 OS/driver/available VRAM and performance remain unverified. Use `docs/hardware.md` for resource-aware planning.
 - Make visible component composition understandable through selection, hiding, and an explanatory exploded view.
 - The canonical local project root is `/Users/caochao/Documents/2Dto3D/`. Earlier ChatGPT and Work paths are obsolete.
 

@@ -2,7 +2,29 @@
 
 从户外光伏设备照片生成可交互的三维结构示意，帮助辨认可见组件及其相对位置。
 
-**当前状态：方案与技术调研阶段。应用代码、模型推理及性能评测尚未实现。**
+**当前状态：一期本地网页原型。** 已接入真实 Grounding DINO／SAM 2 识别、参数化组件场景和网页查看器；结果是结构示意，尚未完成跨设备质量与十秒时延验收。高精生成式几何细化仍在后续计划中。
+
+## 本地启动
+
+需要 Python 3.12、uv、Node.js 22.12+ 和 npm。开发环境可用 Mac 或 Linux，GPU 环境按 [硬件方案](docs/hardware.md) 单独验证。
+
+```bash
+make setup
+make models
+make dev
+```
+
+打开 [本地工作台](http://127.0.0.1:5173)，API 文档位于 [本地 API](http://127.0.0.1:8000/docs)。`make models` 首次从 Hugging Face 下载并缓存两个公开模型，可能需要较长时间；缓存位于被 Git 忽略的 `models/huggingface/`。照片由本地 Python 服务处理，无需外部推理 API。CLI 预加载完成不表示另一个服务进程已经暖机。
+
+上传 JPEG／PNG／WebP 后，左侧显示原图、候选框及可用的分割区域，右侧展示可旋转的组件场景。下方可以改名、改类别、删除组件或在照片中补框，再以人工组件重新构建。点选、高亮、隐藏、隔离和爆炸视图用于理解组成，GLB／JSON 可下载。
+
+```bash
+make test
+make build
+make serve
+```
+
+生产构建后，`make serve` 在 [8000 端口](http://127.0.0.1:8000) 同时提供网页和 API。更多运行参数、CPU／MPS／CUDA 切换及当前限制见 [运行说明](docs/running.md)。
 
 ## 已确定的第一版目标
 
@@ -43,6 +65,7 @@ flowchart LR
 - [项目计划书](docs/plan.md)：范围、技术栈、数据契约、10 秒目标和分阶段验收。
 - [扩展路线图](docs/roadmap.md)：从逆变器扩展到箱变、变压器及更多设备的顺序与验收。
 - [硬件与部署方案](docs/hardware.md)：RTX 5080 主运行端、M4 Pro 备用端及模型显存约束。
+- [运行说明](docs/running.md)：安装、启动、模型缓存、测试与限制。
 - [技术调研索引](docs/research/README.md)：模型、组件理解和几何方法的官方资料。
 - [数据说明](data/README.md)：本地照片、标注、数据切分及来源记录。
 - [开发约定](CONTRIBUTING.md)：后续实现和实验记录方式。
@@ -55,11 +78,12 @@ flowchart LR
 | 服务与数据契约 | Python、FastAPI、Pydantic |
 | 快速结构分析 | OpenCV、GroundingDINO + SAM 2，支持人工框选与纠正 |
 | 结构示意 | 参数化箱体、柱体及板件，组件共用相对坐标系 |
-| 后台几何候选 | 5080 先测 Hunyuan3D-2 仅形状生成；高显存条件下再比较 SAM 3D Objects／TRELLIS.2 |
+| 当前识别 | 真实 Grounding DINO tiny＋SAM 2.1 tiny，可选 CPU／MPS／CUDA |
+| 后续几何候选，未接入 | 5080 先测 Hunyuan3D-2 仅形状生成；高显存条件下再比较 SAM 3D Objects／TRELLIS.2 |
 | 网格与导出 | Trimesh、GLB + JSON |
 | 持久化 | SQLite、本地文件、单个持久任务 worker |
 
-这些是选型建议，尚未锁定运行版本。用户已有 **NVIDIA RTX 5080**，备选为 **M4 Pro MacBook Pro**。建议 5080 机器承担主要推理，Mac 用于开发、浏览、组件纠正与备用运行；5080 机器的操作系统、驱动和 Mac 内存容量尚未核实。Blender 用于查看导出的网格及后续人工编辑。
+依赖由 `uv.lock` 和前端 `package-lock.json` 固定。用户已有 **NVIDIA RTX 5080**，备选为 **M4 Pro MacBook Pro**；本轮在本机 M4 Pro、24GB 内存上验证 MPS 路径，5080 的操作系统、驱动和实际运行表现仍未验证。Blender 可用于导出后的网格查看和人工编辑。
 
 按 NVIDIA 公布的标准 **16GB 显存**规划，5080 低于 SAM 3D Objects（至少 32GB）和 TRELLIS.2（至少 24GB）的官方门槛，因此首版不以这两套默认配置本地可跑为前提。硬件选择与低显存候选依据见 [硬件方案](docs/hardware.md)；M4 Pro 的 MPS 路径也需单独验证，10 秒目标尚无实测结果。[NVIDIA 规格](https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/rtx-5080/)、[SAM 3D 安装要求](https://github.com/facebookresearch/sam-3d-objects/blob/main/doc/setup.md)、[TRELLIS.2 安装要求](https://github.com/microsoft/TRELLIS.2#prerequisites)
 
@@ -70,13 +94,19 @@ flowchart LR
 ├── README.md
 ├── AGENTS.md
 ├── CONTRIBUTING.md
+├── Makefile
+├── pyproject.toml / uv.lock
+├── apps/web/               React／Three.js 工作台
+├── services/api/           FastAPI、识别适配器、持久化和几何
+├── scripts/                本地服务启动
 ├── docs/
 │   ├── plan.md
 │   ├── roadmap.md
 │   ├── hardware.md
+│   ├── running.md
 │   └── research/
 ├── data/                   # 说明文件入库，实际数据默认忽略
 └── photos/                 # 用户原始照片，仅保留在本地
 ```
 
-代码目录将按计划书在实现阶段建立。目前没有安装或启动命令。照片、模型权重和生成资产默认不进入 Git 历史。候选模型及数据的许可独立于本仓库；本阶段未选择开源发布许可。
+照片、模型权重、SQLite 和生成资产默认不进入 Git 历史。自动识别的分数未校准，误检和遗漏需人工纠正；无识别时进入待检查状态，不能当作三维成功。单张照片不提供真实厚度、背面或完整工程 BOM。候选模型及数据的许可独立于本仓库；本阶段未选择开源发布许可。
