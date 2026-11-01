@@ -138,3 +138,13 @@ known-K仅对去畸变图使用已知内参，每个辅助配置重新仅用AB�
 [审查及全部处置](2026-11-01-independent-real-scenes-review.md)：现有30点、120组映射、12组实际张量和24组原始/审计云及误差正确；发现两处验证缺口，已用失败回归补齐。publisher/网页将RGB条件、模型条件、输入SHA和layout绑定到各自冻结case，重算AB比例与相对/绝对误差；源数据核验也重新从实际扫描取每个点，不仅检查存储XYZ/长度自洽。原24次实验、四个冻结JSON均未改变，检查仍完全通过。
 
 新增16个后端/4个前端案例先失败后通过，完整164后端/2可选ML skip、82前端、build/Ruff/14SVG通过。文档原解包问题的临时重用ID DATA-001纠正为DATA-METRIC-001，原设备身份问题仍保留DATA-001；E09的16调用/144收据叙述已恢复归属，旧记录不覆盖。修复只加强校验，不将软件检查当新增物理精度。
+
+## 最终交付核验
+
+审查修复代码aa9bea966b11355747f1f2dabe5553b8741c6a30在正式ML环境166后端通过；开发164后端/2可选ML skip、82前端、build/Ruff/14SVG通过。[GitHub CI41288235830](https://github.com/HenryVarro666/2Dto3D/actions/runs/41288235830)全部通过。单次独立审查的实质发现已逐项RED/GREEN解决，没有遗留Minor或待裁决项；未再派二次审查。
+
+同一GitHub新克隆快进至修复代码后，重新执行全部12组准备及更强扫描校验，再实际调用office/terrains两次rectified/isotropic518。全部输入、数组、原始云、审计云、距离仍与主轮完全一致（0mm差）；本轮worker19.26/14.34s。新克隆164后端/2skip、82前端、build/Ruff/14SVG通过且树干净。原954bb78的初次smoke/日志保留，修复后另存fresh-clone-guard-smoke；新DB累计4个job/36记录。主实验仍是24次调用，另有4次克隆smoke，共28次实际调用，不增加场景或检查线样本量。[凭证](../measurement/independent-clone-verification.json)的post_review_verification保存两阶段边界。
+
+加固后的真实生产网页重新载入，四策略仍显示3.10/2.35/2.86/2.41%，卸货区三张6048像素源预览全部载入；实际重放d35234e1166c4b29b0e58ee39eff1365及G–H#6/#7，9771.14mm，约145mm误差。该跨表面退步样例保留，不能以照片或点云外观代替误差表。修复后原生截图与SHA保存在凭证的post_review_ui及ignored data，未替换既有8张README截图或4个冻结JSON。
+
+采用已授权的私有main同步，先完成审查/修复/新克隆，再更新远端；只调整交付顺序，不改变范围。8004生产网页与当前工作树保留，canonical目录另一个会话的分支/改动不动。最终远端ref/CI核验另记于本机ignored `data/measurement-independent/release-verification.json`；代码/文档/新截图等版本化内容进入私有仓库，原照片/扫描/权重/DB不入Git。开发RED/GREEN与审查原始日志保留在ignored `data/measurement-independent/development-audit/`，可结合Git提交与本报告接手。

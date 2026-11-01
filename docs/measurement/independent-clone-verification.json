@@ -73,5 +73,80 @@
     "figures": "0f58f0200e8de5d45eac33a8fc75cbd0e11f4747fc947688a8fe8cd124b45a08",
     "prepare": "ab56c42dcec7483aae7e8047139b6c3d96048510b8851489c06651f44b4c1a88",
     "smoke": "2b6a9bfa42a85796da1348f9a3cdd8ca6c4197692a2fd01422fc03c24084d960"
+  },
+  "post_review_verification": {
+    "created_at": "2026-11-01T08:23:48.987208+00:00",
+    "verified_commit": "aa9bea966b11355747f1f2dabe5553b8741c6a30",
+    "environment": "same freshly installed clone, fast-forwarded after review; source and weight caches retained, original API DB never copied",
+    "frozen_inputs": "all12cases regenerated and matched under new actual-scan reference verification",
+    "model_smoke_cases": [
+      {
+        "scene": "office",
+        "image_condition": "rectified",
+        "resize_mode": "isotropic",
+        "new_job_id": "04d1d31ec39342afbbfc3ac8cdec263d",
+        "all_arrays_equal": true,
+        "input_tensor_equal": true,
+        "audit_glb_equal": true,
+        "raw_cloud_equal": true,
+        "max_distance_delta_mm": 0.0,
+        "worker_wall_ms": 19257.307708001463
+      },
+      {
+        "scene": "terrains",
+        "image_condition": "rectified",
+        "resize_mode": "isotropic",
+        "new_job_id": "9911a787c22f41e4bbc2bf8de61eaa1f",
+        "all_arrays_equal": true,
+        "input_tensor_equal": true,
+        "audit_glb_equal": true,
+        "raw_cloud_equal": true,
+        "max_distance_delta_mm": 0.0,
+        "worker_wall_ms": 14339.254167003674
+      }
+    ],
+    "total_fresh_runtime_counts": {
+      "multiview_jobs": 4,
+      "measurement_records": 36
+    },
+    "checks": {
+      "backend": "164passed,2optionalMLskips",
+      "frontend": "82passed",
+      "build": "passed",
+      "ruff": "passed",
+      "svg": "14verified"
+    },
+    "worktree_clean": true,
+    "raw_log_sha256": {
+      "prepare": "36dab48304d723a13e2a879d29229a70986c04fe6cc9cec994678ab2824bdae5",
+      "smoke": "3268122718887d782110405ff8e49a9dfb590aa367bbbaa647dbb4a3adf9a8e4",
+      "tests": "5760ecde92a360aee51b170b83692b8daa2a1f9868cfbfd6b92a0f519726aef4",
+      "build": "27de7bd2ffb4b2d637646bf0784fd9eb62cee255246d28fbc347ecf09104f6d5",
+      "ruff": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "figures": "0f58f0200e8de5d45eac33a8fc75cbd0e11f4747fc947688a8fe8cd124b45a08"
+    }
+  },
+  "post_review_ui": {
+    "code_commit": "aa9bea966b11355747f1f2dabe5553b8741c6a30",
+    "four_policy_MAPE_display": [
+      "3.10%",
+      "2.35%",
+      "2.86%",
+      "2.41%"
+    ],
+    "gallery": "delivery_area three source images loaded at6048px width",
+    "job_id": "d35234e1166c4b29b0e58ee39eff1365",
+    "heldout": "GH, derived point indices6/7",
+    "calibrated_mm": 9771.14,
+    "screenshots": [
+      {
+        "path": "data/measurement-independent/postreview-ui-delivery.zh.jpg",
+        "sha256": "c969bdd30093a448ba061c3c4790ac2059a13e6253ca275020f1eac968056f82"
+      },
+      {
+        "path": "data/measurement-independent/postreview-ui-delivery-cloud.zh.jpg",
+        "sha256": "1cca434005a113417d713079d5370010a68274b4b5dae1ff069667856ea178f3"
+      }
+    ]
   }
 }

@@ -121,3 +121,5 @@ E08补充：[新GitHub克隆复现凭证](undistortion-clone-verification.json)�
 E09补充：[新克隆实际推理凭证](resize-clone-verification.json)验证重新生成的输入和两次真实保比例smoke，明确复用源数据/权重缓存、未复用旧DB。它验证同机软件复现，不是5080实测或现场精度证明。
 
 E10-M补充：[全新私有克隆凭证](independent-clone-verification.json)包括重新解包/生成冻结输入、重算30GT点、新DB两次实际推理与全部数组/云/长度一致；复用压缩源包和权重缓存，同机验证。
+
+E10-M审查后补充：源验证重新逐点读取扫描并核对全部支持字段；发布/UI绑定冻结case的RGB/resize/tensor/layout并复算误差。[机器凭证](independent-clone-verification.json)保留初次clone与修复后两阶段实测，各2smoke与主轮完全一致。

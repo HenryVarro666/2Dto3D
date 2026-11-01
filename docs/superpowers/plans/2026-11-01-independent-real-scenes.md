@@ -39,3 +39,5 @@ Files: independent-scene component/tests, workbench/i18n/styles; pairedREADME an
 ## Final review and release gate
 
 After Task3 implementation/checks, dispatch the required fresh whole-branch reviewer; fix material findings RED/GREEN, preserve all evidence. Only then fetch and integrate any concurrent main changes, repeat affected verification, atomically push feature/main without force and verify exact remote SHA/CI. This orders the already authorized delivery after the required review instead of placing review inside its own completion prerequisite.
+
+Implementation/validation completed: Task1 eb2bd34; Task2 34a620c; Task3 cc62f64. Fresh review fixes aa9bea9: actual scan binding, exact case/arithmetic gates and evidence-ledger genealogy,16backend/4UI RED→GREEN. Current166formal/164dev+2skip,82web,build/Ruff14SVG; both initial and post-review private-clone actual smoke arrays/clouds/lengths exact. Final publication state is checked by remote refs/CI and documented in the quality handoff; live worktree is retained.

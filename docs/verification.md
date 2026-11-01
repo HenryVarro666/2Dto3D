@@ -138,3 +138,5 @@ E09云端已通过：[56ee118/run41283299273](https://github.com/HenryVarro666/2
 E10-M GitHub954bb78全新克隆148后端/2skip、78前端、build/Ruff/14SVG通过且工作树干净；重新7zz提取9图/3深度、重建12冻结输入、重算30GT点完全一致。新DB2job/18记录、两次真实rectified/isotropic518 smoke全部数组/云/长度等于主轮，0mm差；[凭证](measurement/independent-clone-verification.json)。同M4/缓存源包和权重，未复制旧DB；不声称跨硬件。954bb78云端CI41286509288全部通过。
 
 E10-M独立整分支审查确认实际数据正确，发现publisher/UI逐case绑定与实际扫描样本绑定不足；均在一个修复阶段RED/GREEN完成，并修复问题ID/旧实验叙述归属。当前164开发后端/2skip、82前端、build/Ruff/14SVG通过；所有冻结输入/结果逐字节未变。[审查处置](quality/2026-11-01-independent-real-scenes-review.md)。
+
+E10-M最终修复aa9bea9：166正式ML后端、164开发后端/2skip、82前端、build/Ruff/14SVG与CI41288235830通过。新克隆快进后重新12输入并追加2次真实模型smoke，全部数组/云/距离与主轮一致；初次2smoke保留，新DB累计4job/36记录。四个冻结JSON字节不变；同M4缓存复用，未验证5080。28实际调用=24正式矩阵+4克隆smoke，非28独立样本。
