@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — fixed-point undistortion evaluation (E08)
+
+- Freeze 20 physical scanner endpoints before evaluating the same six photos with VGGT/518, calibrated full-field rectification and subpixel camera-Z sampling. Preserve raw arrays, supported model samples and derived-anchor provenance.
+- Run eight primary/repeat calls: length MAPE 4.24%→2.97%, four checks improve and four regress; cross-wall error 12.91% and reversed back-wall depth order remain. Known-K auxiliary does not resolve the difficult geometry.
+- Add trilingual original/rectified tables, matching photo markers, depth diagnostics and immutable replay; update Chinese/English READMEs with reproducible charts and authentic screenshots.
+- Prevent measurement evaluation from interrupting unrelated queued jobs (RUN-001); save all failed cases then exit nonzero (RUN-002). Field precision and aspect-preserving resize remain unverified.
+
 ## Unreleased — reference calibration and bilingual visual documentation
 
 - Add immutable known-length calibrations and two-point measurements over actual multi-view GLB point indices/world coordinates, separating relative estimates and reference-calibrated lengths.

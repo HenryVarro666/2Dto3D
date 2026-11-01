@@ -150,3 +150,19 @@ PV3D_DATA_DIR="$PWD/data/measurement-public/runtime" make serve
 ![真实去畸变点云及检查端点](../assets/undistortion-cloud.zh.jpg)
 
 截图SHA256：`73d172e44de446500060f925e97f4a2f601af40e7597ed1c153376bf22df0e58`。照片为ETH3D kicker/DSC_6503的去畸变预览和实际VGGT可见表面，不作为后墙形状正确的证据。
+
+
+退出码修复已由同一独立审查员再次只读复核`7a4038a..b58b72d`：1条故障worker测试通过，未发现新实质回归，无剩余代码阻塞。
+
+
+## GitHub新克隆复现与最终交付检查
+
+已从**GitHub私有feature分支**真正新克隆，未复用原API/worker虚拟环境或旧数据库。先在`7a4038a`用锁定依赖重新安装、生成全部无损原图/去畸变输入，冻结协议SHA与模型输入哈希全部一致。显式复用本机已下载的ETH3D源数据及VGGT checkpoint缓存，不能称首次网络下载/全冷启动。
+
+在该新环境额外运行两次真实rectified/518（pipes22.40s、kicker14.69s），新建独立runtime和测量收据：模型全部数组、有效支持内原始样本GLB、审计GLB哈希和校准长度与主轮完全一致，最大长度差0mm。这两次是软件复现检查，不加入8条独立长度的样本数。随后从GitHub快进至退出码修复`b58b72d`，新克隆131开发后端/2 ML skip、70前端、生产build、Ruff、10 SVG和隔离VGGT lock安装全部通过；正式ML环境在本工作树另有133后端通过。退出码修复不改模型/几何，未为它重跑同一8次实验。
+
+[机器可读克隆凭证](../measurement/undistortion-clone-verification.json)保存准确提交、依赖锁、日志SHA和逐case检查。新克隆smoke的数组、云、收据、DB和日志已另外复制到ignored `data/measurement-undistortion/clone-verification-2026-11-01/`，避免只留临时目录。runtime副本用于审计归档，不保证原绝对路径自动迁移可用。全程仍为同一M4 Pro/24GB/MPS，没有验证另一台机器或RTX5080。
+
+中英文E08 SVG已在真实浏览器检查排版，数值/全部退步可读；10张SVG确定性检查通过。过程环境记录 **ENV-001**：临时配图服务器使用系统Python3.15时虽监听但连接超时，改用项目锁定的Python3.12后HTTP200且实际图已显示；具体原因未定位，未改变防火墙或生产服务。其临时预览服务已停止，8004正式工作台保留。初始浏览器失效重建会话、错误editable路径与系统Python缺numpy等辅助环境问题均通过回到项目环境纠正，不计作模型改进。
+
+本轮使用独立worktree，未切换、重置或改写canonical checkout内其他会话的组件语义分支；未关闭其他服务。仓库当前仍private，原始照片/权重/数组/DB保持ignored。

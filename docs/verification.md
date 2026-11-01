@@ -110,3 +110,5 @@ E07交付补充：GitHub8f55a62干净clone的锁定安装/119API+2optional skips
 本轮开发后端130 passed/2 ML skip；正式ML环境显式本分支PYTHONPATH132 passed；前端70 passed、生产build、Ruff通过。支持mask/半像素/亚像素/GLB来源/不干扰无关queued任务先RED后GREEN。主轮/复跑数组、原始样本云、审计云、收据测量完全相同；重复运行不增加样本。真实浏览器及新克隆/最终审查/远端提交核验继续追加在E08报告，不将待做项冒充完成。
 
 E08最终整分支审查无P1/P2；发现RUN-002的CLI失败退出码P3，已用两故障worker先失败后通过，保持全部失败证据后非零退出。修复后开发131 passed/2 ML skip、正式ML133 passed、Ruff通过。去畸变kicker G–H真实网页重放4657.47mm/12.91%，派生层索引6/7。
+
+GitHub私有feature分支全新克隆完成：重新安装dev/隔离worker，重新生成输入并核对冻结协议；明确复用源数据/权重缓存、未复用原DB。两次真实rectified518 smoke与主轮全部数组/原始样本云/审计云/长度完全一致。更新至b58b72d后131开发后端/2 ML skip、70前端、build/Ruff/10SVG通过；[机器凭证](measurement/undistortion-clone-verification.json)。同Mac复现，不等于跨硬件质量验证。中英SVG真实浏览器可视检查通过，临时预览服务已停止。

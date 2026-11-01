@@ -32,7 +32,7 @@ SVG 由标准库生成，无脚本、外部资源或嵌入照片：
 
 照片来源：ETH3D high-resolution multi-view training，pipes，原始`DSC_0635.JPG`（另两视图`DSC_0634.JPG`/`DSC_0636.JPG`）。作者/项目：Thomas Schöps、Johannes L. Schönberger、Silvano Galliani、Torsten Sattler、Konrad Schindler、Marc Pollefeys、Andreas Geiger，见[官方项目与论文](https://eth3d.ethz.ch/)、[数据](https://eth3d.ethz.ch/datasets)。ETH3D数据及这些包含照片/其点云衍生内容的截图按[CC BY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)保留归属与许可。截图不是把原始输入照片直接入Git；原JPEG/EXIF、深度和网格仍为ignored本机产物。
 
-变更/处理：原始照片进入VGGT联合几何；未对照片做生成式修补。查看器把相对坐标转为显示坐标，叠加实际GLB选点的A/B标记；截图保持浏览器原生像素，没有重写数值或修图。参考长度来自模型外激光深度，不是照片中已有标尺。二维图表是作者根据E07数值重画，SVG无脚本/外部资源，`scripts/readme_figures.py --check`现在验证8张SVG。
+变更/处理：原始照片进入VGGT联合几何；未对照片做生成式修补。查看器把相对坐标转为显示坐标，叠加实际GLB选点的A/B标记；截图保持浏览器原生像素，没有重写数值或修图。参考长度来自模型外激光深度，不是照片中已有标尺。二维图表是作者根据E07数值重画，SVG无脚本/外部资源，E07当轮由`--check`验证8张SVG；新增E08后为10张。
 
 屏幕正常视口1280×720（滚动条占部分宽度）；中文/英文各截一次。浏览器还核对了西语的参考类别、范围说明与同一数字。完整来源、原图/模型/协议哈希见[E07](../quality/2026-11-01-public-metric-measurement.md)。
 

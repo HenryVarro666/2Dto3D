@@ -56,7 +56,7 @@
 
 **Files:**trilingual read-only comparison panel/test/styles, compact JSON asset, paired READMEs/figures/screenshots, measurement guide, E08 report/issues/experiments/verification.
 
-- [ ] UI RED/GREEN for same-reference table, worse/better results and locale preservation; enable immutable audit replay without changing default production calibration.
-- [ ] Record complete primary and repeat results, failed hypotheses, assumptions and next actions; update history append-only.
-- [ ] Run relevant full suites/build/Ruff/figure and link checks; real-browser verify controls, both views, source/derived distinction, receipts and language switching.
+- [x] UI RED/GREEN for same-reference table, worse/better results and locale preservation; enable immutable audit replay without changing default production calibration.
+- [x] Record complete primary and repeat results, failed hypotheses, assumptions and next actions; update history append-only.
+- [x] Run relevant full suites/build/Ruff/figure and link checks; real-browser verify controls, both views, source/derived distinction, receipts and language switching.
 - [ ] Fresh independent review, fix material findings with RED/GREEN; private push, clean-clone verification, final remote-SHA check. Preserve all raw evidence and user-owned E06 branch.

@@ -147,4 +147,4 @@ make build
 | 接手开发或复核历史问题 | [贡献约定](CONTRIBUTING.md) · [问题与实验](docs/quality/README.md) · [版本变化](CHANGELOG.md) |
 | 更新 README 的图 | [配图来源与重建方式](docs/assets/README.md) |
 
-[历史 V1](https://github.com/HenryVarro666/2Dto3D/releases/tag/v1.0.0) / [V2](https://github.com/HenryVarro666/2Dto3D/releases/tag/v2.0.0) 快照保留。仓库默认私有，本阶段未选择开源发布许可；模型、库及数据各有自己的许可。原始照片、权重、SQLite 与实验生成产物默认不进入 Git；这里的截图只包含原创解析场景和真实 UI，图示不充当实测证据。
+[历史 V1](https://github.com/HenryVarro666/2Dto3D/releases/tag/v1.0.0) / [V2](https://github.com/HenryVarro666/2Dto3D/releases/tag/v2.0.0) 快照保留。仓库默认私有，本阶段未选择开源发布许可；模型、库及数据各有自己的许可。原始照片、权重、SQLite 与实验生成产物默认不进入 Git；截图包含明确标注的原创解析场景、真实 UI 和 ETH3D 公开照片/点云衍生内容；归属与许可见素材记录，示意图不充当实测证据。

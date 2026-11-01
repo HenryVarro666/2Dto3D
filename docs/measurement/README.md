@@ -94,3 +94,6 @@ PV3D_DATA_DIR="$PWD/data/measurement-demo" make dev
 | 开发中改 i18n 后切换无响应 | 本次热更新观察到此现象，整页重载恢复；生产构建另行验证，不能据此认定持久数据丢失 |
 
 新增问题分配[台账 ID](../quality/issues.md)，按[实验模板](../quality/README.md)保存版本、失败尝试、修复、同输入对照、测试、剩余误差与下一步。
+
+
+E08补充：[新GitHub克隆复现凭证](undistortion-clone-verification.json)记录独立安装、冻结预处理和两次真实模型smoke；复用了公开源数据与权重缓存，未复制原服务数据库。原始产物仍不随Git迁移。

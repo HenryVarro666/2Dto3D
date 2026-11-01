@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "experiment_id": "E08",
+  "verified_at": "2026-11-01T06:36:10.691865+00:00",
+  "clone_source": "private GitHub eval/undistortion-fixed-points",
+  "clone_final_code_commit": "b58b72d5d13280fa514523b498df49a305e2e2e0",
+  "model_smoke_code_commit": "7a4038add91ab36feba14b0558c889681b72ccf7",
+  "model_smoke_scope": "two real rectified518 calls before RUN-002 exit-code-only fix; geometry/model implementation unchanged by fix",
+  "host": "same M4 Pro /24GB /MPS; not another physical machine or RTX5080",
+  "protocol_sha256": "64a1d72b4f0f6f10125c2caca13b61649ed6202138f81243c370ffbc938c2ff2",
+  "cached_sources_reused": true,
+  "cached_checkpoint_reused": true,
+  "original_database_reused": false,
+  "new_api_virtualenv": true,
+  "new_multiview_virtualenv": true,
+  "frozen_prepare_verified": true,
+  "tests": {
+    "fresh_clone_api": {
+      "passed": 131,
+      "skipped": 2
+    },
+    "fresh_clone_frontend": {
+      "passed": 70,
+      "files": 18
+    },
+    "full_ml_api_worktree": {
+      "passed": 133,
+      "skipped": 0
+    },
+    "build": "passed",
+    "ruff": "passed",
+    "svg_generation_check": "10 passed",
+    "multiview_locked_install": "passed"
+  },
+  "locks_sha256": {
+    "uv.lock": "67492095f4642241c63280f0c8e15239e55ef556bc0845d80983826b134301df",
+    "services/multiview/uv.lock": "db21384d263fb534c7ef05ee65af129fdc6e55de70f7c64121d89a9b8df0cf17",
+    "apps/web/package-lock.json": "b30a8605b17989597e88986fa111e263cdf186fafc2cd1e9d1fa0ca55c93bd51"
+  },
+  "smoke_runs": [
+    {
+      "scene": "pipes",
+      "condition": "rectified",
+      "input_size": 518,
+      "status": "succeeded",
+      "job_id": "0dfdc3bf0fcf4bd3bfe41dfe92160928",
+      "geometry_sha256": "529676885f7d9e2cf105da7da69b328fb5fcbe7bb50622d5460a28b2e945561d",
+      "raw_cloud_sha256": "8b8a3060dea003a13c5de4452555ad75ebc0188318883a612d33961960abc764",
+      "worker_wall_ms": 22402.097583995783,
+      "model_arrays_equal_primary": true,
+      "maximum_calibrated_distance_change_mm": 0.0
+    },
+    {
+      "scene": "kicker",
+      "condition": "rectified",
+      "input_size": 518,
+      "status": "succeeded",
+      "job_id": "ef95cec9b23e4478bbea611707aa4a29",
+      "geometry_sha256": "80a480d04755e65660570cac29130d959e8ab803a22053ebd9d2fd828d8b21da",
+      "raw_cloud_sha256": "8d1462af76438a7172d3fee9a0a983bce4eb4127b50764d52f8ce66d34826596",
+      "worker_wall_ms": 14690.257708003628,
+      "model_arrays_equal_primary": true,
+      "maximum_calibrated_distance_change_mm": 0.0
+    }
+  ],
+  "smoke_source_summary_sha256": "d8de95400ad8c45d542473af24eecd935032e59760ddc05d348693595a7b6234",
+  "log_sha256": {
+    "clone-final-update.log": "58bb771fed5147b7ec8823fda3f70aa9205b23eba5bb978f935167d5880a4ee0",
+    "clone-prepare.log": "b537e36a50e5bb8f032f98315eada2a4279a068199d91e594140c64878e1ea56",
+    "clone-figures-final.log": "e775f1618cd16a5887d61f875e9bcc4ea824041d0318f5ec943126176c66efc9",
+    "clone-frontend-final.log": "3f3e413c526a23b973a4bbb87802c8c07f428a7f06e050efcce910065a3465bf",
+    "clone-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "clone-ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "clone-setup.log": "c533a997acd786ea80b4ff50ea038304588194d95c31ffb3eb604055140f4f99",
+    "clone-backend-final.log": "5b9c0d221794b893bb52b424ba06e9076f7b701a3b71902c9eb42e74f656661f",
+    "clone-build-final.log": "c6c391d69d9d03fc1c91f861dfcbafef72d7e1f948667389bc1956b597405aae",
+    "clone-figures.log": "e775f1618cd16a5887d61f875e9bcc4ea824041d0318f5ec943126176c66efc9",
+    "clone-model-smoke.log": "f13cc03d6929611d663ef35dc85ee7da1781b39dbf4c29bde707744241713027",
+    "clone-backend.log": "976c1b754cefb5b256bb692e540853cfe42d89a127440eba89e835c64e122b97",
+    "clone-frontend.log": "53c4d24eac6f0840c91d498a894da407de53030514918ad9ee4e4d60ee4717a1",
+    "clone-build.log": "ccacdae310b175aa97f6f20ac22c8e1cc0c71098e6894791dffca7a563813c32",
+    "clone-worker-setup.log": "15f21e578ad9cfe2cea7d8bde34a8eef67ee3e5c5c3e7a161bfcc752a358f6f0"
+  },
+  "durable_ignored_evidence": "data/measurement-undistortion/clone-verification-2026-11-01/",
+  "runtime_copy_scope": "audit archive only; not a claim of database migration or automatic restoration of original absolute paths"
+}
