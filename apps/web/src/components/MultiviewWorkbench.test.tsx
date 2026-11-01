@@ -17,6 +17,7 @@ const photos = ["front", "side"].map(
   (name) => new File([name], `${name}.png`, { type: "image/png" }),
 );
 
+// This full edit/language/rebuild/navigation flow exceeds 5s on the shared CI runner.
 it("keeps per-view edits, global association and language while preserving single mode", async () => {
   const user = userEvent.setup();
   const inputs: MultiJobInput[] = [];
@@ -113,7 +114,7 @@ it("keeps per-view edits, global association and language while preserving singl
     screen.getByRole("button", { name: "Foto 2: side.png" }),
   ).toHaveAttribute("aria-pressed", "true");
   expect(create).toHaveBeenCalledTimes(2);
-});
+}, 15_000);
 
 it("runs guided correction against the active photo and blocks changing views during a draft", async () => {
   const user = userEvent.setup();
