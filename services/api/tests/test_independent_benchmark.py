@@ -57,6 +57,28 @@ def test_selected_camera_uses_image_id_instead_of_first_camera_row(tmp_path, mon
         benchmark.camera_for_views(tmp_path, ["one.JPG", "two.JPG"])
 
 
+def test_publisher_rejects_missing_duplicate_and_moved_references(monkeypatch):
+    publisher = module(monkeypatch, "publish_independent")
+    protocol = {"model_revision": "model", "model_code_revision": "code", "scenes": [{
+        "id": "scene", "cases": [{"image_condition": "original", "resize_mode": "isotropic"}],
+        "reference_lengths_mm": [100, 200, 300, 400, 500],
+        "segments": [{"id": x} for x in ["AB", "CD", "EF", "GH", "IJ"]]}]}
+    row = {"scene": "scene", "image_condition": "original", "resize_mode": "isotropic", "status": "succeeded",
+           "input_size": 518, "view_count": 3, "reference_lengths_mm": [100, 200, 300, 400, 500],
+           "calibration": {"known_length_mm": 100}, "model": {"revision": "model", "code_revision": "code",
+           "protocol_sha256": "frozen", "resize_mode": "isotropic"},
+           "checks": [{"segment_id": x, "reference_mm": (i+2)*100, "calibrated_mm": (i+2)*100,
+                       "relative_error_pct": 0} for i, x in enumerate(["CD", "EF", "GH", "IJ"])]}
+    summary = {"protocol_sha256": "frozen", "runs": [row]}
+    publisher.validate_round(summary, protocol, "frozen")
+    for invalid in [[], [row, row]]:
+        with pytest.raises(ValueError, match="CASE_SET"):
+            publisher.validate_round({**summary, "runs": invalid}, protocol, "frozen")
+    row["checks"][0]["reference_mm"] += .01
+    with pytest.raises(ValueError, match="REFERENCE"):
+        publisher.validate_round(summary, protocol, "frozen")
+
+
 def test_independent_protocol_checks_inputs_without_e08_dependency(tmp_path, monkeypatch):
     benchmark = module(monkeypatch, "resize_benchmark")
     image = tmp_path/"image.png"

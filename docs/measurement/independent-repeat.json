@@ -1,0 +1,4637 @@
+{
+  "schema_version": 1,
+  "experiment_id": "E10-M",
+  "created_at": "2026-11-01T07:34:32.496120+00:00",
+  "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+  "configuration": {
+    "input_size": 518,
+    "resize_modes": [
+      "legacy14",
+      "isotropic"
+    ],
+    "image_conditions": [
+      "original",
+      "rectified"
+    ],
+    "filter": "PIL BICUBIC, reducing_gap=None",
+    "isotropic": "one scalar; centered fractional content; floor/ceil storage; inverse-affine floating source box",
+    "border": "white short-axis source padding covers bicubic footprint; unchanged legacy14 borders",
+    "support": "source erosion ceil(2*max_inverse_scale)+2; inverse mapping; all four neighbours valid",
+    "sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping",
+    "primary_stratum": "rectified",
+    "auxiliary_K": "rectified only, separate A-B-only scale"
+  },
+  "order_reversed": true,
+  "code_commit": "eb2bd3411fb9a182ae4739c8a675a3283f6b4094",
+  "code_file_sha256": {
+    "scripts/resize_benchmark.py": "f3f22dfd6802563c6f4438e250929f7fb91d295dd26718affa0454a8cf7fc4e2",
+    "services/api/src/pv3d/reconstruction.py": "98bf3f62facd7b23df350565c149cdfa552a8c38e815bd91ffa3b55d0ab4ab56",
+    "services/api/src/pv3d/undistortion.py": "f6b7a22d0da737a1dd62d3fbcdbf060491bfda899aacd2119966e92c211f8cce",
+    "services/multiview/infer.py": "42d2a2de41deac30e97ae732d4ae964fb04db616f85cf52239c5deb25b196557",
+    "scripts/independent_benchmark.py": "6479d84da4ca396b2af425df2f63ff9273e6d731ffac06943aad127f6d0c2b94"
+  },
+  "runs": [
+    {
+      "scene": "terrains",
+      "image_condition": "rectified",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1073.4452513137696,
+        2876.01535921437,
+        575.9841094984808,
+        3257.6368867998553,
+        137.17740407282702
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 10247.816750008496,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "rectified",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "421acf8e13712592eb1ad1fd8941d459062b6b56d27011dd7b62815bf83f01d3",
+      "model_timings": {
+        "geometry_load_ms": 3619.5432910026284,
+        "geometry_inference_ms": 5016.041166993091,
+        "geometry_unproject_ms": 514.9173749960028
+      },
+      "job_id": "fac99b72ef934f43a2c991dd38890fff",
+      "geometry_sha256": "f2e1035f3c8ffc6e5a95762e57df80ef9bdc5c330f87644edf9d2564d1b67438",
+      "calibration": {
+        "id": "b99738cfde38499ebd4014107f370744",
+        "job_id": "fac99b72ef934f43a2c991dd38890fff",
+        "geometry_job_id": "fac99b72ef934f43a2c991dd38890fff",
+        "geometry_sha256": "f2e1035f3c8ffc6e5a95762e57df80ef9bdc5c330f87644edf9d2564d1b67438",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.592316210269928,
+              0.10817372053861618,
+              -0.647892951965332
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.5972150564193726,
+              -0.21600329875946045,
+              -0.6531370282173157
+            ]
+          }
+        ],
+        "distance_units": 0.32425643998279835,
+        "label": "左墙纵向参照",
+        "created_at": "2026-11-01T07:34:44.046592+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1073.4452513137696,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D terrains/rectified/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1073.4452513137696,
+        "mm_per_unit": 3310.48244213967,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "terrains-CD",
+          "label": "走廊左右墙跨墙线1",
+          "reference_mm": 2876.01535921437,
+          "relative_distance_u": 0.8604276662102595,
+          "calibrated_mm": 2848.430681720277,
+          "absolute_error_mm": 27.584677494093285,
+          "relative_error_pct": 0.9591283094408953,
+          "measurement_record_id": "e4f25c5c09de43a5a1b1909ce46deb2b"
+        },
+        {
+          "segment_id": "terrains-EF",
+          "label": "左墙横向",
+          "reference_mm": 575.9841094984808,
+          "relative_distance_u": 0.16058736222209472,
+          "calibrated_mm": 531.6216430657679,
+          "absolute_error_mm": 44.36246643271295,
+          "relative_error_pct": 7.702029570110902,
+          "measurement_record_id": "966339d198d94bdcb6c82e5e53da2f81"
+        },
+        {
+          "segment_id": "terrains-GH",
+          "label": "走廊左右墙跨墙线2",
+          "reference_mm": 3257.6368867998553,
+          "relative_distance_u": 0.9635291227296787,
+          "calibrated_mm": 3189.746243286841,
+          "absolute_error_mm": 67.89064351301431,
+          "relative_error_pct": 2.084045762991921,
+          "measurement_record_id": "bc4e7d2dfae44a5c8ac5845b8a33e329"
+        },
+        {
+          "segment_id": "terrains-IJ",
+          "label": "右墙纵向",
+          "reference_mm": 137.17740407282702,
+          "relative_distance_u": 0.04422950815662697,
+          "calibrated_mm": 146.4210101769869,
+          "absolute_error_mm": 9.24360610415988,
+          "relative_error_pct": 6.738432008271918,
+          "measurement_record_id": "ef59d3818c364aa78a21cbe5d9276e9b"
+        }
+      ],
+      "api_roundtrip_ms": [
+        6.501291005406529,
+        5.85674999456387,
+        6.387125002220273,
+        5.977958993753418,
+        6.353874996420927,
+        6.1563750059576705,
+        6.1775420035701245,
+        5.666167009621859,
+        6.633540993789211
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 3310.48244213967,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            259.4575500488281,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            259.82843017578125,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2340.5609130859375,
+            "primary_scale_camera_z_mm": 2145.8792386232685,
+            "primary_scale_camera_z_signed_error_pct": -8.317735862981191,
+            "relative_neighbour_depth_spread": 0.004568962895449658,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0031962708936336555
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2340.344190597534,
+            "primary_scale_camera_z_mm": 2163.07609961079,
+            "primary_scale_camera_z_signed_error_pct": -7.574445318723999,
+            "relative_neighbour_depth_spread": 0.005024872699955071,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.006139966978730031
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2585.63494682312,
+            "primary_scale_camera_z_mm": 2393.005898874712,
+            "primary_scale_camera_z_signed_error_pct": -7.449970777393955,
+            "relative_neighbour_depth_spread": 0.005338184875351104,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.011654631662221103
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 1330.3437232971191,
+            "primary_scale_camera_z_mm": 1295.3631608085639,
+            "primary_scale_camera_z_signed_error_pct": -2.629437932165346,
+            "relative_neighbour_depth_spread": 0.00806264693698542,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.009262768619825935
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2337.540626525879,
+            "primary_scale_camera_z_mm": 2159.264366914802,
+            "primary_scale_camera_z_signed_error_pct": -7.626659301149186,
+            "relative_neighbour_depth_spread": 0.0046412529359864604,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.006610604162581266
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 2898.418188095093,
+            "primary_scale_camera_z_mm": 2675.4113066258087,
+            "primary_scale_camera_z_signed_error_pct": -7.694089223744804,
+            "relative_neighbour_depth_spread": 0.00548192742784492,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.013276938866790407
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 2894.0634727478027,
+            "primary_scale_camera_z_mm": 2684.443188016607,
+            "primary_scale_camera_z_signed_error_pct": -7.243112900083326,
+            "relative_neighbour_depth_spread": 0.0054512079920977985,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.010109311668380172
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 1007.3657035827637,
+            "primary_scale_camera_z_mm": 979.8328949397995,
+            "primary_scale_camera_z_signed_error_pct": -2.7331492967292648,
+            "relative_neighbour_depth_spread": 0.005945282678278027,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005147304355324201
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 897.2094058990479,
+            "primary_scale_camera_z_mm": 874.8035382598952,
+            "primary_scale_camera_z_signed_error_pct": -2.4972840779239114,
+            "relative_neighbour_depth_spread": 0.005640224684621353,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00423058508120362
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 897.5236415863037,
+            "primary_scale_camera_z_mm": 877.3874464016029,
+            "primary_scale_camera_z_signed_error_pct": -2.2435281090881998,
+            "relative_neighbour_depth_spread": 0.005043609768488599,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0038204559619265683
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.405637659716689e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.6535407168964933,
+          0.495248027242308,
+          2.9715034272898126,
+          0.13640286730765724
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          2.6792380474872552,
+          0.5365752084640969,
+          3.0347489849276377,
+          0.1277917098286458
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1073.44534051974,
+          2848.4113902879885,
+          531.621339000434,
+          3189.7335733790287,
+          146.42045569078476
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              281.87100902615515,
+              0.0,
+              259.60544105567305
+            ],
+            [
+              0.0,
+              281.81348030510225,
+              257.4482218751343
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 3590.1693595201873,
+          "checks": [
+            {
+              "segment_id": "terrains-CD",
+              "calibrated_mm": 2883.9781695683896,
+              "relative_error_pct": 0.27686953508463397
+            },
+            {
+              "segment_id": "terrains-EF",
+              "calibrated_mm": 574.7759277746999,
+              "relative_error_pct": 0.20975955826852966
+            },
+            {
+              "segment_id": "terrains-GH",
+              "calibrated_mm": 3269.9416705225476,
+              "relative_error_pct": 0.37772115647856097
+            },
+            {
+              "segment_id": "terrains-IJ",
+              "calibrated_mm": 146.42300354530173,
+              "relative_error_pct": 6.739885139950785
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "16b01489057d137f7435a22bc1b9d7aeeae6417654375e53ab4fc984d7f80100",
+      "input_preview_url": "/api/assets/39b998610daa44fd8eedb29a5e071b71/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.043246209929601244,
+            0.4171459573270299
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.043055126974332635,
+            0.6666738262442259
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.08507647746731639,
+            0.6248687126401005
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.7469191906728703,
+            0.6644490387701294
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.043010935226637084,
+            0.6249341963452851
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.12756502471813014,
+            0.6245863901285469
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.12693842614891085,
+            0.6664209190974453
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.8321942176927262,
+            0.7071975394535845
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.874628455057122,
+            0.7079945627758804
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.8747157762724864,
+            0.7910717586008447
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "terrains",
+      "image_condition": "rectified",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1073.4452513137696,
+        2876.01535921437,
+        575.9841094984808,
+        3257.6368867998553,
+        137.17740407282702
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 13004.47625000379,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "rectified",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "8d0421533daae8e3c53aeaaf9d13b65bb9153de57cc03820d5d9b93e480b84bb",
+      "model_timings": {
+        "geometry_load_ms": 6094.071208994137,
+        "geometry_inference_ms": 5212.76566600136,
+        "geometry_unproject_ms": 528.0027499975404
+      },
+      "job_id": "bb40fc4e5ba64d2e93d3565b3aeeab35",
+      "geometry_sha256": "6b5f4ded8eb529f54dc1753deafdee3af1586c8190d8de42badffbadb68f6353",
+      "calibration": {
+        "id": "5e414be0c02d4a5bbdcde31ccc52bc88",
+        "job_id": "bb40fc4e5ba64d2e93d3565b3aeeab35",
+        "geometry_job_id": "bb40fc4e5ba64d2e93d3565b3aeeab35",
+        "geometry_sha256": "6b5f4ded8eb529f54dc1753deafdee3af1586c8190d8de42badffbadb68f6353",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.5900495648384094,
+              0.10922058671712875,
+              -0.6383200287818909
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.5953224301338196,
+              -0.21834096312522888,
+              -0.6438983678817749
+            ]
+          }
+        ],
+        "distance_units": 0.3276514762833584,
+        "label": "左墙纵向参照",
+        "created_at": "2026-11-01T07:34:58.437878+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1073.4452513137696,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D terrains/rectified/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1073.4452513137696,
+        "mm_per_unit": 3276.180115194831,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "terrains-CD",
+          "label": "走廊左右墙跨墙线1",
+          "reference_mm": 2876.01535921437,
+          "relative_distance_u": 0.8544354259315488,
+          "calibrated_mm": 2799.284352154966,
+          "absolute_error_mm": 76.73100705940396,
+          "relative_error_pct": 2.667962353315257,
+          "measurement_record_id": "5e23feb3b03549a481b17ac9736284ab"
+        },
+        {
+          "segment_id": "terrains-EF",
+          "label": "左墙横向",
+          "reference_mm": 575.9841094984808,
+          "relative_distance_u": 0.15773283326182475,
+          "calibrated_mm": 516.7611718457321,
+          "absolute_error_mm": 59.22293765274878,
+          "relative_error_pct": 10.28204366684963,
+          "measurement_record_id": "525977ba548e4929905dc5305024c1f5"
+        },
+        {
+          "segment_id": "terrains-GH",
+          "label": "走廊左右墙跨墙线2",
+          "reference_mm": 3257.6368867998553,
+          "relative_distance_u": 0.9562638413638282,
+          "calibrated_mm": 3132.8925819559986,
+          "absolute_error_mm": 124.74430484385675,
+          "relative_error_pct": 3.829288198120801,
+          "measurement_record_id": "1c37c86c71c240f7af6653af4a915998"
+        },
+        {
+          "segment_id": "terrains-IJ",
+          "label": "右墙纵向",
+          "reference_mm": 137.17740407282702,
+          "relative_distance_u": 0.04409576691698668,
+          "calibrated_mm": 144.46567473769787,
+          "absolute_error_mm": 7.288270664870851,
+          "relative_error_pct": 5.313025650348021,
+          "measurement_record_id": "7938842eda814f8c96c83d3124baa08e"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.112708000931889,
+        6.972375005716458,
+        7.063958008075133,
+        5.931417006650008,
+        10.362583008827642,
+        6.48108399764169,
+        6.251874990994111,
+        6.192125001689419,
+        6.2253329961095005
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 3276.180115194831,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            256.55584716796875,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            256.8727722167969,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2340.5609130859375,
+            "primary_scale_camera_z_mm": 2092.2132969567665,
+            "primary_scale_camera_z_signed_error_pct": -10.610602558586457,
+            "relative_neighbour_depth_spread": 0.0048230570771986775,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.003479187702611432
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2340.344190597534,
+            "primary_scale_camera_z_mm": 2110.351771332192,
+            "primary_scale_camera_z_signed_error_pct": -9.827290369910102,
+            "relative_neighbour_depth_spread": 0.004913738921633441,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0059737997064368085
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2585.63494682312,
+            "primary_scale_camera_z_mm": 2329.810634351777,
+            "primary_scale_camera_z_signed_error_pct": -9.894061525803,
+            "relative_neighbour_depth_spread": 0.005197266356774453,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.010966927577624016
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 1330.3437232971191,
+            "primary_scale_camera_z_mm": 1246.095431878627,
+            "primary_scale_camera_z_signed_error_pct": -6.332821356099716,
+            "relative_neighbour_depth_spread": 0.008037418236061149,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.009127935265580842
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2337.540626525879,
+            "primary_scale_camera_z_mm": 2104.5301206524964,
+            "primary_scale_camera_z_signed_error_pct": -9.96819063716935,
+            "relative_neighbour_depth_spread": 0.004662328452499314,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.006444909412432957
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 2898.418188095093,
+            "primary_scale_camera_z_mm": 2605.577495796223,
+            "primary_scale_camera_z_signed_error_pct": -10.103465866370765,
+            "relative_neighbour_depth_spread": 0.005360980745046558,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.012512585810246722
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 2894.0634727478027,
+            "primary_scale_camera_z_mm": 2614.2379679945393,
+            "primary_scale_camera_z_signed_error_pct": -9.668948431444724,
+            "relative_neighbour_depth_spread": 0.005382810210670294,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.010228181907431128
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 1007.3657035827637,
+            "primary_scale_camera_z_mm": 943.5568633795455,
+            "primary_scale_camera_z_signed_error_pct": -6.334227974635009,
+            "relative_neighbour_depth_spread": 0.005711491543437084,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00490408525921254
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 897.2094058990479,
+            "primary_scale_camera_z_mm": 842.5989950035023,
+            "primary_scale_camera_z_signed_error_pct": -6.086696208988496,
+            "relative_neighbour_depth_spread": 0.00514516698376995,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.003799242920772677
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 897.5236415863037,
+            "primary_scale_camera_z_mm": 844.9035601064722,
+            "primary_scale_camera_z_signed_error_pct": -5.8628072890458345,
+            "relative_neighbour_depth_spread": 0.005042728936398442,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0037264046333214712
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 4.7865860386409054e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.6077569850245963,
+          0.4814043112243291,
+          2.918539700205213,
+          0.13458131615086005
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          2.6792380474872552,
+          0.5365752084640969,
+          3.0347489849276377,
+          0.1277917098286458
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1073.4452196238828,
+          2799.2658856633866,
+          516.7611946171518,
+          3132.879995518397,
+          144.4659698078952
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              281.87100902615515,
+              0.0,
+              259.60544105567305
+            ],
+            [
+              0.0,
+              285.6217705794955,
+              257.4340086572307
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 3642.3353869277275,
+          "checks": [
+            {
+              "segment_id": "terrains-CD",
+              "calibrated_mm": 2878.881669659934,
+              "relative_error_pct": 0.09966255696027826
+            },
+            {
+              "segment_id": "terrains-EF",
+              "calibrated_mm": 571.9415259971848,
+              "relative_error_pct": 0.7018567760169514
+            },
+            {
+              "segment_id": "terrains-GH",
+              "calibrated_mm": 3266.10862100482,
+              "relative_error_pct": 0.26005765833794214
+            },
+            {
+              "segment_id": "terrains-IJ",
+              "calibrated_mm": 144.46399862656546,
+              "relative_error_pct": 5.311803793772052
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "f484c74eae008393dd062f12eb8eb50a4a8b60026913c34cbd58ea99c1011553",
+      "input_preview_url": "/api/assets/ebc0ae54f8854d04ac6c934ced709db0/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.043246209929601244,
+            0.4160263081017195
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.043055126974332635,
+            0.6689261752475261
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.08507647746731639,
+            0.6265561276757774
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.7469191906728703,
+            0.6666713230778338
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.043010935226637084,
+            0.6266224962958971
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.12756502471813014,
+            0.6262699899951489
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.12693842614891085,
+            0.6686698504366
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.8321942176927262,
+            0.7099975062029573
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.874628455057122,
+            0.7108053001106894
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.8747157762724864,
+            0.7950051607440993
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "terrains",
+      "image_condition": "original",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1073.4452513137696,
+        2876.01535921437,
+        575.9841094984808,
+        3257.6368867998553,
+        137.17740407282702
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 12371.876749995863,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "original",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "5ac78012c05275b0fd77077be2cd944f3e0e74c648affd23f001e1982303db78",
+      "model_timings": {
+        "geometry_load_ms": 5734.905375007656,
+        "geometry_inference_ms": 5007.656082991161,
+        "geometry_unproject_ms": 536.9978340022499
+      },
+      "job_id": "6c4fb5e779014c10beb569969d78fca0",
+      "geometry_sha256": "92d92752d45db0bea695020f9df77a174f9119fe05dd6b4dfa4877c7094db138",
+      "calibration": {
+        "id": "98148b13f5264fea984d8a1a71e7913e",
+        "job_id": "6c4fb5e779014c10beb569969d78fca0",
+        "geometry_job_id": "6c4fb5e779014c10beb569969d78fca0",
+        "geometry_sha256": "92d92752d45db0bea695020f9df77a174f9119fe05dd6b4dfa4877c7094db138",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.6002942323684692,
+              0.10921867936849594,
+              -0.6483066082000732
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.6053413152694702,
+              -0.21912959218025208,
+              -0.6540445685386658
+            ]
+          }
+        ],
+        "distance_units": 0.32843718526334253,
+        "label": "左墙纵向参照",
+        "created_at": "2026-11-01T07:35:12.205039+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1073.4452513137696,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D terrains/original/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1073.4452513137696,
+        "mm_per_unit": 3268.3426222066664,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "terrains-CD",
+          "label": "走廊左右墙跨墙线1",
+          "reference_mm": 2876.01535921437,
+          "relative_distance_u": 0.8714451822913525,
+          "calibrated_mm": 2848.1814321994852,
+          "absolute_error_mm": 27.83392701488492,
+          "relative_error_pct": 0.9677947972603389,
+          "measurement_record_id": "008c394f67594480b6bdb1c06efe2d5e"
+        },
+        {
+          "segment_id": "terrains-EF",
+          "label": "左墙横向",
+          "reference_mm": 575.9841094984808,
+          "relative_distance_u": 0.15858502091751245,
+          "calibrated_mm": 518.3101831082416,
+          "absolute_error_mm": 57.67392639023922,
+          "relative_error_pct": 10.013110681205578,
+          "measurement_record_id": "abab930739f042a08e2f60fa730b709a"
+        },
+        {
+          "segment_id": "terrains-GH",
+          "label": "走廊左右墙跨墙线2",
+          "reference_mm": 3257.6368867998553,
+          "relative_distance_u": 0.9722611336284015,
+          "calibrated_mm": 3177.682502952676,
+          "absolute_error_mm": 79.95438384717954,
+          "relative_error_pct": 2.454367586859039,
+          "measurement_record_id": "4ae78f27241143938ae9cb84d4f163bb"
+        },
+        {
+          "segment_id": "terrains-IJ",
+          "label": "右墙纵向",
+          "reference_mm": 137.17740407282702,
+          "relative_distance_u": 0.044137043896051394,
+          "calibrated_mm": 144.25498178367135,
+          "absolute_error_mm": 7.077577710844338,
+          "relative_error_pct": 5.159434061813034,
+          "measurement_record_id": "6998e7c9cded44bbb533188c9e4fecc2"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.511417003115639,
+        6.482541997684166,
+        6.916083992109634,
+        5.844166997121647,
+        6.474499998148531,
+        7.193665995146148,
+        6.303874994046055,
+        5.794291006168351,
+        6.48199999704957
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 3268.3426222066664,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            256.9044189453125,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            257.3627624511719,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2340.5609130859375,
+            "primary_scale_camera_z_mm": 2120.535890218281,
+            "primary_scale_camera_z_signed_error_pct": -9.400525388487413,
+            "relative_neighbour_depth_spread": 0.004622498661012115,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00779289010184967
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2340.344190597534,
+            "primary_scale_camera_z_mm": 2138.8855250692936,
+            "primary_scale_camera_z_signed_error_pct": -8.608078518433837,
+            "relative_neighbour_depth_spread": 0.004908997267072622,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.008324576196504141
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2585.63494682312,
+            "primary_scale_camera_z_mm": 2363.0543996169818,
+            "primary_scale_camera_z_signed_error_pct": -8.608351595789475,
+            "relative_neighbour_depth_spread": 0.005199442659093273,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0014569161758723626
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 1330.3437232971191,
+            "primary_scale_camera_z_mm": 1252.0327330365908,
+            "primary_scale_camera_z_signed_error_pct": -5.886523075889194,
+            "relative_neighbour_depth_spread": 0.007658866316866025,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0061076562247815245
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2337.540626525879,
+            "primary_scale_camera_z_mm": 2132.8479660170424,
+            "primary_scale_camera_z_signed_error_pct": -8.756753067135215,
+            "relative_neighbour_depth_spread": 0.004593531399911714,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.007698937931551633
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 2898.418188095093,
+            "primary_scale_camera_z_mm": 2635.2071282935935,
+            "primary_scale_camera_z_signed_error_pct": -9.081196801848934,
+            "relative_neighbour_depth_spread": 0.005402680577738013,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.013116968404511098
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 2894.0634727478027,
+            "primary_scale_camera_z_mm": 2647.0726932504385,
+            "primary_scale_camera_z_signed_error_pct": -8.534394004249535,
+            "relative_neighbour_depth_spread": 0.005322678760698801,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.013660956754069777
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 1007.3657035827637,
+            "primary_scale_camera_z_mm": 954.0226847783944,
+            "primary_scale_camera_z_signed_error_pct": -5.295298282902749,
+            "relative_neighbour_depth_spread": 0.006279052297555229,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005127630986953813
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 897.2094058990479,
+            "primary_scale_camera_z_mm": 854.5469136048541,
+            "primary_scale_camera_z_signed_error_pct": -4.755020624359574,
+            "relative_neighbour_depth_spread": 0.006544701402924809,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0011510887864298605
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 897.5236415863037,
+            "primary_scale_camera_z_mm": 857.0494183586369,
+            "primary_scale_camera_z_signed_error_pct": -4.509543966566909,
+            "relative_neighbour_depth_spread": 0.005111436777936792,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0017365682752863779
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 4.436770340010554e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.653308521057454,
+          0.4828473389526774,
+          2.96026508949904,
+          0.13438503883371822
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          2.6792380474872552,
+          0.5365752084640969,
+          3.0347489849276377,
+          0.1277917098286458
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1073.4454480821441,
+          2848.1746872216677,
+          518.3101527099384,
+          3177.6668263682113,
+          144.25390696982993
+        ]
+      },
+      "raw_cloud_sha256": "75976e5ce34ce839b00d96be697784e744e3a1ec619acf186be198c73f6fced7",
+      "input_preview_url": "/api/assets/3ae9f3c95b3b453d8232c23d169e63db/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.042080026455026454,
+            0.41724537037037035
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.042080026455026454,
+            0.6672453703703703
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.08391203703703719,
+            0.6254133597883601
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.7504133597883598,
+            0.6672453703703705
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.042080026455026454,
+            0.6254133597883598
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.12557870370370383,
+            0.6254133597883603
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.12541335978836,
+            0.667245370370371
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.833746693121693,
+            0.7085813492063493
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.8755787037037037,
+            0.708912037037037
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.8752480158730159,
+            0.7919146825396827
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "terrains",
+      "image_condition": "original",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1073.4452513137696,
+        2876.01535921437,
+        575.9841094984808,
+        3257.6368867998553,
+        137.17740407282702
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 12343.160958000226,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "original",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "02a67371c5ea5657e859e0dfe10a3c431b218061d1ecedd4f7d4b54d3611c0e2",
+      "model_timings": {
+        "geometry_load_ms": 5357.2019999992335,
+        "geometry_inference_ms": 5101.074750011321,
+        "geometry_unproject_ms": 666.4168749994133
+      },
+      "job_id": "8d66489546fc41aba5774dbcbea41501",
+      "geometry_sha256": "844aef032535981bdc36df4bda6baf1608e06571544907246b7770b0ac96a7a4",
+      "calibration": {
+        "id": "4419b40bea4c4875ab333b56b51fba50",
+        "job_id": "8d66489546fc41aba5774dbcbea41501",
+        "geometry_job_id": "8d66489546fc41aba5774dbcbea41501",
+        "geometry_sha256": "844aef032535981bdc36df4bda6baf1608e06571544907246b7770b0ac96a7a4",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.6050711274147034,
+              0.1117803305387497,
+              -0.6439474821090698
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.6108556985855103,
+              -0.2243814766407013,
+              -0.6503311991691589
+            ]
+          }
+        ],
+        "distance_units": 0.33627217207685767,
+        "label": "左墙纵向参照",
+        "created_at": "2026-11-01T07:35:25.950378+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1073.4452513137696,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D terrains/original/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1073.4452513137696,
+        "mm_per_unit": 3192.1917436225594,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "terrains-CD",
+          "label": "走廊左右墙跨墙线1",
+          "reference_mm": 2876.01535921437,
+          "relative_distance_u": 0.8769398446479777,
+          "calibrated_mm": 2799.3601317389243,
+          "absolute_error_mm": 76.65522747544583,
+          "relative_error_pct": 2.6653274722561093,
+          "measurement_record_id": "aba14d12faaf4fa8b5e1ce7c47ca0069"
+        },
+        {
+          "segment_id": "terrains-EF",
+          "label": "左墙横向",
+          "reference_mm": 575.9841094984808,
+          "relative_distance_u": 0.1588723231850841,
+          "calibrated_mm": 507.1509183615604,
+          "absolute_error_mm": 68.83319113692045,
+          "relative_error_pct": 11.95053648213571,
+          "measurement_record_id": "198833564a9a46fdb9185505c920b832"
+        },
+        {
+          "segment_id": "terrains-GH",
+          "label": "走廊左右墙跨墙线2",
+          "reference_mm": 3257.6368867998553,
+          "relative_distance_u": 0.9771694765665778,
+          "calibrated_mm": 3119.3123352158077,
+          "absolute_error_mm": 138.32455158404764,
+          "relative_error_pct": 4.246162368327398,
+          "measurement_record_id": "5bf99fd348d94d7892cc3d62fce82a99"
+        },
+        {
+          "segment_id": "terrains-IJ",
+          "label": "右墙纵向",
+          "reference_mm": 137.17740407282702,
+          "relative_distance_u": 0.04570830332085534,
+          "calibrated_mm": 145.90966847583005,
+          "absolute_error_mm": 8.732264403003029,
+          "relative_error_pct": 6.3656725843617075,
+          "measurement_record_id": "303b01cfac4845b1894fcbe2457a3b6b"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.285540996235795,
+        7.276999996975064,
+        7.3193340067518875,
+        6.370666989823803,
+        6.732208014000207,
+        6.30162499146536,
+        6.669459005934186,
+        6.115958007285371,
+        7.108708989107981
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 3192.1917436225594,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            253.1217498779297,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            253.22557067871094,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2340.5609130859375,
+            "primary_scale_camera_z_mm": 2057.044163594821,
+            "primary_scale_camera_z_signed_error_pct": -12.113196794238135,
+            "relative_neighbour_depth_spread": 0.004683007007976197,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0078111271492753
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2340.344190597534,
+            "primary_scale_camera_z_mm": 2077.063590047558,
+            "primary_scale_camera_z_signed_error_pct": -11.249653004362381,
+            "relative_neighbour_depth_spread": 0.004976809215960767,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.007983394133742624
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2585.63494682312,
+            "primary_scale_camera_z_mm": 2292.9817177928294,
+            "primary_scale_camera_z_signed_error_pct": -11.318427970269497,
+            "relative_neighbour_depth_spread": 0.005205608005148623,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00162245695741119
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 1330.3437232971191,
+            "primary_scale_camera_z_mm": 1221.404780725834,
+            "primary_scale_camera_z_signed_error_pct": -8.188781640679398,
+            "relative_neighbour_depth_spread": 0.00745154206935657,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005865682936961768
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2337.540626525879,
+            "primary_scale_camera_z_mm": 2069.633771486296,
+            "primary_scale_camera_z_signed_error_pct": -11.461056633601864,
+            "relative_neighbour_depth_spread": 0.00450540347108488,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.007671573965353655
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 2898.418188095093,
+            "primary_scale_camera_z_mm": 2560.1856704902416,
+            "primary_scale_camera_z_signed_error_pct": -11.66955544904117,
+            "relative_neighbour_depth_spread": 0.005329090656480837,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.012878397052701857
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 2894.0634727478027,
+            "primary_scale_camera_z_mm": 2570.0902722769297,
+            "primary_scale_camera_z_signed_error_pct": -11.194405496686388,
+            "relative_neighbour_depth_spread": 0.0054403307603900445,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.013559082038414353
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 1007.3657035827637,
+            "primary_scale_camera_z_mm": 933.1358475213793,
+            "primary_scale_camera_z_signed_error_pct": -7.368709873423418,
+            "relative_neighbour_depth_spread": 0.0059960816438096014,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.004970423971477059
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 897.2094058990479,
+            "primary_scale_camera_z_mm": 834.5417767834476,
+            "primary_scale_camera_z_signed_error_pct": -6.984727166653382,
+            "relative_neighbour_depth_spread": 0.004434800516404177,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0007167151594018473
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 897.5236415863037,
+            "primary_scale_camera_z_mm": 838.2429605703979,
+            "primary_scale_camera_z_signed_error_pct": -6.604915822733282,
+            "relative_neighbour_depth_spread": 0.004812898619438949,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0016615004748814937
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 3.8229054699634446e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.607827579760439,
+          0.4724515924224993,
+          2.9058886155564427,
+          0.13592651166629496
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          2.6792380474872552,
+          0.5365752084640969,
+          3.0347489849276377,
+          0.1277917098286458
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1073.4457363337722,
+          2799.353322544155,
+          507.15101557650354,
+          3119.2968311764585,
+          145.9099653453349
+        ]
+      },
+      "raw_cloud_sha256": "a49b2721868bffa21df2257747bde5f530515d14ea6c980a55fb664d17a4b99b",
+      "input_preview_url": "/api/assets/86e47599be4d45c98bd62449cf19729b/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.042080026455026454,
+            0.4161270645645646
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.042080026455026454,
+            0.669505442942943
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.08391203703703719,
+            0.6271081349206353
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.7504133597883598,
+            0.6695054429429431
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.042080026455026454,
+            0.627108134920635
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.12557870370370383,
+            0.6271081349206356
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.12541335978836,
+            0.6695054429429437
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.833746693121693,
+            0.711400016087516
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.8755787037037037,
+            0.7117351726726727
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.8752480158730159,
+            0.7958594755469756
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "delivery_area",
+      "image_condition": "rectified",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        2033.0489088314807,
+        4034.760555995956,
+        547.5589857482898,
+        9626.2448277277,
+        6069.837163414093
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 12351.06345800159,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "rectified",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "cb127abd8adf25fd04e64c38b2a1f77e85bc00de97ea0049be07e0df54ce0c19",
+      "model_timings": {
+        "geometry_load_ms": 5692.888292003772,
+        "geometry_inference_ms": 5047.510958000203,
+        "geometry_unproject_ms": 506.97166699683294
+      },
+      "job_id": "a57d1d063a7f4b05bf2e62283db9ed54",
+      "geometry_sha256": "4ddc7304fb92b4d0bc257a5f82981504ae2bfd40039fe5b5a7de7c53aa83f182",
+      "calibration": {
+        "id": "0a03e0a4915b46d59e250dc18558f938",
+        "job_id": "a57d1d063a7f4b05bf2e62283db9ed54",
+        "geometry_job_id": "a57d1d063a7f4b05bf2e62283db9ed54",
+        "geometry_sha256": "4ddc7304fb92b4d0bc257a5f82981504ae2bfd40039fe5b5a7de7c53aa83f182",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              0.3179101347923279,
+              -0.07745406031608582,
+              -1.8096059560775757
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              0.3123985826969147,
+              -0.3354738652706146,
+              -1.768595576286316
+            ]
+          }
+        ],
+        "distance_units": 0.26131675837170665,
+        "label": "后墙纵向参照",
+        "created_at": "2026-11-01T07:35:39.664910+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 2033.0489088314807,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D delivery_area/rectified/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 2033.0489088314807,
+        "mm_per_unit": 7780.017330306832,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "delivery_area-CD",
+          "label": "后墙横向",
+          "reference_mm": 4034.760555995956,
+          "relative_distance_u": 0.5204592706109487,
+          "calibrated_mm": 4049.182145072034,
+          "absolute_error_mm": 14.421589076077908,
+          "relative_error_pct": 0.35743357941393444,
+          "measurement_record_id": "7e489bebef774ff2bdfe49b766c91d4f"
+        },
+        {
+          "segment_id": "delivery_area-EF",
+          "label": "近侧柱面纵向",
+          "reference_mm": 547.5589857482898,
+          "relative_distance_u": 0.06898956142840529,
+          "calibrated_mm": 536.7399835232609,
+          "absolute_error_mm": 10.819002225028953,
+          "relative_error_pct": 1.9758605934014195,
+          "measurement_record_id": "53cf0cde85de428c90381be89394508c"
+        },
+        {
+          "segment_id": "delivery_area-GH",
+          "label": "后墙至近侧柱面",
+          "reference_mm": 9626.2448277277,
+          "relative_distance_u": 1.2559275362396896,
+          "calibrated_mm": 9771.137997554348,
+          "absolute_error_mm": 144.89316982664786,
+          "relative_error_pct": 1.5051889123918145,
+          "measurement_record_id": "0de24fdf0dec4631a197f19129ab68c8"
+        },
+        {
+          "segment_id": "delivery_area-IJ",
+          "label": "后墙至拖车表面",
+          "reference_mm": 6069.837163414093,
+          "relative_distance_u": 0.7948087270974568,
+          "calibrated_mm": 6183.6256710973275,
+          "absolute_error_mm": 113.78850768323446,
+          "relative_error_pct": 1.8746550297773061,
+          "measurement_record_id": "4ebba47460624c5d982545c649a26d5b"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.92220800940413,
+        8.18766700103879,
+        6.664041997282766,
+        5.950332997599617,
+        7.837209006538615,
+        6.776791997253895,
+        6.606750001083128,
+        5.75266701343935,
+        28.284040992730297
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 7780.017330306832,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            283.97479248046875,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            285.262939453125,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 13846.612930297852,
+            "primary_scale_camera_z_mm": 14079.87732809518,
+            "primary_scale_camera_z_signed_error_pct": 1.6846314616545621,
+            "relative_neighbour_depth_spread": 0.0016322082505129329,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.010672022538032669
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 13538.951873779297,
+            "primary_scale_camera_z_mm": 13760.53603525541,
+            "primary_scale_camera_z_signed_error_pct": 1.6366419169068225,
+            "relative_neighbour_depth_spread": 0.0017948430536913055,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00462549081102602
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 14285.333633422852,
+            "primary_scale_camera_z_mm": 14513.210814164875,
+            "primary_scale_camera_z_signed_error_pct": 1.5951827698925225,
+            "relative_neighbour_depth_spread": 0.0017132627574481226,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.016847878593353568
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 12923.315048217773,
+            "primary_scale_camera_z_mm": 13141.59348660032,
+            "primary_scale_camera_z_signed_error_pct": 1.6890282220013653,
+            "relative_neighbour_depth_spread": 0.0016415433104616268,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0050517160693669926
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 3450.9520530700684,
+            "primary_scale_camera_z_mm": 3465.235475308618,
+            "primary_scale_camera_z_signed_error_pct": 0.413898020572101,
+            "relative_neighbour_depth_spread": 0.0015176767012585327,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0034669320328007142
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 3383.225917816162,
+            "primary_scale_camera_z_mm": 3408.6856420075164,
+            "primary_scale_camera_z_signed_error_pct": 0.7525280548745794,
+            "relative_neighbour_depth_spread": 0.001079358990467853,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0023494976076939584
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 13203.344345092773,
+            "primary_scale_camera_z_mm": 13424.998388680278,
+            "primary_scale_camera_z_signed_error_pct": 1.6787719671182089,
+            "relative_neighbour_depth_spread": 0.0016225028877197823,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.004810420186692186
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 3737.7514839172363,
+            "primary_scale_camera_z_mm": 3812.854111405349,
+            "primary_scale_camera_z_signed_error_pct": 2.0092996501041904,
+            "relative_neighbour_depth_spread": 0.007268954275434493,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.009205768984134383
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 13020.891189575195,
+            "primary_scale_camera_z_mm": 13223.49447667539,
+            "primary_scale_camera_z_signed_error_pct": 1.5559863311230382,
+            "relative_neighbour_depth_spread": 0.0015779321990489618,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.011186065031288512
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 10541.45622253418,
+            "primary_scale_camera_z_mm": 10453.176491206488,
+            "primary_scale_camera_z_signed_error_pct": -0.8374529046468737,
+            "relative_neighbour_depth_spread": 0.001854514462138147,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.008157162008440903
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.7581362788994284e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          1.9916796529008984,
+          0.26400741329521615,
+          4.80614999231397,
+          3.0415528343838223
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          1.984586075853425,
+          0.2693289784469602,
+          4.734881087174878,
+          2.985583444179316
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          2033.0493109734048,
+          4049.1948823749613,
+          536.7401687237304,
+          9771.137892065166,
+          6183.622671998222
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              280.320197328384,
+              0.0,
+              259.7017002550021
+            ],
+            [
+              0.0,
+              280.34322434402736,
+              258.312630358015
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 7652.007978415759,
+          "checks": [
+            {
+              "segment_id": "delivery_area-CD",
+              "calibrated_mm": 4031.8261065543097,
+              "relative_error_pct": 0.07272920910474934
+            },
+            {
+              "segment_id": "delivery_area-EF",
+              "calibrated_mm": 536.9062987577529,
+              "relative_error_pct": 1.945486654004791
+            },
+            {
+              "segment_id": "delivery_area-GH",
+              "calibrated_mm": 9613.650149973842,
+              "relative_error_pct": 0.13083687335251337
+            },
+            {
+              "segment_id": "delivery_area-IJ",
+              "calibrated_mm": 6141.1264113386915,
+              "relative_error_pct": 1.174483697096429
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "46dde2b41ad743a105a6faf08a21bc3a033f5f6f3401ae738d6004e2c2bf1ec3",
+      "input_preview_url": "/api/assets/eee7aee6c67445cb808822e026b985a3/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.5970715407526038,
+            0.5246248487485897
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.5975826975690942,
+            0.6055085736033582
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.5407224627973819,
+            0.540783036428588
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.7037522460314601,
+            0.5409767130823511
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.9574933125787484,
+            0.33396365974792724
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.9576262045375928,
+            0.4171006172557477
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.6786972079297031,
+            0.5167630711882076
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.9157971480923782,
+            0.4173740342151584
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.6625789407803708,
+            0.6057424622764112
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.4202009499449808,
+            0.5811540523659044
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "delivery_area",
+      "image_condition": "rectified",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        2033.0489088314807,
+        4034.760555995956,
+        547.5589857482898,
+        9626.2448277277,
+        6069.837163414093
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 13994.952749999356,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "rectified",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "8defa9f139a278b3622a8b409b095e09f353562bbfae6c1e6d60123f0becd65b",
+      "model_timings": {
+        "geometry_load_ms": 5671.279582995339,
+        "geometry_inference_ms": 6204.050875006942,
+        "geometry_unproject_ms": 766.4628339989576
+      },
+      "job_id": "b091f2301f6d40188319080828e296ca",
+      "geometry_sha256": "fb81cf27ff613ef9027847fedd6991eb50952e455d523c3afc26d44eac2a5bdf",
+      "calibration": {
+        "id": "820c97ebd6354ab0842f220ace5a552c",
+        "job_id": "b091f2301f6d40188319080828e296ca",
+        "geometry_job_id": "b091f2301f6d40188319080828e296ca",
+        "geometry_sha256": "fb81cf27ff613ef9027847fedd6991eb50952e455d523c3afc26d44eac2a5bdf",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              0.3156689405441284,
+              -0.07797441631555557,
+              -1.810678243637085
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              0.3101947009563446,
+              -0.3376031219959259,
+              -1.7696404457092285
+            ]
+          }
+        ],
+        "distance_units": 0.26290898229443666,
+        "label": "后墙纵向参照",
+        "created_at": "2026-11-01T07:35:55.111286+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 2033.0489088314807,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D delivery_area/rectified/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 2033.0489088314807,
+        "mm_per_unit": 7732.900150800597,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "delivery_area-CD",
+          "label": "后墙横向",
+          "reference_mm": 4034.760555995956,
+          "relative_distance_u": 0.5172562267626423,
+          "calibrated_mm": 3999.890753935384,
+          "absolute_error_mm": 34.869802060572056,
+          "relative_error_pct": 0.8642347315692109,
+          "measurement_record_id": "590ad58ca66a443ab111baf00fb433cc"
+        },
+        {
+          "segment_id": "delivery_area-EF",
+          "label": "近侧柱面纵向",
+          "reference_mm": 547.5589857482898,
+          "relative_distance_u": 0.0700679028118532,
+          "calibrated_mm": 541.8280962200612,
+          "absolute_error_mm": 5.7308895282286585,
+          "relative_error_pct": 1.0466250536272124,
+          "measurement_record_id": "4a191bf4b54145f0b016000bf8dc0075"
+        },
+        {
+          "segment_id": "delivery_area-GH",
+          "label": "后墙至近侧柱面",
+          "reference_mm": 9626.2448277277,
+          "relative_distance_u": 1.2536140843305215,
+          "calibrated_mm": 9694.072541765241,
+          "absolute_error_mm": 67.82771403754123,
+          "relative_error_pct": 0.7046123930088337,
+          "measurement_record_id": "95195f2ae78c4a6585640a0f31c9d106"
+        },
+        {
+          "segment_id": "delivery_area-IJ",
+          "label": "后墙至拖车表面",
+          "reference_mm": 6069.837163414093,
+          "relative_distance_u": 0.791855038506407,
+          "calibrated_mm": 6123.335946678408,
+          "absolute_error_mm": 53.498783264314625,
+          "relative_error_pct": 0.8813874544572334,
+          "measurement_record_id": "19d64f01d1c84e84a323e476d9f74896"
+        }
+      ],
+      "api_roundtrip_ms": [
+        9.626125000067987,
+        8.246249999501742,
+        7.7605410042451695,
+        6.394458992872387,
+        7.371416999376379,
+        6.054999990737997,
+        6.567625008756295,
+        5.838750003022142,
+        7.172040990553796
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 7732.900150800597,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            286.12030029296875,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            287.489990234375,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 13846.612930297852,
+            "primary_scale_camera_z_mm": 14002.681714073398,
+            "primary_scale_camera_z_signed_error_pct": 1.1271260673001882,
+            "relative_neighbour_depth_spread": 0.0016260662588491325,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.011153085544625149
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 13538.951873779297,
+            "primary_scale_camera_z_mm": 13685.054061102288,
+            "primary_scale_camera_z_signed_error_pct": 1.0791247999480946,
+            "relative_neighbour_depth_spread": 0.0017703040833006306,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0038512833791162823
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 14285.333633422852,
+            "primary_scale_camera_z_mm": 14432.06025978251,
+            "primary_scale_camera_z_signed_error_pct": 1.0271137526418395,
+            "relative_neighbour_depth_spread": 0.0016832078600105965,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.015186061741936313
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 12923.315048217773,
+            "primary_scale_camera_z_mm": 13078.174796890935,
+            "primary_scale_camera_z_signed_error_pct": 1.198297403532833,
+            "relative_neighbour_depth_spread": 0.001583970506476039,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0019217448241797782
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 3450.9520530700684,
+            "primary_scale_camera_z_mm": 3475.1511339905373,
+            "primary_scale_camera_z_signed_error_pct": 0.7012291260013459,
+            "relative_neighbour_depth_spread": 0.0014306366862727599,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.003199685596145274
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 3383.225917816162,
+            "primary_scale_camera_z_mm": 3416.6438619899423,
+            "primary_scale_camera_z_signed_error_pct": 0.987753847527606,
+            "relative_neighbour_depth_spread": 0.0010280311210476775,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0020419506681563187
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 13203.344345092773,
+            "primary_scale_camera_z_mm": 13356.850659357058,
+            "primary_scale_camera_z_signed_error_pct": 1.1626320593640882,
+            "relative_neighbour_depth_spread": 0.00158073753922978,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005404834399545043
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 3737.7514839172363,
+            "primary_scale_camera_z_mm": 3817.929937261956,
+            "primary_scale_camera_z_signed_error_pct": 2.1450985623231222,
+            "relative_neighbour_depth_spread": 0.007464984619759992,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.009325867212432793
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 13020.891189575195,
+            "primary_scale_camera_z_mm": 13153.45417376775,
+            "primary_scale_camera_z_signed_error_pct": 1.0180791949070844,
+            "relative_neighbour_depth_spread": 0.0016959385248812887,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.010365352852016807
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 10541.45622253418,
+            "primary_scale_camera_z_mm": 10377.126454480887,
+            "primary_scale_camera_z_signed_error_pct": -1.5588905800510644,
+            "relative_neighbour_depth_spread": 0.001960193781157365,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.007171025058180481
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.66035620597205e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          1.9674345937080133,
+          0.2665101138818561,
+          4.768243646109344,
+          3.0118980020986648
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          1.984586075853425,
+          0.2693289784469602,
+          4.734881087174878,
+          2.985583444179316
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          2033.051153213367,
+          3999.9029853069887,
+          541.8290343248595,
+          9694.073032105814,
+          6123.332704998302
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              280.320197328384,
+              0.0,
+              259.7017002550021
+            ],
+            [
+              0.0,
+              284.1316462946223,
+              258.31009833582596
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 7647.600298847373,
+          "checks": [
+            {
+              "segment_id": "delivery_area-CD",
+              "calibrated_mm": 4031.542884401026,
+              "relative_error_pct": 0.0797487620460724
+            },
+            {
+              "segment_id": "delivery_area-EF",
+              "calibrated_mm": 541.9963198074125,
+              "relative_error_pct": 1.0159025941790412
+            },
+            {
+              "segment_id": "delivery_area-GH",
+              "calibrated_mm": 9591.45535158747,
+              "relative_error_pct": 0.36140236159400985
+            },
+            {
+              "segment_id": "delivery_area-IJ",
+              "calibrated_mm": 6149.153497689515,
+              "relative_error_pct": 1.3067291945408455
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "6bf01b94777e3e4a6527d66efea848c0985f084802804150eba339acb0923f2f",
+      "input_preview_url": "/api/assets/1389048073f44168b2fa78b5eae902c1/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.5970715407526038,
+            0.524957616974922
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.5975826975690942,
+            0.6069343651385386
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.5407224627973819,
+            0.5413341585424879
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.7037522460314601,
+            0.5415304524483286
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.9574933125787484,
+            0.3317199254201965
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.9576262045375928,
+            0.4159803553267713
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.6786972079297031,
+            0.5169895991772375
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.9157971480923782,
+            0.4162574671099578
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.6625789407803708,
+            0.6071714144693355
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.4202009499449808,
+            0.5822507287492276
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "delivery_area",
+      "image_condition": "original",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        2033.0489088314807,
+        4034.760555995956,
+        547.5589857482898,
+        9626.2448277277,
+        6069.837163414093
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 13845.80054100661,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "original",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "832841b92f8f784fd4a7e570835ff57356d417d42dabf05ef7fb2057f0997536",
+      "model_timings": {
+        "geometry_load_ms": 6280.131833002088,
+        "geometry_inference_ms": 5500.8390419970965,
+        "geometry_unproject_ms": 632.0062919985503
+      },
+      "job_id": "787f285ac07546cfb4e9c37a18617e92",
+      "geometry_sha256": "caefbe0b2786027a6feb2bd76c1c2354c29bfa879f45ec78b49e1cd78451df02",
+      "calibration": {
+        "id": "3e49d769936e4e35a0b6e59810cdbd9e",
+        "job_id": "787f285ac07546cfb4e9c37a18617e92",
+        "geometry_job_id": "787f285ac07546cfb4e9c37a18617e92",
+        "geometry_sha256": "caefbe0b2786027a6feb2bd76c1c2354c29bfa879f45ec78b49e1cd78451df02",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              0.30553507804870605,
+              -0.07437005639076233,
+              -1.7640409469604492
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              0.2996103763580322,
+              -0.32232582569122314,
+              -1.726830244064331
+            ]
+          }
+        ],
+        "distance_units": 0.2508023166350941,
+        "label": "后墙纵向参照",
+        "created_at": "2026-11-01T07:36:10.390274+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 2033.0489088314807,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D delivery_area/original/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 2033.0489088314807,
+        "mm_per_unit": 8106.180740704536,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "delivery_area-CD",
+          "label": "后墙横向",
+          "reference_mm": 4034.760555995956,
+          "relative_distance_u": 0.49561452920676274,
+          "calibrated_mm": 4017.540951469206,
+          "absolute_error_mm": 17.219604526750118,
+          "relative_error_pct": 0.42678132413980546,
+          "measurement_record_id": "e21078c29b764496b64d177e8ebf8758"
+        },
+        {
+          "segment_id": "delivery_area-EF",
+          "label": "近侧柱面纵向",
+          "reference_mm": 547.5589857482898,
+          "relative_distance_u": 0.0675499445736424,
+          "calibrated_mm": 547.5720597385189,
+          "absolute_error_mm": 0.013073990229031551,
+          "relative_error_pct": 0.00238768617981216,
+          "measurement_record_id": "476c3d5fa76a4f09bbcafd7f7493027b"
+        },
+        {
+          "segment_id": "delivery_area-GH",
+          "label": "后墙至近侧柱面",
+          "reference_mm": 9626.2448277277,
+          "relative_distance_u": 1.1975772457207383,
+          "calibrated_mm": 9707.777604767432,
+          "absolute_error_mm": 81.53277703973254,
+          "relative_error_pct": 0.8469842446234412,
+          "measurement_record_id": "455c38daf90a4db591089bf9090d4ccc"
+        },
+        {
+          "segment_id": "delivery_area-IJ",
+          "label": "后墙至拖车表面",
+          "reference_mm": 6069.837163414093,
+          "relative_distance_u": 0.7653767878620021,
+          "calibrated_mm": 6204.2825771492635,
+          "absolute_error_mm": 134.4454137351704,
+          "relative_error_pct": 2.214975626455671,
+          "measurement_record_id": "cd0fc408e0be4881872de19dae915b82"
+        }
+      ],
+      "api_roundtrip_ms": [
+        6.3954590004868805,
+        7.378000009339303,
+        7.061333992169239,
+        15.565250010695308,
+        6.572958009201102,
+        6.305458009592257,
+        6.701416001305915,
+        5.826000007800758,
+        6.565957999555394
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 8106.180740704536,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            298.0107727050781,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            299.33697509765625,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 13846.612930297852,
+            "primary_scale_camera_z_mm": 14300.314709742723,
+            "primary_scale_camera_z_signed_error_pct": 3.2766264336899553,
+            "relative_neighbour_depth_spread": 0.00154319155954616,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.014463145573855899
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 13538.951873779297,
+            "primary_scale_camera_z_mm": 13998.51767124439,
+            "primary_scale_camera_z_signed_error_pct": 3.3943971568074494,
+            "relative_neighbour_depth_spread": 0.0016724146837666129,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.01253877959918822
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 14285.333633422852,
+            "primary_scale_camera_z_mm": 14725.913187533433,
+            "primary_scale_camera_z_signed_error_pct": 3.0841390576960226,
+            "relative_neighbour_depth_spread": 0.0020103053634079014,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.015752965465983332
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 12923.315048217773,
+            "primary_scale_camera_z_mm": 13399.939498026411,
+            "primary_scale_camera_z_signed_error_pct": 3.6880974272492706,
+            "relative_neighbour_depth_spread": 0.0015668351629329208,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.01072644409118468
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 3450.9520530700684,
+            "primary_scale_camera_z_mm": 3700.7609832035823,
+            "primary_scale_camera_z_signed_error_pct": 7.238840942784952,
+            "relative_neighbour_depth_spread": 0.001381897074497673,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0011794312766031654
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 3383.225917816162,
+            "primary_scale_camera_z_mm": 3641.4572869150866,
+            "primary_scale_camera_z_signed_error_pct": 7.632696585205001,
+            "relative_neighbour_depth_spread": 0.0011542250554008194,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.001292007331035758
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 13203.344345092773,
+            "primary_scale_camera_z_mm": 13673.732178667018,
+            "primary_scale_camera_z_signed_error_pct": 3.5626415647416865,
+            "relative_neighbour_depth_spread": 0.0015318578116485298,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.011253085812653545
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 3737.7514839172363,
+            "primary_scale_camera_z_mm": 4113.132384086946,
+            "primary_scale_camera_z_signed_error_pct": 10.04296036761394,
+            "relative_neighbour_depth_spread": 0.007388220026126756,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.021736494885375705
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 13020.891189575195,
+            "primary_scale_camera_z_mm": 13483.829770672792,
+            "primary_scale_camera_z_signed_error_pct": 3.555352505120646,
+            "relative_neighbour_depth_spread": 0.0014980342472009913,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.004972793030299034
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 10541.45622253418,
+            "primary_scale_camera_z_mm": 10677.614420987087,
+            "primary_scale_camera_z_signed_error_pct": 1.2916450590749085,
+            "relative_neighbour_depth_spread": 0.0018317350544374586,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.01171013876316875
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.7594659708115614e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          1.9761162331202036,
+          0.26933540917775683,
+          4.774984783984904,
+          3.0517133897753834
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          1.984586075853425,
+          0.2693289784469602,
+          4.734881087174878,
+          2.985583444179316
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          2033.0511802739325,
+          4017.5439799775127,
+          547.5718425458592,
+          9707.778086693374,
+          6204.290435923288
+        ]
+      },
+      "raw_cloud_sha256": "085167d20a57bf63686909f13087b74bcea73ae6c6c3e53bd72c9eec3909beae",
+      "input_preview_url": "/api/assets/ea238e5c53624e7fb4fc962454b8940a/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.6004464285714286,
+            0.525380291005291
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.6006117724867724,
+            0.6088789682539683
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.5420800264550264,
+            0.5422453703703703
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.708912037037037,
+            0.5419146825396826
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.9585813492063493,
+            0.33358134920634913
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.9585813492063493,
+            0.4169146825396825
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.683779761904762,
+            0.5171130952380953
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.9170800264550264,
+            0.41708002645502684
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.6669146825396826,
+            0.6085482804232804
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.41708002645502645,
+            0.5839120370370371
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "delivery_area",
+      "image_condition": "original",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        2033.0489088314807,
+        4034.760555995956,
+        547.5589857482898,
+        9626.2448277277,
+        6069.837163414093
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 12733.707291990868,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "original",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "0b780a03815cddbf27463159e8b7f7a4b3e8726601d94e2d70d2367c4b4b93f7",
+      "model_timings": {
+        "geometry_load_ms": 5714.23270899686,
+        "geometry_inference_ms": 5212.104833000922,
+        "geometry_unproject_ms": 514.6010830067098
+      },
+      "job_id": "366beae6ba6540f9adf1f051edb00b21",
+      "geometry_sha256": "47b5d104c0811f010888519023623c1d79b4c73162b3404aa708bbe6a16cf647",
+      "calibration": {
+        "id": "259c2744063f4ffd95e3c393d5c58571",
+        "job_id": "366beae6ba6540f9adf1f051edb00b21",
+        "geometry_job_id": "366beae6ba6540f9adf1f051edb00b21",
+        "geometry_sha256": "47b5d104c0811f010888519023623c1d79b4c73162b3404aa708bbe6a16cf647",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              0.3064929246902466,
+              -0.07569634169340134,
+              -1.7764298915863037
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              0.30030471086502075,
+              -0.32763054966926575,
+              -1.7375375032424927
+            ]
+          }
+        ],
+        "distance_units": 0.2549936411165161,
+        "label": "后墙纵向参照",
+        "created_at": "2026-11-01T07:36:24.580872+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 2033.0489088314807,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D delivery_area/original/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 2033.0489088314807,
+        "mm_per_unit": 7972.939638532024,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "delivery_area-CD",
+          "label": "后墙横向",
+          "reference_mm": 4034.760555995956,
+          "relative_distance_u": 0.4972182318825239,
+          "calibrated_mm": 3964.290949976982,
+          "absolute_error_mm": 70.46960601897399,
+          "relative_error_pct": 1.7465622814779154,
+          "measurement_record_id": "b4840efc93834c16b29b97782ae437ce"
+        },
+        {
+          "segment_id": "delivery_area-EF",
+          "label": "近侧柱面纵向",
+          "reference_mm": 547.5589857482898,
+          "relative_distance_u": 0.06871704504131844,
+          "calibrated_mm": 547.8768522527182,
+          "absolute_error_mm": 0.31786650442836617,
+          "relative_error_pct": 0.058051554755141545,
+          "measurement_record_id": "e20090459f0e4ccb83ff01fb530efe2b"
+        },
+        {
+          "segment_id": "delivery_area-GH",
+          "label": "后墙至近侧柱面",
+          "reference_mm": 9626.2448277277,
+          "relative_distance_u": 1.2051214400363317,
+          "calibrated_mm": 9608.360498510463,
+          "absolute_error_mm": 17.884329217236882,
+          "relative_error_pct": 0.18578718427898663,
+          "measurement_record_id": "170ea438e1014abc8335515f808864e8"
+        },
+        {
+          "segment_id": "delivery_area-IJ",
+          "label": "后墙至拖车表面",
+          "reference_mm": 6069.837163414093,
+          "relative_distance_u": 0.7675601111221809,
+          "calibrated_mm": 6119.710434922082,
+          "absolute_error_mm": 49.87327150798865,
+          "relative_error_pct": 0.8216574871003046,
+          "measurement_record_id": "6cfeae39bc6f4a8c9a32119b00ff40a5"
+        }
+      ],
+      "api_roundtrip_ms": [
+        8.082082989858463,
+        42.02020799857564,
+        7.529624999733642,
+        5.939292008406483,
+        7.0218329929048195,
+        5.814957999973558,
+        6.627334005315788,
+        6.6974999936064705,
+        7.081875010044314
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 7972.939638532024,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            299.13641357421875,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            300.364501953125,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 13846.612930297852,
+            "primary_scale_camera_z_mm": 14163.885796731505,
+            "primary_scale_camera_z_signed_error_pct": 2.2913391746470113,
+            "relative_neighbour_depth_spread": 0.0015679439433039202,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.013543190987264838
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 13538.951873779297,
+            "primary_scale_camera_z_mm": 13853.653146115306,
+            "primary_scale_camera_z_signed_error_pct": 2.324413848796425,
+            "relative_neighbour_depth_spread": 0.0016559512842567955,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.013298353605334969
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 14285.333633422852,
+            "primary_scale_camera_z_mm": 14579.480871798412,
+            "primary_scale_camera_z_signed_error_pct": 2.059085534322813,
+            "relative_neighbour_depth_spread": 0.0020039661372642614,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.015128169909845668
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 12923.315048217773,
+            "primary_scale_camera_z_mm": 13266.318798793756,
+            "primary_scale_camera_z_signed_error_pct": 2.654146782742761,
+            "relative_neighbour_depth_spread": 0.0014947746377574692,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.010480553086554578
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 3450.9520530700684,
+            "primary_scale_camera_z_mm": 3663.692153638442,
+            "primary_scale_camera_z_signed_error_pct": 6.164678537886781,
+            "relative_neighbour_depth_spread": 0.0014105513581572822,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.001078608538409239
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 3383.225917816162,
+            "primary_scale_camera_z_mm": 3603.543256036031,
+            "primary_scale_camera_z_signed_error_pct": 6.512049256293273,
+            "relative_neighbour_depth_spread": 0.0012762390256373297,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0007339687058910319
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 13203.344345092773,
+            "primary_scale_camera_z_mm": 13535.31120514406,
+            "primary_scale_camera_z_signed_error_pct": 2.51426344246386,
+            "relative_neighbour_depth_spread": 0.001568502352941554,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.011991561828941413
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 3737.7514839172363,
+            "primary_scale_camera_z_mm": 4072.8342434805145,
+            "primary_scale_camera_z_signed_error_pct": 8.96482179206053,
+            "relative_neighbour_depth_spread": 0.006736953983000546,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.019071600540179173
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 13020.891189575195,
+            "primary_scale_camera_z_mm": 13346.665408553265,
+            "primary_scale_camera_z_signed_error_pct": 2.501934884755741,
+            "relative_neighbour_depth_spread": 0.001525227815791613,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005791472874334951
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 10541.45622253418,
+            "primary_scale_camera_z_mm": 10583.969305182212,
+            "primary_scale_camera_z_signed_error_pct": 0.4032942105015147,
+            "relative_neighbour_depth_spread": 0.0019238914468543288,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.013014348314360796
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.8416871562272377e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          1.9499240440091066,
+          0.26948532810635484,
+          4.726084284924057,
+          3.0101147140820426
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          1.984586075853425,
+          0.2693289784469602,
+          4.734881087174878,
+          2.985583444179316
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          2033.046296526193,
+          3964.2945384294217,
+          547.8768329377314,
+          9608.360685412912,
+          6119.719282478734
+        ]
+      },
+      "raw_cloud_sha256": "fa5017ecc28c70b258aef2fa1a2780d07dcf7a25ce7f66d90a2baaad36a1f77b",
+      "input_preview_url": "/api/assets/3bcda2725b654655b1f5b222a6ada5ae/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.6004464285714286,
+            0.5257232679107678
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.6006117724867724,
+            0.6103503056628057
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.5420800264550264,
+            0.5428162537537538
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.708912037037037,
+            0.5424810971685973
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.9585813492063493,
+            0.3313324485199485
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.9585813492063493,
+            0.415791907979408
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.683779761904762,
+            0.5173443532818532
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.9170800264550264,
+            0.41595948627198664
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.6669146825396826,
+            0.6100151490776491
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.41708002645502645,
+            0.5850459834834835
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "office",
+      "image_condition": "rectified",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1242.3660057184877,
+        3043.1678752128105,
+        1421.7700566829633,
+        2727.2390654935875,
+        909.4676531067921
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 12803.847583010793,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "rectified",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "1787be7f9e3aa6928e10ae6545770e203fc2a0f1672f9568897db4e4baf74c60",
+      "model_timings": {
+        "geometry_load_ms": 5717.33333299926,
+        "geometry_inference_ms": 5250.75616700633,
+        "geometry_unproject_ms": 533.3101659925887
+      },
+      "job_id": "b932448113a64066a76cbcc650ebe3e5",
+      "geometry_sha256": "500573dd42812aba505d9d3c539dbad4a3beefd79033bc97f2f5617cf56878a3",
+      "calibration": {
+        "id": "7675c049b5dc4d8c997881a5c7c72fb0",
+        "job_id": "b932448113a64066a76cbcc650ebe3e5",
+        "geometry_job_id": "b932448113a64066a76cbcc650ebe3e5",
+        "geometry_sha256": "500573dd42812aba505d9d3c539dbad4a3beefd79033bc97f2f5617cf56878a3",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.4226994514465332,
+              0.37200942635536194,
+              -1.122885823249817
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.4194384813308716,
+              -0.08260800689458847,
+              -1.1241463422775269
+            ]
+          }
+        ],
+        "distance_units": 0.4546308760402087,
+        "label": "左墙纵向参照",
+        "created_at": "2026-11-01T07:36:38.821287+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1242.3660057184877,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D office/rectified/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1242.3660057184877,
+        "mm_per_unit": 2732.6916652458285,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "office-CD",
+          "label": "左右墙跨墙线1",
+          "reference_mm": 3043.1678752128105,
+          "relative_distance_u": 1.1203167713559214,
+          "calibrated_mm": 3061.480303519443,
+          "absolute_error_mm": 18.312428306632683,
+          "relative_error_pct": 0.6017554422741823,
+          "measurement_record_id": "e03616f1d30949b991fa827f70e8a496"
+        },
+        {
+          "segment_id": "office-EF",
+          "label": "左墙横向",
+          "reference_mm": 1421.7700566829633,
+          "relative_distance_u": 0.49942401253150254,
+          "calibrated_mm": 1364.7718364684652,
+          "absolute_error_mm": 56.99822021449813,
+          "relative_error_pct": 4.008961923665552,
+          "measurement_record_id": "ce73e9ddcaaf476d85f467573b65251c"
+        },
+        {
+          "segment_id": "office-GH",
+          "label": "左右墙跨墙线2",
+          "reference_mm": 2727.2390654935875,
+          "relative_distance_u": 0.9916023824894938,
+          "calibrated_mm": 2709.743565866946,
+          "absolute_error_mm": 17.495499626641504,
+          "relative_error_pct": 0.6415095709064688,
+          "measurement_record_id": "ef9cfec2a15745248804d15f4e370bae"
+        },
+        {
+          "segment_id": "office-IJ",
+          "label": "右墙纵向",
+          "reference_mm": 909.4676531067921,
+          "relative_distance_u": 0.3313515631838691,
+          "calibrated_mm": 905.4816549787356,
+          "absolute_error_mm": 3.985998128056508,
+          "relative_error_pct": 0.438278163543268,
+          "measurement_record_id": "885608a9490041949347f757fae54b7d"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.165791001170874,
+        6.3297090091509745,
+        6.959375008591451,
+        6.091541989007965,
+        8.578583001508377,
+        7.059791998472065,
+        6.625042005907744,
+        6.149458000436425,
+        6.300833003479056
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2732.6916652458285,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            281.9356689453125,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            282.4964599609375,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 3069.17142868042,
+            "primary_scale_camera_z_mm": 3067.543275997635,
+            "primary_scale_camera_z_signed_error_pct": -0.05304860678586598,
+            "relative_neighbour_depth_spread": 0.0053793816015006305,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0066623637385844914
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 3046.9727516174316,
+            "primary_scale_camera_z_mm": 3070.9211817255573,
+            "primary_scale_camera_z_signed_error_pct": 0.7859745413021146,
+            "relative_neighbour_depth_spread": 0.005650968824216111,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.009770010024702933
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2711.909294128418,
+            "primary_scale_camera_z_mm": 2751.205876903288,
+            "primary_scale_camera_z_signed_error_pct": 1.4490375050504545,
+            "relative_neighbour_depth_spread": 0.004969307991929619,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.007184488888153279
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 2731.6060066223145,
+            "primary_scale_camera_z_mm": 2724.4124716752326,
+            "primary_scale_camera_z_signed_error_pct": -0.2633445280777025,
+            "relative_neighbour_depth_spread": 0.0007452894937944144,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.001439544294267313
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2006.7253112792969,
+            "primary_scale_camera_z_mm": 2096.977411834426,
+            "primary_scale_camera_z_signed_error_pct": 4.497481546071347,
+            "relative_neighbour_depth_spread": 0.004001155186223925,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005797371104568687
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 3298.762321472168,
+            "primary_scale_camera_z_mm": 3290.6782466734103,
+            "primary_scale_camera_z_signed_error_pct": -0.2450638758099366,
+            "relative_neighbour_depth_spread": 0.0012439770467197082,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0006463051769875108
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 3319.042682647705,
+            "primary_scale_camera_z_mm": 3292.167201974001,
+            "primary_scale_camera_z_signed_error_pct": -0.8097359161487128,
+            "relative_neighbour_depth_spread": 0.0010760888057590604,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.002176250348312674
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 2741.372585296631,
+            "primary_scale_camera_z_mm": 2724.411555049901,
+            "primary_scale_camera_z_signed_error_pct": -0.618705765779537,
+            "relative_neighbour_depth_spread": 0.0006571654798694453,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0013196449192665702
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2714.017868041992,
+            "primary_scale_camera_z_mm": 2704.9745620546555,
+            "primary_scale_camera_z_signed_error_pct": -0.3332073120749568,
+            "relative_neighbour_depth_spread": 0.0011265698545786687,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.002103022304923616
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2718.508720397949,
+            "primary_scale_camera_z_mm": 2706.7002155148975,
+            "primary_scale_camera_z_signed_error_pct": -0.4343743610034534,
+            "relative_neighbour_depth_spread": 0.0009322020049733032,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0003644316247731127
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.8324452822944295e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.464233800206825,
+          1.0985263844845685,
+          2.1811153503832723,
+          0.7288364707428352
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          2.449493837730113,
+          1.1444051512506752,
+          2.195197754075994,
+          0.7320448635270143
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1242.3653217297494,
+          3061.4716958489403,
+          1364.7685775900197,
+          2709.7441353879785,
+          905.481040749351
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              282.42505212722835,
+              0.0,
+              259.98920267918317
+            ],
+            [
+              0.0,
+              282.2697850558927,
+              258.07802482769273
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 2730.4753683605977,
+          "checks": [
+            {
+              "segment_id": "office-CD",
+              "calibrated_mm": 3053.7909248798564,
+              "relative_error_pct": 0.3490786608774554
+            },
+            {
+              "segment_id": "office-EF",
+              "calibrated_mm": 1360.8866479325663,
+              "relative_error_pct": 4.282226121180244
+            },
+            {
+              "segment_id": "office-GH",
+              "calibrated_mm": 2704.885708990787,
+              "relative_error_pct": 0.8196331882168506
+            },
+            {
+              "segment_id": "office-IJ",
+              "calibrated_mm": 905.4794754634858,
+              "relative_error_pct": 0.43851781090646913
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "301be1e6815472b0a38d707cb636b04bfe349012e91ca4b3e0c228be44e03848",
+      "input_preview_url": "/api/assets/eb1c2273cf4b4086be8e9c58b653b316/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.29607730745708694,
+            0.3202805397755104
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.29786753534173654,
+            0.5411026751143095
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.2554400783521106,
+            0.40239764239781317
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.8646180591322518,
+            0.40132310646561986
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.127852642941745,
+            0.4589848954653117
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.371734684436742,
+            0.46026152479804383
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.35295859832605786,
+            0.25472044945547057
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.8492898850240496,
+            0.2512235326337478
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.8820888853405278,
+            0.3595917457446095
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.8813384235713335,
+            0.5421219684910535
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "office",
+      "image_condition": "rectified",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1242.3660057184877,
+        3043.1678752128105,
+        1421.7700566829633,
+        2727.2390654935875,
+        909.4676531067921
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 12809.808000005432,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "rectified",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "7870334abd7a3389a911cc467303f3ecbdd6db5dc3114d651939f297fa5b32fc",
+      "model_timings": {
+        "geometry_load_ms": 5834.1010000003735,
+        "geometry_inference_ms": 5190.494125010446,
+        "geometry_unproject_ms": 541.8534589989576
+      },
+      "job_id": "10972b8194b14171913baeb35d2a8caa",
+      "geometry_sha256": "6c60b091640c8490ab6609e43da9f371253f8ed2e9c8cadf2adfe193ce6d96f1",
+      "calibration": {
+        "id": "6e1f1573b7e644fb8232f410c1fa1fef",
+        "job_id": "10972b8194b14171913baeb35d2a8caa",
+        "geometry_job_id": "10972b8194b14171913baeb35d2a8caa",
+        "geometry_sha256": "6c60b091640c8490ab6609e43da9f371253f8ed2e9c8cadf2adfe193ce6d96f1",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.42284175753593445,
+              0.3770000636577606,
+              -1.1261950731277466
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.4202411472797394,
+              -0.08390175551176071,
+              -1.129291296005249
+            ]
+          }
+        ],
+        "distance_units": 0.46091955554476743,
+        "label": "左墙纵向参照",
+        "created_at": "2026-11-01T07:36:53.040743+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1242.3660057184877,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D office/rectified/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1242.3660057184877,
+        "mm_per_unit": 2695.4074540189936,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "office-CD",
+          "label": "左右墙跨墙线1",
+          "reference_mm": 3043.1678752128105,
+          "relative_distance_u": 1.12164260404135,
+          "calibrated_mm": 3023.2838356783295,
+          "absolute_error_mm": 19.884039534480962,
+          "relative_error_pct": 0.6533993637498706,
+          "measurement_record_id": "28d1616e01d446cb80472a111a5a0588"
+        },
+        {
+          "segment_id": "office-EF",
+          "label": "左墙横向",
+          "reference_mm": 1421.7700566829633,
+          "relative_distance_u": 0.4988202428220811,
+          "calibrated_mm": 1344.5238007182018,
+          "absolute_error_mm": 77.24625596476153,
+          "relative_error_pct": 5.433104713499144,
+          "measurement_record_id": "a0b766a4d37244cda83cba5bd1abd054"
+        },
+        {
+          "segment_id": "office-GH",
+          "label": "左右墙跨墙线2",
+          "reference_mm": 2727.2390654935875,
+          "relative_distance_u": 0.9895524874810294,
+          "calibrated_mm": 2667.2471508994036,
+          "absolute_error_mm": 59.99191459418398,
+          "relative_error_pct": 2.1997306856311982,
+          "measurement_record_id": "f1fe10c639ff4212b34dbc22bb56cfda"
+        },
+        {
+          "segment_id": "office-IJ",
+          "label": "右墙纵向",
+          "reference_mm": 909.4676531067921,
+          "relative_distance_u": 0.33592401615397477,
+          "calibrated_mm": 905.4520971254204,
+          "absolute_error_mm": 4.015555981371676,
+          "relative_error_pct": 0.44152818054103554,
+          "measurement_record_id": "8e4258c5e1214e05bcedb1f3b5c65c74"
+        }
+      ],
+      "api_roundtrip_ms": [
+        8.012416001292877,
+        6.295708008110523,
+        7.663790995138697,
+        6.297458996414207,
+        6.916832993738353,
+        6.005040995660238,
+        6.42537500243634,
+        5.915334011660889,
+        6.710125002427958
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2695.4074540189936,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            282.6717224121094,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            283.31781005859375,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 3069.17142868042,
+            "primary_scale_camera_z_mm": 3034.5187181816787,
+            "primary_scale_camera_z_signed_error_pct": -1.1290575096236988,
+            "relative_neighbour_depth_spread": 0.005323494176353605,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.006405176496801889
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 3046.9727516174316,
+            "primary_scale_camera_z_mm": 3042.7987349838104,
+            "primary_scale_camera_z_signed_error_pct": -0.13698897147687017,
+            "relative_neighbour_depth_spread": 0.005577230348027247,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.009465855216836553
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2711.909294128418,
+            "primary_scale_camera_z_mm": 2721.475674818111,
+            "primary_scale_camera_z_signed_error_pct": 0.3527544490667722,
+            "relative_neighbour_depth_spread": 0.004989765243864072,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.006973393786550098
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 2731.6060066223145,
+            "primary_scale_camera_z_mm": 2699.1818000236544,
+            "primary_scale_camera_z_signed_error_pct": -1.187001585150016,
+            "relative_neighbour_depth_spread": 0.0008362742345386649,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.001762455098255733
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2006.7253112792969,
+            "primary_scale_camera_z_mm": 2072.7418417655063,
+            "primary_scale_camera_z_signed_error_pct": 3.289764180236676,
+            "relative_neighbour_depth_spread": 0.004071692602283427,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005693988582636575
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 3298.762321472168,
+            "primary_scale_camera_z_mm": 3247.7908030022327,
+            "primary_scale_camera_z_signed_error_pct": -1.5451709915004663,
+            "relative_neighbour_depth_spread": 0.0011536717879941896,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0008557156758315854
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 3319.042682647705,
+            "primary_scale_camera_z_mm": 3241.8507816681285,
+            "primary_scale_camera_z_signed_error_pct": -2.325727878799022,
+            "relative_neighbour_depth_spread": 0.0012032619696285662,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0022118181520665654
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 2741.372585296631,
+            "primary_scale_camera_z_mm": 2696.907204536298,
+            "primary_scale_camera_z_signed_error_pct": -1.6220115791199974,
+            "relative_neighbour_depth_spread": 0.0005928555542973849,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0013321597331490478
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2714.017868041992,
+            "primary_scale_camera_z_mm": 2675.8119262452797,
+            "primary_scale_camera_z_signed_error_pct": -1.4077262440529092,
+            "relative_neighbour_depth_spread": 0.00093988403682562,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0020532239225473036
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2718.508720397949,
+            "primary_scale_camera_z_mm": 2680.8134715954357,
+            "primary_scale_camera_z_signed_error_pct": -1.386614967230837,
+            "relative_neighbour_depth_spread": 0.0009082258790909038,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0003889171282966986
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.8949163328492205e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.433488860579293,
+          1.0822284210365478,
+          2.1469093154692973,
+          0.7288126791603393
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          2.449493837730113,
+          1.1444051512506752,
+          2.195197754075994,
+          0.7320448635270143
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1242.3657401569706,
+          3023.2751255791545,
+          1344.5208235852392,
+          2667.247611789403,
+          905.4517531519178
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              282.42505212722835,
+              0.0,
+              259.98920267918317
+            ],
+            [
+              0.0,
+              286.08424161070207,
+              258.0723224604994
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 2721.665417767477,
+          "checks": [
+            {
+              "segment_id": "office-CD",
+              "calibrated_mm": 3055.48083479896,
+              "relative_error_pct": 0.40460993579884974
+            },
+            {
+              "segment_id": "office-EF",
+              "calibrated_mm": 1355.6149017905966,
+              "relative_error_pct": 4.653013655858585
+            },
+            {
+              "segment_id": "office-GH",
+              "calibrated_mm": 2696.999737445478,
+              "relative_error_pct": 1.1087890471617623
+            },
+            {
+              "segment_id": "office-IJ",
+              "calibrated_mm": 905.4484458650187,
+              "relative_error_pct": 0.44192965280772656
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "fcedd4f2303562fd7107d17f77e64b2e99c29c5034d83e305444d246ea489068",
+      "input_preview_url": "/api/assets/73830ba8673e49d59bedd6f30f134139/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.29607730745708694,
+            0.31785189842112543
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.29786753534173654,
+            0.5416581166699084
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.2554400783521106,
+            0.4010786916194053
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.8646180591322518,
+            0.39998963493137146
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.127852642941745,
+            0.458430637295924
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.371734684436742,
+            0.4597245183763958
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.35295859832605786,
+            0.2514058609345986
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.8492898850240496,
+            0.24786168848014986
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.8820888853405278,
+            0.3576943369033204
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.8813384235713335,
+            0.5426911842814731
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "office",
+      "image_condition": "original",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1242.3660057184877,
+        3043.1678752128105,
+        1421.7700566829633,
+        2727.2390654935875,
+        909.4676531067921
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 13082.021041002008,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "original",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "77b9be00d6c4c3c21abf0b72b1448c77f60ffdd83d94ebf83daedc9ef91331e5",
+      "model_timings": {
+        "geometry_load_ms": 5743.259791997843,
+        "geometry_inference_ms": 5321.146667003632,
+        "geometry_unproject_ms": 585.4887499881443
+      },
+      "job_id": "d3625b589504472db01008ab50b74b7f",
+      "geometry_sha256": "86d6f29f6288b82658b1bbd39e0fad1abeeca36673c5e5a6556fb2ec4321d524",
+      "calibration": {
+        "id": "a0905469fbc040eebae66233872e4128",
+        "job_id": "d3625b589504472db01008ab50b74b7f",
+        "geometry_job_id": "d3625b589504472db01008ab50b74b7f",
+        "geometry_sha256": "86d6f29f6288b82658b1bbd39e0fad1abeeca36673c5e5a6556fb2ec4321d524",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.4007004201412201,
+              0.3523322343826294,
+              -1.1324206590652466
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.40066373348236084,
+              -0.07858765125274658,
+              -1.132392168045044
+            ]
+          }
+        ],
+        "distance_units": 0.43091988813891463,
+        "label": "左墙纵向参照",
+        "created_at": "2026-11-01T07:37:07.749275+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1242.3660057184877,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D office/original/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1242.3660057184877,
+        "mm_per_unit": 2883.0556210438567,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "office-CD",
+          "label": "左右墙跨墙线1",
+          "reference_mm": 3043.1678752128105,
+          "relative_distance_u": 1.0628225778907088,
+          "calibrated_mm": 3064.17660736013,
+          "absolute_error_mm": 21.008732147319733,
+          "relative_error_pct": 0.6903573187151425,
+          "measurement_record_id": "8373f6bba710449daadefc1ccba254af"
+        },
+        {
+          "segment_id": "office-EF",
+          "label": "左墙横向",
+          "reference_mm": 1421.7700566829633,
+          "relative_distance_u": 0.4788936260107725,
+          "calibrated_mm": 1380.6769603524322,
+          "absolute_error_mm": 41.093096330531125,
+          "relative_error_pct": 2.8902772383885114,
+          "measurement_record_id": "7e4dd4c3c01a4c2d96071fd6d50dadf4"
+        },
+        {
+          "segment_id": "office-GH",
+          "label": "左右墙跨墙线2",
+          "reference_mm": 2727.2390654935875,
+          "relative_distance_u": 0.9316508903944496,
+          "calibrated_mm": 2686.001336402232,
+          "absolute_error_mm": 41.237729091355504,
+          "relative_error_pct": 1.5120687296216961,
+          "measurement_record_id": "4c4cd767a3384a9fa2c2633b2207b514"
+        },
+        {
+          "segment_id": "office-IJ",
+          "label": "右墙纵向",
+          "reference_mm": 909.4676531067921,
+          "relative_distance_u": 0.3122551048216272,
+          "calibrated_mm": 900.248835155631,
+          "absolute_error_mm": 9.2188179511611,
+          "relative_error_pct": 1.0136498994405247,
+          "measurement_record_id": "3fbecb787c2d49e5882deefa62491259"
+        }
+      ],
+      "api_roundtrip_ms": [
+        8.123791994876228,
+        7.65549999778159,
+        6.749084001057781,
+        6.2459170003421605,
+        6.643583998084068,
+        6.052582990378141,
+        6.7217910109320655,
+        6.149166991235688,
+        6.797167006880045
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2883.0556210438567,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            305.3630676269531,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            306.4766540527344,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 3069.17142868042,
+            "primary_scale_camera_z_mm": 3264.0209715978917,
+            "primary_scale_camera_z_signed_error_pct": 6.348604092188048,
+            "relative_neighbour_depth_spread": 0.0050085953053859876,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005391472332762671
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 3046.9727516174316,
+            "primary_scale_camera_z_mm": 3263.9764721495094,
+            "primary_scale_camera_z_signed_error_pct": 7.121944901439803,
+            "relative_neighbour_depth_spread": 0.00523894818387258,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005530879534359372
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2711.909294128418,
+            "primary_scale_camera_z_mm": 2944.1945777530473,
+            "primary_scale_camera_z_signed_error_pct": 8.565378057723105,
+            "relative_neighbour_depth_spread": 0.00466830127789297,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.009333526287354491
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 2731.6060066223145,
+            "primary_scale_camera_z_mm": 2920.9230479798703,
+            "primary_scale_camera_z_signed_error_pct": 6.9306130129524135,
+            "relative_neighbour_depth_spread": 0.0006363260284834118,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0012278308473650894
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2006.7253112792969,
+            "primary_scale_camera_z_mm": 2276.382226648464,
+            "primary_scale_camera_z_signed_error_pct": 13.43765954679963,
+            "relative_neighbour_depth_spread": 0.003799021247954117,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.006881828549897284
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 3298.762321472168,
+            "primary_scale_camera_z_mm": 3487.3734653380543,
+            "primary_scale_camera_z_signed_error_pct": 5.717633629988628,
+            "relative_neighbour_depth_spread": 0.0008334527666966394,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0018235559991329627
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 3319.042682647705,
+            "primary_scale_camera_z_mm": 3473.629193185539,
+            "primary_scale_camera_z_signed_error_pct": 4.6575631987509025,
+            "relative_neighbour_depth_spread": 0.0010116795735901525,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0007029986724413986
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 2741.372585296631,
+            "primary_scale_camera_z_mm": 2922.1440541480797,
+            "primary_scale_camera_z_signed_error_pct": 6.594195543539683,
+            "relative_neighbour_depth_spread": 0.0005720777610369945,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0004194468967769627
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2714.017868041992,
+            "primary_scale_camera_z_mm": 2903.405641690608,
+            "primary_scale_camera_z_signed_error_pct": 6.978132895832712,
+            "relative_neighbour_depth_spread": 0.0008772678580388052,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0014823156152132108
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2718.508720397949,
+            "primary_scale_camera_z_mm": 2909.064920793791,
+            "primary_scale_camera_z_signed_error_pct": 7.009585769066318,
+            "relative_neighbour_depth_spread": 0.0005166413764548652,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0009361296311481369
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.635317656960126e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.4664040977103596,
+          1.1113286696491314,
+          2.1620048552832527,
+          0.7246244915040131
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          2.449493837730113,
+          1.1444051512506752,
+          2.195197754075994,
+          0.7320448635270143
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1242.3661097673048,
+          3064.166046773755,
+          1380.6725781656119,
+          2686.001365011597,
+          900.2482649035986
+        ]
+      },
+      "raw_cloud_sha256": "d71c9b96d3a505311158170990139fe5ee08107b2e33bba685328ad096506132",
+      "input_preview_url": "/api/assets/0cb5a25af3a94fa6ab3d64453353ca67/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.29224537037037046,
+            0.3168816137566138
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.29224537037037046,
+            0.5420800264550264
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.2505787037037037,
+            0.40038029100529104
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.8669808201058201,
+            0.40054563492063505
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.12541335978835985,
+            0.4585813492063492
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.3669808201058201,
+            0.45874669312169314
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.3504464285714285,
+            0.2505787037037036
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.8502810846560848,
+            0.25041335978836016
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.8836805555555556,
+            0.35887896825396853
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.8836805555555556,
+            0.5422453703703703
+          ]
+        }
+      ]
+    },
+    {
+      "scene": "office",
+      "image_condition": "original",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1242.3660057184877,
+        3043.1678752128105,
+        1421.7700566829633,
+        2727.2390654935875,
+        909.4676531067921
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 13050.069416000042,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E10-M",
+        "image_condition": "original",
+        "protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "255c14d93250b549d14ef42d850032eb1c9d6f751a949940841161d763335f38",
+      "model_timings": {
+        "geometry_load_ms": 5801.814666992868,
+        "geometry_inference_ms": 5159.500624999055,
+        "geometry_unproject_ms": 804.1209579969291
+      },
+      "job_id": "1fb87d0cb5354045a87b6f1934b5f3e8",
+      "geometry_sha256": "39680534ae25caf0c6b17e6acbd4dfbec3e120ae6207259234712d405ad9152e",
+      "calibration": {
+        "id": "1cc9472c2afb4f679fa21032d42279b5",
+        "job_id": "1fb87d0cb5354045a87b6f1934b5f3e8",
+        "geometry_job_id": "1fb87d0cb5354045a87b6f1934b5f3e8",
+        "geometry_sha256": "39680534ae25caf0c6b17e6acbd4dfbec3e120ae6207259234712d405ad9152e",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.4035361409187317,
+              0.3596581220626831,
+              -1.1397444009780884
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.4035652279853821,
+              -0.08022768050432205,
+              -1.1398324966430664
+            ]
+          }
+        ],
+        "distance_units": 0.4398858123501165,
+        "label": "左墙纵向参照",
+        "created_at": "2026-11-01T07:37:22.207090+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1242.3660057184877,
+        "unit": "mm",
+        "source_note": "E10-M ETH3D office/original/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1242.3660057184877,
+        "mm_per_unit": 2824.292056797814,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "office-CD",
+          "label": "左右墙跨墙线1",
+          "reference_mm": 3043.1678752128105,
+          "relative_distance_u": 1.0682863949568637,
+          "calibrated_mm": 3017.1527796618425,
+          "absolute_error_mm": 26.015095550968,
+          "relative_error_pct": 0.8548688937888038,
+          "measurement_record_id": "c5f672088670449cb6bbc3507368a1c0"
+        },
+        {
+          "segment_id": "office-EF",
+          "label": "左墙横向",
+          "reference_mm": 1421.7700566829633,
+          "relative_distance_u": 0.4824863556172266,
+          "calibrated_mm": 1362.6823816830583,
+          "absolute_error_mm": 59.08767499990495,
+          "relative_error_pct": 4.155923436575845,
+          "measurement_record_id": "f4730962ea3c4fbeafb42a89d320d6f7"
+        },
+        {
+          "segment_id": "office-GH",
+          "label": "左右墙跨墙线2",
+          "reference_mm": 2727.2390654935875,
+          "relative_distance_u": 0.9369686859352898,
+          "calibrated_mm": 2646.273217155325,
+          "absolute_error_mm": 80.96584833826273,
+          "relative_error_pct": 2.968784415076908,
+          "measurement_record_id": "86a56c27d571492892916438ac88dc48"
+        },
+        {
+          "segment_id": "office-IJ",
+          "label": "右墙纵向",
+          "reference_mm": 909.4676531067921,
+          "relative_distance_u": 0.3181975040432459,
+          "calibrated_mm": 898.6826831622298,
+          "absolute_error_mm": 10.784969944562363,
+          "relative_error_pct": 1.1858552536442946,
+          "measurement_record_id": "354db4195f1f404095aa35a91bafb2cc"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.18425000377465,
+        7.907499995781109,
+        7.10054200317245,
+        6.446375002269633,
+        6.936999998288229,
+        6.431707995943725,
+        6.599708998692222,
+        7.36591599707026,
+        6.783832999644801
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2824.292056797814,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            305.146240234375,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            306.25262451171875,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 3069.17142868042,
+            "primary_scale_camera_z_mm": 3218.0849559861304,
+            "primary_scale_camera_z_signed_error_pct": 4.851912992352303,
+            "relative_neighbour_depth_spread": 0.005120818758570496,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005365632306042558
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 3046.9727516174316,
+            "primary_scale_camera_z_mm": 3218.378615290748,
+            "primary_scale_camera_z_signed_error_pct": 5.62544786730792,
+            "relative_neighbour_depth_spread": 0.005165020945664592,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.005548274432580893
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2711.909294128418,
+            "primary_scale_camera_z_mm": 2897.2132995148563,
+            "primary_scale_camera_z_signed_error_pct": 6.83297209783682,
+            "relative_neighbour_depth_spread": 0.0048223189898183375,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.009210880700522856
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 2731.6060066223145,
+            "primary_scale_camera_z_mm": 2873.8722745546565,
+            "primary_scale_camera_z_signed_error_pct": 5.2081547480654855,
+            "relative_neighbour_depth_spread": 0.0005596383700343696,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0012106820927336962
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2006.7253112792969,
+            "primary_scale_camera_z_mm": 2237.2548576424488,
+            "primary_scale_camera_z_signed_error_pct": 11.48784764249513,
+            "relative_neighbour_depth_spread": 0.0038577809695514334,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00695560818296591
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 3298.762321472168,
+            "primary_scale_camera_z_mm": 3434.4631881708056,
+            "primary_scale_camera_z_signed_error_pct": 4.113690332138797,
+            "relative_neighbour_depth_spread": 0.0009822647522788183,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.002228286330827832
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 3319.042682647705,
+            "primary_scale_camera_z_mm": 3421.3938191039683,
+            "primary_scale_camera_z_signed_error_pct": 3.083754752277379,
+            "relative_neighbour_depth_spread": 0.0011256534269108354,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0009698668564884063
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 2741.372585296631,
+            "primary_scale_camera_z_mm": 2873.989648892473,
+            "primary_scale_camera_z_signed_error_pct": 4.837615445165477,
+            "relative_neighbour_depth_spread": 0.0006719603495806482,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0004145248399239639
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2714.017868041992,
+            "primary_scale_camera_z_mm": 2858.028194145343,
+            "primary_scale_camera_z_signed_error_pct": 5.306167206896317,
+            "relative_neighbour_depth_spread": 0.0006876111159413089,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0010131096159325449
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2718.508720397949,
+            "primary_scale_camera_z_mm": 2861.964731373469,
+            "primary_scale_camera_z_signed_error_pct": 5.277011248818808,
+            "relative_neighbour_depth_spread": 0.00039374145256709857,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0007347610122609132
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.719609452725649e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.428553876856085,
+          1.0968445493604673,
+          2.1300270652728672,
+          0.7233638710538459
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          2.449493837730113,
+          1.1444051512506752,
+          2.195197754075994,
+          0.7320448635270143
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1242.3660096349627,
+          3017.1423748334523,
+          1362.6779460732653,
+          2646.2731275499254,
+          898.6823481834887
+        ]
+      },
+      "raw_cloud_sha256": "6897241662df15b6d58ab72c99eb6eeb8d82ffa198214417099db4d2c5f93fb1",
+      "input_preview_url": "/api/assets/5704df1b874c483a893c7b61582837cc/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.29224537037037046,
+            0.314407040969541
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.29224537037037046,
+            0.5426486754611755
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.2505787037037037,
+            0.3990340787215787
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.8669808201058201,
+            0.3992016570141572
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.12541335978835985,
+            0.45802163770913773
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.3669808201058201,
+            0.45818921600171597
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.3504464285714285,
+            0.2472081456456456
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.8502810846560848,
+            0.2470405673530677
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.8836805555555556,
+            0.35697192728442756
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.8836805555555556,
+            0.5428162537537538
+          ]
+        }
+      ]
+    }
+  ]
+}
