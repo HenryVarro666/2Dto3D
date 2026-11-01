@@ -1,0 +1,3161 @@
+{
+  "schema_version": 1,
+  "experiment_id": "E09",
+  "created_at": "2026-11-01T06:50:52.971281+00:00",
+  "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+  "configuration": {
+    "input_size": 518,
+    "resize_modes": [
+      "legacy14",
+      "isotropic"
+    ],
+    "image_conditions": [
+      "original",
+      "rectified"
+    ],
+    "filter": "PIL BICUBIC, reducing_gap=None",
+    "isotropic": "one scalar; centered fractional content; floor/ceil storage; inverse-affine floating source box",
+    "border": "white short-axis source padding covers bicubic footprint; unchanged legacy14 borders",
+    "support": "source erosion ceil(2*max_inverse_scale)+2; inverse mapping; all four neighbours valid",
+    "sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping",
+    "primary_stratum": "rectified",
+    "auxiliary_K": "rectified only, separate A-B-only scale"
+  },
+  "order_reversed": false,
+  "code_commit": "959655af68b9b27515742757c7964254038b838f",
+  "code_file_sha256": {
+    "scripts/resize_benchmark.py": "efd4fd1854611596e6894dee28ddf3d42a7d53425b8048bc0084ae6e598b3061",
+    "services/api/src/pv3d/reconstruction.py": "98bf3f62facd7b23df350565c149cdfa552a8c38e815bd91ffa3b55d0ab4ab56",
+    "services/api/src/pv3d/undistortion.py": "f6b7a22d0da737a1dd62d3fbcdbf060491bfda899aacd2119966e92c211f8cce",
+    "services/multiview/infer.py": "42d2a2de41deac30e97ae732d4ae964fb04db616f85cf52239c5deb25b196557"
+  },
+  "runs": [
+    {
+      "scene": "pipes",
+      "image_condition": "original",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1105.031717014742,
+        528.6418138631055,
+        1274.7375975801,
+        996.1472922846974,
+        1347.8164876349686
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 15974.483792000683,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E09",
+        "image_condition": "original",
+        "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "8cfda9d9c5c6dd06a713a9564695883c7a6ca5c1f40f5fc958c87a969d993248",
+      "model_timings": {
+        "geometry_load_ms": 8918.122292001499,
+        "geometry_inference_ms": 5224.538916998426,
+        "geometry_unproject_ms": 554.8120830062544
+      },
+      "job_id": "7a430530f18a458daa839fe78ffe8879",
+      "geometry_sha256": "6e9a0fc864bda1fee75bfb37c5ad6ff992ac47dfba776690ae364411e0e967ce",
+      "calibration": {
+        "id": "3f6bac5ce9ee4352afb07c3c7cb9b254",
+        "job_id": "7a430530f18a458daa839fe78ffe8879",
+        "geometry_job_id": "7a430530f18a458daa839fe78ffe8879",
+        "geometry_sha256": "6e9a0fc864bda1fee75bfb37c5ad6ff992ac47dfba776690ae364411e0e967ce",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.43664661049842834,
+              0.14857380092144012,
+              -0.8149217963218689
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.4325222074985504,
+              -0.29129496216773987,
+              -0.8082358837127686
+            ]
+          }
+        ],
+        "distance_units": 0.43993890583707995,
+        "label": "Cabinet vertical A-B",
+        "created_at": "2026-11-01T06:51:10.237212+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1105.031717014742,
+        "unit": "mm",
+        "source_note": "E09 ETH3D pipes/original/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1105.031717014742,
+        "mm_per_unit": 2511.784482693518,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "pipes-1",
+          "label": "Cabinet horizontal C-D",
+          "reference_mm": 528.6418138631055,
+          "relative_distance_u": 0.20283988068210998,
+          "calibrated_mm": 509.49006476872853,
+          "absolute_error_mm": 19.15174909437701,
+          "relative_error_pct": 3.6228214628774054,
+          "measurement_record_id": "8affc2aaf4a844b8aa62e3367a1b47a0"
+        },
+        {
+          "segment_id": "pipes-2",
+          "label": "Orange panel vertical E-F",
+          "reference_mm": 1274.7375975801,
+          "relative_distance_u": 0.4998315551934748,
+          "calibrated_mm": 1255.4691442955386,
+          "absolute_error_mm": 19.268453284561474,
+          "relative_error_pct": 1.5115623263281612,
+          "measurement_record_id": "32a279feee1f407cb512beb4210a1017"
+        },
+        {
+          "segment_id": "pipes-3",
+          "label": "Pipe vertical G-H",
+          "reference_mm": 996.1472922846974,
+          "relative_distance_u": 0.40522854874481573,
+          "calibrated_mm": 1017.846780681642,
+          "absolute_error_mm": 21.699488396944616,
+          "relative_error_pct": 2.178341352228756,
+          "measurement_record_id": "f50934ded239462ebb486a999b3a0329"
+        },
+        {
+          "segment_id": "pipes-4",
+          "label": "Cabinet to pipe I-J",
+          "reference_mm": 1347.8164876349686,
+          "relative_distance_u": 0.5375912536997972,
+          "calibrated_mm": 1350.3133690749048,
+          "absolute_error_mm": 2.49688143993626,
+          "relative_error_pct": 0.18525381332272994,
+          "measurement_record_id": "e1f7d26f093e49bd8338578cbee2cbde"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.419209010549821,
+        6.148041007691063,
+        6.983457991736941,
+        5.6945000105770305,
+        6.291666999459267,
+        6.03975000558421,
+        6.558916007634252,
+        6.26066600671038,
+        6.613040997763164
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2511.784482693518,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            291.1280517578125,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            291.2807312011719,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2033.7655544281006,
+            "primary_scale_camera_z_mm": 2046.096365167104,
+            "primary_scale_camera_z_signed_error_pct": 0.6063044342626167,
+            "relative_neighbour_depth_spread": 0.00035685283301408507,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00019503699987917934
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2008.3208084106445,
+            "primary_scale_camera_z_mm": 2029.0860738130216,
+            "primary_scale_camera_z_signed_error_pct": 1.0339615720463602,
+            "relative_neighbour_depth_spread": 0.0004420397520040221,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00022247554911106898
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2021.8744277954102,
+            "primary_scale_camera_z_mm": 2038.083695409566,
+            "primary_scale_camera_z_signed_error_pct": 0.8016950702437908,
+            "relative_neighbour_depth_spread": 0.0006184448424456514,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00018191455668350572
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 2030.6100845336914,
+            "primary_scale_camera_z_mm": 2040.0406208567952,
+            "primary_scale_camera_z_signed_error_pct": 0.4644188657848325,
+            "relative_neighbour_depth_spread": 0.0001346665489273675,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00016473361134581774
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2343.344211578369,
+            "primary_scale_camera_z_mm": 2338.604417814429,
+            "primary_scale_camera_z_signed_error_pct": -0.20226622023863383,
+            "relative_neighbour_depth_spread": 0.00022169617644348343,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00010142978116201582
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 2306.631565093994,
+            "primary_scale_camera_z_mm": 2302.551834750772,
+            "primary_scale_camera_z_signed_error_pct": -0.17686961389761224,
+            "relative_neighbour_depth_spread": 0.000622250134575287,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0002927514252751235
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 2209.589958190918,
+            "primary_scale_camera_z_mm": 2216.408763127686,
+            "primary_scale_camera_z_signed_error_pct": 0.30860046731706614,
+            "relative_neighbour_depth_spread": 0.00063366796877754,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0003442221079355884
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 2178.9321899414062,
+            "primary_scale_camera_z_mm": 2200.5229306731976,
+            "primary_scale_camera_z_signed_error_pct": 0.9908863080485331,
+            "relative_neighbour_depth_spread": 0.0003103106284915307,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0001543722009795182
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2015.7995223999023,
+            "primary_scale_camera_z_mm": 2031.0804560332342,
+            "primary_scale_camera_z_signed_error_pct": 0.7580582028881233,
+            "relative_neighbour_depth_spread": 0.00010983016053542547,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00012700612386996944
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2222.3081588745117,
+            "primary_scale_camera_z_mm": 2223.4664297544455,
+            "primary_scale_camera_z_signed_error_pct": 0.052120174032044275,
+            "relative_neighbour_depth_spread": 0.003561139975530071,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0018995497906366763
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.282004300610765e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          0.4610637476950641,
+          1.1361385605177063,
+          0.9211018697557103,
+          1.2219679745689058
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          0.47839514986161524,
+          1.1535755743046188,
+          0.901464887338983,
+          1.2197084182127484
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1105.0314685634723,
+          509.48999671871456,
+          1255.46886602246,
+          1017.8469620564053,
+          1350.3148044873503
+        ]
+      },
+      "raw_cloud_sha256": "06c26b85fceb01ce6290a41fc4997eefaa5e27ef0ea9d23c01333110ce4faca1",
+      "input_preview_url": "/api/assets/6d576bd7157248ef896c71276d982a4c/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.19965277777777773,
+            0.3985313438438439
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.19998346560846564,
+            0.703858992921493
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.13996362433862441,
+            0.4876829954954955
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.28067129629629634,
+            0.4875154172029172
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.8506117724867724,
+            0.39869892213642216
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.8504464285714285,
+            0.7035238363363364
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.4547784391534392,
+            0.363675058987559
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.45461309523809523,
+            0.6227510993135993
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.259837962962963,
+            0.6495636261261261
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.5204199735449736,
+            0.39853134384384387
+          ]
+        }
+      ],
+      "e08_audit_cloud_matches": true,
+      "model_arrays_equal_e08": true,
+      "repeat_arrays_equal": true,
+      "repeat_geometry_matches": true,
+      "repeat_raw_cloud_matches": true,
+      "repeat_input_tensor_matches": true,
+      "repeat_max_distance_delta_mm": 0.0,
+      "repeat_worker_wall_ms": 13213.093208003556
+    },
+    {
+      "scene": "pipes",
+      "image_condition": "original",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1105.031717014742,
+        528.6418138631055,
+        1274.7375975801,
+        996.1472922846974,
+        1347.8164876349686
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 13570.300666993717,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E09",
+        "image_condition": "original",
+        "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "e8dbf260c660bdcf0f18e0ccfeb9feeaa8636d8cde32e362916f1b1eba144843",
+      "model_timings": {
+        "geometry_load_ms": 6141.690749995178,
+        "geometry_inference_ms": 5585.1851250045,
+        "geometry_unproject_ms": 556.0461249988293
+      },
+      "job_id": "c95b42abfae348ada0a240f70e2254f2",
+      "geometry_sha256": "192ebd9c9cc5b15e3d04ca6b3d958eea17b7fbc5435a05cf874f571985f6c9f5",
+      "calibration": {
+        "id": "af0d7196d62747688371c19e9e43f782",
+        "job_id": "c95b42abfae348ada0a240f70e2254f2",
+        "geometry_job_id": "c95b42abfae348ada0a240f70e2254f2",
+        "geometry_sha256": "192ebd9c9cc5b15e3d04ca6b3d958eea17b7fbc5435a05cf874f571985f6c9f5",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.4371715486049652,
+              0.14693385362625122,
+              -0.8073006272315979
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.4334033727645874,
+              -0.28822293877601624,
+              -0.8013371229171753
+            ]
+          }
+        ],
+        "distance_units": 0.4352139663506931,
+        "label": "Cabinet vertical A-B",
+        "created_at": "2026-11-01T06:51:25.171641+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1105.031717014742,
+        "unit": "mm",
+        "source_note": "E09 ETH3D pipes/original/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1105.031717014742,
+        "mm_per_unit": 2539.0538963639633,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "pipes-1",
+          "label": "Cabinet horizontal C-D",
+          "reference_mm": 528.6418138631055,
+          "relative_distance_u": 0.20238778008093836,
+          "calibrated_mm": 513.8734815909595,
+          "absolute_error_mm": 14.76833227214604,
+          "relative_error_pct": 2.7936368037603576,
+          "measurement_record_id": "48d7d499fdb04444904f1eccda0050fe"
+        },
+        {
+          "segment_id": "pipes-2",
+          "label": "Orange panel vertical E-F",
+          "reference_mm": 1274.7375975801,
+          "relative_distance_u": 0.495211901582525,
+          "calibrated_mm": 1257.3697082389176,
+          "absolute_error_mm": 17.36788934118249,
+          "relative_error_pct": 1.3624678031112323,
+          "measurement_record_id": "0a3bcaf6e8614fbbabc5e982f9f91744"
+        },
+        {
+          "segment_id": "pipes-3",
+          "label": "Pipe vertical G-H",
+          "reference_mm": 996.1472922846974,
+          "relative_distance_u": 0.4016676336002951,
+          "calibrated_mm": 1019.8557701361221,
+          "absolute_error_mm": 23.708477851424732,
+          "relative_error_pct": 2.380017296141873,
+          "measurement_record_id": "a131141c5a3c4b65bc4ab9ce7f28c88e"
+        },
+        {
+          "segment_id": "pipes-4",
+          "label": "Cabinet to pipe I-J",
+          "reference_mm": 1347.8164876349686,
+          "relative_distance_u": 0.5356745662901563,
+          "calibrated_mm": 1360.1065947220975,
+          "absolute_error_mm": 12.290107087128945,
+          "relative_error_pct": 0.9118531491400999,
+          "measurement_record_id": "26ec4d5c48db4c10bf3a1a4b14e621d2"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.578624994494021,
+        7.852208000258543,
+        6.665416993200779,
+        7.013082999037579,
+        7.060916002956219,
+        7.263124993187375,
+        7.020958000794053,
+        5.986708012642339,
+        6.0653330001514405
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2539.0538963639633,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            288.10162353515625,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            287.96466064453125,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2033.7655544281006,
+            "primary_scale_camera_z_mm": 2049.0796680745325,
+            "primary_scale_camera_z_signed_error_pct": 0.7529930681089869,
+            "relative_neighbour_depth_spread": 0.00039484090087876794,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00018948436678459685
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2008.3208084106445,
+            "primary_scale_camera_z_mm": 2033.7136606914846,
+            "primary_scale_camera_z_signed_error_pct": 1.264382272717457,
+            "relative_neighbour_depth_spread": 0.001197639785842744,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.000560433724958643
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2021.8744277954102,
+            "primary_scale_camera_z_mm": 2039.2054941950191,
+            "primary_scale_camera_z_signed_error_pct": 0.8571781788894839,
+            "relative_neighbour_depth_spread": 0.0004294815517412432,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00011988069646119678
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 2030.6100845336914,
+            "primary_scale_camera_z_mm": 2044.3808670933595,
+            "primary_scale_camera_z_signed_error_pct": 0.6781598626222962,
+            "relative_neighbour_depth_spread": 0.00013702399792401554,
+            "pointmap_vs_depth_interpolation_delta_mm": 5.570738982031142e-05
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2343.344211578369,
+            "primary_scale_camera_z_mm": 2346.3080974275285,
+            "primary_scale_camera_z_signed_error_pct": 0.12648102803314298,
+            "relative_neighbour_depth_spread": 0.00025019968809912634,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0003462215160679654
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 2306.631565093994,
+            "primary_scale_camera_z_mm": 2310.88766519759,
+            "primary_scale_camera_z_signed_error_pct": 0.18451581813079265,
+            "relative_neighbour_depth_spread": 0.00013693902208588866,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00020220764227680754
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 2209.589958190918,
+            "primary_scale_camera_z_mm": 2223.3081409353817,
+            "primary_scale_camera_z_signed_error_pct": 0.6208474424682642,
+            "relative_neighbour_depth_spread": 0.00042591067029520204,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00029717385473744144
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 2178.9321899414062,
+            "primary_scale_camera_z_mm": 2211.582585230523,
+            "primary_scale_camera_z_signed_error_pct": 1.4984585311943466,
+            "relative_neighbour_depth_spread": 0.0005155543768028577,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00022507583765671096
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2015.7995223999023,
+            "primary_scale_camera_z_mm": 2039.0228821664298,
+            "primary_scale_camera_z_signed_error_pct": 1.1520669346562373,
+            "relative_neighbour_depth_spread": 9.567155693586021e-05,
+            "pointmap_vs_depth_interpolation_delta_mm": 7.804333759145209e-05
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2222.3081588745117,
+            "primary_scale_camera_z_mm": 2227.9000638437387,
+            "primary_scale_camera_z_signed_error_pct": 0.25162599286225884,
+            "relative_neighbour_depth_spread": 0.004712722132296574,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.003107599266166056
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 3.6911145140372525e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          0.4650305268876766,
+          1.1378584785201629,
+          0.9229199075762966,
+          1.2308303678345482
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          0.47839514986161524,
+          1.1535755743046188,
+          0.901464887338983,
+          1.2197084182127484
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1105.031499422648,
+          513.8735574436678,
+          1257.3698520141725,
+          1019.856242581884,
+          1360.109610652124
+        ]
+      },
+      "raw_cloud_sha256": "faaa4cad16cb2c20a5a80f431055858ba9f58eca1a69dd45a8bca9f610bf0f4f",
+      "input_preview_url": "/api/assets/d20437bfb8b34a3384af2354b8bbb1bb/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.19965277777777773,
+            0.3998842592592593
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.19998346560846564,
+            0.7011408730158732
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.13996362433862441,
+            0.4878472222222222
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.28067129629629634,
+            0.4876818783068783
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.8506117724867724,
+            0.4000496031746032
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.8504464285714285,
+            0.7008101851851853
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.4547784391534392,
+            0.3654927248677248
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.45461309523809523,
+            0.6211144179894179
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.259837962962963,
+            0.6475694444444443
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.5204199735449736,
+            0.3998842592592593
+          ]
+        }
+      ],
+      "repeat_arrays_equal": true,
+      "repeat_geometry_matches": true,
+      "repeat_raw_cloud_matches": true,
+      "repeat_input_tensor_matches": true,
+      "repeat_max_distance_delta_mm": 0.0,
+      "repeat_worker_wall_ms": 12890.460042006453
+    },
+    {
+      "scene": "pipes",
+      "image_condition": "rectified",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1105.031717014742,
+        528.6418138631055,
+        1274.7375975801,
+        996.1472922846974,
+        1347.8164876349686
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 18173.930582997855,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E09",
+        "image_condition": "rectified",
+        "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "1f9f8a247e3720dae340ad870ea35600bfd835637100d798c91b51529db0e864",
+      "model_timings": {
+        "geometry_load_ms": 7180.258290987695,
+        "geometry_inference_ms": 8732.176334000542,
+        "geometry_unproject_ms": 815.6914580031298
+      },
+      "job_id": "b5a1239292ae4c53b236613221082433",
+      "geometry_sha256": "529676885f7d9e2cf105da7da69b328fb5fcbe7bb50622d5460a28b2e945561d",
+      "calibration": {
+        "id": "2e280d5660254f1795f63b1955f68f55",
+        "job_id": "b5a1239292ae4c53b236613221082433",
+        "geometry_job_id": "b5a1239292ae4c53b236613221082433",
+        "geometry_sha256": "529676885f7d9e2cf105da7da69b328fb5fcbe7bb50622d5460a28b2e945561d",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.43116486072540283,
+              0.14692962169647217,
+              -0.815458357334137
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.4295860826969147,
+              -0.28930729627609253,
+              -0.8089909553527832
+            ]
+          }
+        ],
+        "distance_units": 0.43628771290359963,
+        "label": "Cabinet vertical A-B",
+        "created_at": "2026-11-01T06:51:44.796200+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1105.031717014742,
+        "unit": "mm",
+        "source_note": "E09 ETH3D pipes/rectified/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1105.031717014742,
+        "mm_per_unit": 2532.8050374384607,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "pipes-1",
+          "label": "Cabinet horizontal C-D",
+          "reference_mm": 528.6418138631055,
+          "relative_distance_u": 0.20524349463876648,
+          "calibrated_mm": 519.8417571225415,
+          "absolute_error_mm": 8.80005674056406,
+          "relative_error_pct": 1.66465393198028,
+          "measurement_record_id": "77fdf45d6d6c490899f4f12f562d1477"
+        },
+        {
+          "segment_id": "pipes-2",
+          "label": "Orange panel vertical E-F",
+          "reference_mm": 1274.7375975801,
+          "relative_distance_u": 0.4997628655433205,
+          "calibrated_mm": 1265.8019033728024,
+          "absolute_error_mm": 8.935694207297729,
+          "relative_error_pct": 0.7009830277431854,
+          "measurement_record_id": "79d93b752b8c447db4481d2763f12460"
+        },
+        {
+          "segment_id": "pipes-3",
+          "label": "Pipe vertical G-H",
+          "reference_mm": 996.1472922846974,
+          "relative_distance_u": 0.3956695797313318,
+          "calibrated_mm": 1002.1539047046759,
+          "absolute_error_mm": 6.006612419978524,
+          "relative_error_pct": 0.6029843645112115,
+          "measurement_record_id": "7899f7d1abb845c6a783b2dc0197ebeb"
+        },
+        {
+          "segment_id": "pipes-4",
+          "label": "Cabinet to pipe I-J",
+          "reference_mm": 1347.8164876349686,
+          "relative_distance_u": 0.5291757332910182,
+          "calibrated_mm": 1340.2989629696822,
+          "absolute_error_mm": 7.517524665286373,
+          "relative_error_pct": 0.5577558023850467,
+          "measurement_record_id": "4acb3150cbb64b52b4bb5bbe3ec57fd1"
+        }
+      ],
+      "api_roundtrip_ms": [
+        9.488124997005798,
+        23.655541997868568,
+        7.49566599552054,
+        6.121833008364774,
+        30.549916991731152,
+        6.745624996256083,
+        6.529457998112775,
+        6.535707987495698,
+        6.926125002792105
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2532.8050374384607,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            291.1216735839844,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            290.9694519042969,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2033.7655544281006,
+            "primary_scale_camera_z_mm": 2064.9327090398997,
+            "primary_scale_camera_z_signed_error_pct": 1.5324851256300898,
+            "relative_neighbour_depth_spread": 0.0004515265051537253,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00034907472939764385
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2008.3208084106445,
+            "primary_scale_camera_z_mm": 2048.2059502594934,
+            "primary_scale_camera_z_signed_error_pct": 1.985994552355086,
+            "relative_neighbour_depth_spread": 0.000272789297227928,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0003069780435287696
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2021.8744277954102,
+            "primary_scale_camera_z_mm": 2054.6568113347375,
+            "primary_scale_camera_z_signed_error_pct": 1.6213857343787774,
+            "relative_neighbour_depth_spread": 0.00037692933497567136,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0004763959894114962
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 2030.6100845336914,
+            "primary_scale_camera_z_mm": 2065.1714502363407,
+            "primary_scale_camera_z_signed_error_pct": 1.702018815226447,
+            "relative_neighbour_depth_spread": 0.0001797563667587499,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00023982401357069345
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2343.344211578369,
+            "primary_scale_camera_z_mm": 2374.3906697491475,
+            "primary_scale_camera_z_signed_error_pct": 1.324878266597751,
+            "relative_neighbour_depth_spread": 0.0004408094421206392,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0007737631217723424
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 2306.631565093994,
+            "primary_scale_camera_z_mm": 2328.1487771101556,
+            "primary_scale_camera_z_signed_error_pct": 0.9328413059883189,
+            "relative_neighbour_depth_spread": 0.0001747551185475665,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00018917986413406087
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 2209.589958190918,
+            "primary_scale_camera_z_mm": 2252.615984183853,
+            "primary_scale_camera_z_signed_error_pct": 1.9472402937675382,
+            "relative_neighbour_depth_spread": 0.00016004017821818342,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00012159566696416433
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 2178.9321899414062,
+            "primary_scale_camera_z_mm": 2245.8339913921122,
+            "primary_scale_camera_z_signed_error_pct": 3.070393918615011,
+            "relative_neighbour_depth_spread": 0.0012072870632306872,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0013124851550193693
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2015.7995223999023,
+            "primary_scale_camera_z_mm": 2052.989401861865,
+            "primary_scale_camera_z_signed_error_pct": 1.8449195492261428,
+            "relative_neighbour_depth_spread": 0.00021163424711173829,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00024336287329784778
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2222.3081588745117,
+            "primary_scale_camera_z_mm": 2262.916339733877,
+            "primary_scale_camera_z_signed_error_pct": 1.8272974743489767,
+            "relative_neighbour_depth_spread": 0.00295086909477172,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.004443332230962697
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.27322377985584e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          0.4704315261890409,
+          1.1454892053165524,
+          0.9069005796611956,
+          1.2129054237379882
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          0.47839514986161524,
+          1.1535755743046188,
+          0.901464887338983,
+          1.2197084182127484
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1105.0317676170985,
+          519.841077808481,
+          1265.8019746833725,
+          1002.1538401445218,
+          1340.3018765599388
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              282.0231895785852,
+              0.0,
+              259.278087878471
+            ],
+            [
+              0.0,
+              285.74765361978393,
+              257.494786235387
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 2487.5551193626334,
+          "checks": [
+            {
+              "segment_id": "pipes-1",
+              "calibrated_mm": 527.0089457596738,
+              "relative_error_pct": 0.30887986167786874
+            },
+            {
+              "segment_id": "pipes-2",
+              "calibrated_mm": 1265.6421564616326,
+              "relative_error_pct": 0.7135147763534966
+            },
+            {
+              "segment_id": "pipes-3",
+              "calibrated_mm": 1002.2003262502136,
+              "relative_error_pct": 0.6076444731012876
+            },
+            {
+              "segment_id": "pipes-4",
+              "calibrated_mm": 1348.04487241827,
+              "relative_error_pct": 0.016944798152906948
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "8b8a3060dea003a13c5de4452555ad75ebc0188318883a612d33961960abc764",
+      "input_preview_url": "/api/assets/997b45f4be98453ea5398cb1e0c033db/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.20370396054145606,
+            0.39993083557886466
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.20235876011429121,
+            0.7021222028421902
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.14300193502943168,
+            0.4877700550945936
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.2862640548595532,
+            0.48786183763825186
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.8476516509035342,
+            0.39949064486707014
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.8487704707537588,
+            0.7026193943691902
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.45635030968280343,
+            0.3683333421298478
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.45621771780205744,
+            0.6185809480552493
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.2640061988978503,
+            0.6469328156317574
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.5197290272311048,
+            0.40231729554409973
+          ]
+        }
+      ],
+      "e08_audit_cloud_matches": true,
+      "model_arrays_equal_e08": true,
+      "repeat_arrays_equal": true,
+      "repeat_geometry_matches": true,
+      "repeat_raw_cloud_matches": true,
+      "repeat_input_tensor_matches": true,
+      "repeat_max_distance_delta_mm": 0.0,
+      "repeat_worker_wall_ms": 13323.125583003275
+    },
+    {
+      "scene": "pipes",
+      "image_condition": "rectified",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        1105.031717014742,
+        528.6418138631055,
+        1274.7375975801,
+        996.1472922846974,
+        1347.8164876349686
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 14924.724917000276,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E09",
+        "image_condition": "rectified",
+        "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "80bff977ff3fa90a49f7e6dce1e530d77ecfdad37f4e2eb55f355d3a3f83d8b7",
+      "model_timings": {
+        "geometry_load_ms": 7600.056166993454,
+        "geometry_inference_ms": 5318.381750010303,
+        "geometry_unproject_ms": 569.7817909967853
+      },
+      "job_id": "bb094ab1dcb54026bd6f9268911ed547",
+      "geometry_sha256": "bd5b61508ca780d2b066ceec2d402ffa2f7bdc6427fd253f8ee3328a3ce1d641",
+      "calibration": {
+        "id": "6bbc83d1178c49d7ac1ad910b0d52142",
+        "job_id": "bb094ab1dcb54026bd6f9268911ed547",
+        "geometry_job_id": "bb094ab1dcb54026bd6f9268911ed547",
+        "geometry_sha256": "bd5b61508ca780d2b066ceec2d402ffa2f7bdc6427fd253f8ee3328a3ce1d641",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.42939862608909607,
+              0.14470274746418,
+              -0.8160187005996704
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.42768967151641846,
+              -0.28450754284858704,
+              -0.809261679649353
+            ]
+          }
+        ],
+        "distance_units": 0.4292668763930246,
+        "label": "Cabinet vertical A-B",
+        "created_at": "2026-11-01T06:52:01.228616+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1105.031717014742,
+        "unit": "mm",
+        "source_note": "E09 ETH3D pipes/rectified/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 1105.031717014742,
+        "mm_per_unit": 2574.2301066877717,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "pipes-1",
+          "label": "Cabinet horizontal C-D",
+          "reference_mm": 528.6418138631055,
+          "relative_distance_u": 0.20476729614513062,
+          "calibrated_mm": 527.1181386018461,
+          "absolute_error_mm": 1.5236752612594273,
+          "relative_error_pct": 0.2882245068972146,
+          "measurement_record_id": "9d6ffb36b58b4748b3d588c0d5846847"
+        },
+        {
+          "segment_id": "pipes-2",
+          "label": "Orange panel vertical E-F",
+          "reference_mm": 1274.7375975801,
+          "relative_distance_u": 0.4911380573631542,
+          "calibrated_mm": 1264.3023738043773,
+          "absolute_error_mm": 10.435223775722761,
+          "relative_error_pct": 0.818617399810948,
+          "measurement_record_id": "5368ca4e2f344044b76bd5a71fddd34e"
+        },
+        {
+          "segment_id": "pipes-3",
+          "label": "Pipe vertical G-H",
+          "reference_mm": 996.1472922846974,
+          "relative_distance_u": 0.38802610552520256,
+          "calibrated_mm": 998.8684830237827,
+          "absolute_error_mm": 2.721190739085273,
+          "relative_error_pct": 0.27317152394643673,
+          "measurement_record_id": "cf498020474340e6abc8409c1edb7b6f"
+        },
+        {
+          "segment_id": "pipes-4",
+          "label": "Cabinet to pipe I-J",
+          "reference_mm": 1347.8164876349686,
+          "relative_distance_u": 0.523183076479183,
+          "calibrated_mm": 1346.793626782244,
+          "absolute_error_mm": 1.0228608527245342,
+          "relative_error_pct": 0.0758902166658728,
+          "measurement_record_id": "c0a329c1a70d4178aa33c85b6dcb59e6"
+        }
+      ],
+      "api_roundtrip_ms": [
+        6.97754199791234,
+        34.51949999725912,
+        7.6244159863563254,
+        6.035958998836577,
+        7.078915994497947,
+        18.0975419934839,
+        7.01025000307709,
+        6.347540998831391,
+        6.848165998235345
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2574.2301066877717,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            292.53369140625,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            291.9444274902344,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2033.7655544281006,
+            "primary_scale_camera_z_mm": 2100.35289230903,
+            "primary_scale_camera_z_signed_error_pct": 3.2740911427056707,
+            "relative_neighbour_depth_spread": 0.00017919783086717581,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0001428823160617898
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2008.3208084106445,
+            "primary_scale_camera_z_mm": 2082.5328297065803,
+            "primary_scale_camera_z_signed_error_pct": 3.6952274250778627,
+            "relative_neighbour_depth_spread": 6.490998686433999e-05,
+            "pointmap_vs_depth_interpolation_delta_mm": 8.789155125715554e-05
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 2021.8744277954102,
+            "primary_scale_camera_z_mm": 2087.461379549504,
+            "primary_scale_camera_z_signed_error_pct": 3.2438687018564005,
+            "relative_neighbour_depth_spread": 0.00041595726500329763,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0006115349246271772
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 2030.6100845336914,
+            "primary_scale_camera_z_mm": 2093.9527534514827,
+            "primary_scale_camera_z_signed_error_pct": 3.1193910342633524,
+            "relative_neighbour_depth_spread": 0.00012449559061632852,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0001750399568969071
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2343.344211578369,
+            "primary_scale_camera_z_mm": 2405.8823896768527,
+            "primary_scale_camera_z_signed_error_pct": 2.668757657943921,
+            "relative_neighbour_depth_spread": 0.0005060576648459133,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0006944010323486836
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 2306.631565093994,
+            "primary_scale_camera_z_mm": 2368.743084853501,
+            "primary_scale_camera_z_signed_error_pct": 2.6927369199066575,
+            "relative_neighbour_depth_spread": 0.0001640110886051049,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00018604204717103228
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 2209.589958190918,
+            "primary_scale_camera_z_mm": 2283.002458956575,
+            "primary_scale_camera_z_signed_error_pct": 3.3224490586372335,
+            "relative_neighbour_depth_spread": 0.00012278904946510377,
+            "pointmap_vs_depth_interpolation_delta_mm": 7.410337412352877e-05
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 2178.9321899414062,
+            "primary_scale_camera_z_mm": 2276.551440309743,
+            "primary_scale_camera_z_signed_error_pct": 4.4801417326787885,
+            "relative_neighbour_depth_spread": 0.0012689108882230331,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0012421606976635306
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2015.7995223999023,
+            "primary_scale_camera_z_mm": 2084.7170982055504,
+            "primary_scale_camera_z_signed_error_pct": 3.4188705295256083,
+            "relative_neighbour_depth_spread": 0.0002511982614064089,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00025194787185344104
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2222.3081588745117,
+            "primary_scale_camera_z_mm": 2297.5860856627146,
+            "primary_scale_camera_z_signed_error_pct": 3.387375710591245,
+            "relative_neighbour_depth_spread": 0.002326731601410208,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.003509866501846219
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 4.996010127822359e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          0.4770162977999064,
+          1.144132203933392,
+          0.9039274327095689,
+          1.218782778851475
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          0.47839514986161524,
+          1.1535755743046188,
+          0.901464887338983,
+          1.2197084182127484
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          1105.0318046900977,
+          527.1173618028276,
+          1264.3024201615688,
+          998.8685776140383,
+          1346.7960279814233
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              282.0231895785852,
+              0.0,
+              259.278087878471
+            ],
+            [
+              0.0,
+              281.9376849048535,
+              257.5081890855819
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 2486.221623254263,
+          "checks": [
+            {
+              "segment_id": "pipes-1",
+              "calibrated_mm": 528.0610009386704,
+              "relative_error_pct": 0.10986889595259175
+            },
+            {
+              "segment_id": "pipes-2",
+              "calibrated_mm": 1264.1909192317426,
+              "relative_error_pct": 0.8273607343486922
+            },
+            {
+              "segment_id": "pipes-3",
+              "calibrated_mm": 998.9250521876543,
+              "relative_error_pct": 0.2788503190713776
+            },
+            {
+              "segment_id": "pipes-4",
+              "calibrated_mm": 1346.041329408685,
+              "relative_error_pct": 0.1317062257784385
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "f9a5fd72dd51fc6ff405db8fae09342471888aca3a1314ab43e621c041d408e4",
+      "input_preview_url": "/api/assets/a7085f1fc2324bfb95f490a5f0fc9480/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.20370396054145606,
+            0.4012650911044798
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.20235876011429121,
+            0.6994272401376277
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.14300193502943168,
+            0.4879331210266657
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.2862640548595532,
+            0.48802367980307526
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.8476516509035342,
+            0.4008307696021759
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.8487704707537588,
+            0.6999178024442677
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.45635030968280343,
+            0.3700888975681165
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.45621771780205744,
+            0.616999868747846
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.2640061988978503,
+            0.644973711423334
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.5197290272311048,
+            0.40361973160351167
+          ]
+        }
+      ],
+      "repeat_arrays_equal": true,
+      "repeat_geometry_matches": true,
+      "repeat_raw_cloud_matches": true,
+      "repeat_input_tensor_matches": true,
+      "repeat_max_distance_delta_mm": 0.0,
+      "repeat_worker_wall_ms": 13855.360291985562
+    },
+    {
+      "scene": "kicker",
+      "image_condition": "original",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        907.579630404336,
+        1719.8135418869979,
+        772.8615953514021,
+        5347.843414099709,
+        985.1184325062123
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 13234.518792000017,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E09",
+        "image_condition": "original",
+        "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "04ee9dbf723449aeb921982ed22fddbda2b928f04082ed45fd23277ff4358f54",
+      "model_timings": {
+        "geometry_load_ms": 6052.651040998171,
+        "geometry_inference_ms": 5482.170875009615,
+        "geometry_unproject_ms": 505.37454198638443
+      },
+      "job_id": "d993df709e2348a098e380e37a8215ed",
+      "geometry_sha256": "ea03a1943e549995e20291a9dcb8a1050e47f7c6c3e7f3e9bc61d536e78d7dc1",
+      "calibration": {
+        "id": "d467e3ca611b41f4807f2c2cac3f5cf3",
+        "job_id": "d993df709e2348a098e380e37a8215ed",
+        "geometry_job_id": "d993df709e2348a098e380e37a8215ed",
+        "geometry_sha256": "ea03a1943e549995e20291a9dcb8a1050e47f7c6c3e7f3e9bc61d536e78d7dc1",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.4435577690601349,
+              -0.05953509360551834,
+              -0.8334161639213562
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.12836478650569916,
+              -0.05143005773425102,
+              -0.8946958184242249
+            ]
+          }
+        ],
+        "distance_units": 0.32119698615339826,
+        "label": "Cabinet horizontal A-B",
+        "created_at": "2026-11-01T06:52:16.072764+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 907.579630404336,
+        "unit": "mm",
+        "source_note": "E09 ETH3D kicker/original/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 907.579630404336,
+        "mm_per_unit": 2825.6168940853363,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "kicker-1",
+          "label": "Back wall C-D",
+          "reference_mm": 1719.8135418869979,
+          "relative_distance_u": 0.6868347522810824,
+          "calibrated_mm": 1940.7318794903433,
+          "absolute_error_mm": 220.91833760334544,
+          "relative_error_pct": 12.845481921310578,
+          "measurement_record_id": "f42f75fb130d480593e02070af58dd02"
+        },
+        {
+          "segment_id": "kicker-2",
+          "label": "Side wall E-F",
+          "reference_mm": 772.8615953514021,
+          "relative_distance_u": 0.2689146096148572,
+          "calibrated_mm": 759.8496639941035,
+          "absolute_error_mm": 13.011931357298636,
+          "relative_error_pct": 1.6836043394525788,
+          "measurement_record_id": "2674831b769e4b4db895f29244ac7ac0"
+        },
+        {
+          "segment_id": "kicker-3",
+          "label": "Back wall to side wall G-H",
+          "reference_mm": 5347.843414099709,
+          "relative_distance_u": 1.6680928528931844,
+          "calibrated_mm": 4713.391346037987,
+          "absolute_error_mm": 634.4520680617215,
+          "relative_error_pct": 11.863699419264492,
+          "measurement_record_id": "c79848ab619248979f8f937587a51f4d"
+        },
+        {
+          "segment_id": "kicker-4",
+          "label": "Cabinet lower span I-J",
+          "reference_mm": 985.1184325062123,
+          "relative_distance_u": 0.3484255392378286,
+          "calibrated_mm": 984.5170900012017,
+          "absolute_error_mm": 0.6013425050106207,
+          "relative_error_pct": 0.06104266098044293,
+          "measurement_record_id": "d1384733af22441db2e3a2c9f8d1dce4"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.633707995410077,
+        8.00708400493022,
+        11.790292002842762,
+        5.837417003931478,
+        6.156082992674783,
+        6.120667007053271,
+        6.739999997080304,
+        5.971833001240157,
+        6.392166003934108
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2825.6168940853363,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            292.68768310546875,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            294.21673583984375,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2268.5890197753906,
+            "primary_scale_camera_z_mm": 2354.0898938031514,
+            "primary_scale_camera_z_signed_error_pct": 3.7689009901064496,
+            "relative_neighbour_depth_spread": 0.0012646749069968805,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0005816479254941248
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2442.488193511963,
+            "primary_scale_camera_z_mm": 2527.4209720619997,
+            "primary_scale_camera_z_signed_error_pct": 3.4773055925365615,
+            "relative_neighbour_depth_spread": 0.001985184516347378,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0009903053301554806
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 6279.505252838135,
+            "primary_scale_camera_z_mm": 5747.709565774854,
+            "primary_scale_camera_z_signed_error_pct": -8.468751368954209,
+            "relative_neighbour_depth_spread": 0.0018540017091676821,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00027320332679662467
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 6622.191429138184,
+            "primary_scale_camera_z_mm": 4725.456006017793,
+            "primary_scale_camera_z_signed_error_pct": -28.642111050650087,
+            "relative_neighbour_depth_spread": 0.025046557356779627,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.007417864813688634
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2086.533308029175,
+            "primary_scale_camera_z_mm": 2119.8298811937307,
+            "primary_scale_camera_z_signed_error_pct": 1.5957844064327986,
+            "relative_neighbour_depth_spread": 0.006574146559803309,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.004278684914616769
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 1602.645993232727,
+            "primary_scale_camera_z_mm": 1658.9142314481646,
+            "primary_scale_camera_z_signed_error_pct": 3.510958655438179,
+            "relative_neighbour_depth_spread": 0.0050873761826941205,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0004178218244474639
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 6327.075958251953,
+            "primary_scale_camera_z_mm": 5729.54843414699,
+            "primary_scale_camera_z_signed_error_pct": -9.443975827817441,
+            "relative_neighbour_depth_spread": 0.0026731783640024085,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0005822480615869328
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 1920.8276271820068,
+            "primary_scale_camera_z_mm": 1906.9591054219889,
+            "primary_scale_camera_z_signed_error_pct": -0.7220076160797451,
+            "relative_neighbour_depth_spread": 0.005563274712678754,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0014569359279220809
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2257.516860961914,
+            "primary_scale_camera_z_mm": 2349.0645531400833,
+            "primary_scale_camera_z_signed_error_pct": 4.05523846848086,
+            "relative_neighbour_depth_spread": 0.0008004922994635551,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00014553304588797445
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2446.779251098633,
+            "primary_scale_camera_z_mm": 2525.8134247621974,
+            "primary_scale_camera_z_signed_error_pct": 3.2301309416481905,
+            "relative_neighbour_depth_spread": 0.0008386276481868013,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0006840433129318511
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 1.074714481852368e-07,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.138359890939517,
+          0.8372264411174397,
+          5.193363962937471,
+          1.0847721313033318
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          1.8949450651738442,
+          0.8515633994640056,
+          5.892423358727421,
+          1.0854347095332364
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          907.5797130150349,
+          1940.7336346926504,
+          759.8499719611368,
+          4713.391054762187,
+          984.5176241506866
+        ]
+      },
+      "raw_cloud_sha256": "1a46dffa51fcb6a1e2998636f0787b8c17223ec472e2b56d8209b179d0341152",
+      "input_preview_url": "/api/assets/a42a72aeeaa5413cabe243f5a74d0cd5/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.19998346560846564,
+            0.5414756274131274
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.4197255291005291,
+            0.5335994476619477
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.3001818783068783,
+            0.39869892213642216
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.4508101851851852,
+            0.41210518554268555
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.7193287037037037,
+            0.32529962998713
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.8195271164021165,
+            0.47947165915915924
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.3195271164021164,
+            0.4179704257829258
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.749917328042328,
+            0.4449505308880309
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.18047288359788363,
+            0.5746561293436295
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.4195601851851852,
+            0.5686233108108109
+          ]
+        }
+      ],
+      "e08_audit_cloud_matches": true,
+      "model_arrays_equal_e08": true,
+      "repeat_arrays_equal": true,
+      "repeat_geometry_matches": true,
+      "repeat_raw_cloud_matches": true,
+      "repeat_input_tensor_matches": true,
+      "repeat_max_distance_delta_mm": 0.0,
+      "repeat_worker_wall_ms": 12986.864082995453
+    },
+    {
+      "scene": "kicker",
+      "image_condition": "original",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        907.579630404336,
+        1719.8135418869979,
+        772.8615953514021,
+        5347.843414099709,
+        985.1184325062123
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 14119.688708000467,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E09",
+        "image_condition": "original",
+        "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "b9151beab586f9d29a8b61d8c38d3439736fe9f6b9e6ae0f1fe4b10d40a5862a",
+      "model_timings": {
+        "geometry_load_ms": 5916.213583986973,
+        "geometry_inference_ms": 6363.282125006663,
+        "geometry_unproject_ms": 536.3099999958649
+      },
+      "job_id": "969d4bdd41f04663bcb44eb7c2bb9d21",
+      "geometry_sha256": "22755ef0b83f652ab43bac4c2efbfbacbb6ea07198af4a8ab50073eebcef4f73",
+      "calibration": {
+        "id": "73619dbf714c4da3942ab115aefcda99",
+        "job_id": "969d4bdd41f04663bcb44eb7c2bb9d21",
+        "geometry_job_id": "969d4bdd41f04663bcb44eb7c2bb9d21",
+        "geometry_sha256": "22755ef0b83f652ab43bac4c2efbfbacbb6ea07198af4a8ab50073eebcef4f73",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.452457070350647,
+              -0.05990569666028023,
+              -0.8521053791046143
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.13093028962612152,
+              -0.051759812980890274,
+              -0.9147705435752869
+            ]
+          }
+        ],
+        "distance_units": 0.3276778127706111,
+        "label": "Cabinet horizontal A-B",
+        "created_at": "2026-11-01T06:52:31.843250+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 907.579630404336,
+        "unit": "mm",
+        "source_note": "E09 ETH3D kicker/original/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 907.579630404336,
+        "mm_per_unit": 2769.731715218942,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "kicker-1",
+          "label": "Back wall C-D",
+          "reference_mm": 1719.8135418869979,
+          "relative_distance_u": 0.7219282097199163,
+          "calibrated_mm": 1999.547458572484,
+          "absolute_error_mm": 279.73391668548607,
+          "relative_error_pct": 16.265363068286984,
+          "measurement_record_id": "2ad4310f7a0841758b78b2a5222de12a"
+        },
+        {
+          "segment_id": "kicker-2",
+          "label": "Side wall E-F",
+          "reference_mm": 772.8615953514021,
+          "relative_distance_u": 0.27383566052329966,
+          "calibrated_mm": 758.4513137093107,
+          "absolute_error_mm": 14.410281642091377,
+          "relative_error_pct": 1.8645358662878517,
+          "measurement_record_id": "f20194d30de0498baf1691daa420463c"
+        },
+        {
+          "segment_id": "kicker-3",
+          "label": "Back wall to side wall G-H",
+          "reference_mm": 5347.843414099709,
+          "relative_distance_u": 1.5061847761547382,
+          "calibrated_mm": 4171.727743495721,
+          "absolute_error_mm": 1176.1156706039874,
+          "relative_error_pct": 21.992335592757488,
+          "measurement_record_id": "b8be984ed13c4849a529b27b2e666a12"
+        },
+        {
+          "segment_id": "kicker-4",
+          "label": "Cabinet lower span I-J",
+          "reference_mm": 985.1184325062123,
+          "relative_distance_u": 0.35546882513042727,
+          "calibrated_mm": 984.5532787353605,
+          "absolute_error_mm": 0.5651537708517935,
+          "relative_error_pct": 0.0573691195092149,
+          "measurement_record_id": "f086f9b4b11e47958ca6a498dae8f71f"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.985499993083067,
+        7.041750010102987,
+        8.556542001315393,
+        7.420416994136758,
+        8.097458005067892,
+        142.4857499951031,
+        7.704582996666431,
+        6.538917004945688,
+        7.063249999191612
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2769.731715218942,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            293.3375244140625,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            294.87176513671875,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2268.5890197753906,
+            "primary_scale_camera_z_mm": 2359.13709096066,
+            "primary_scale_camera_z_signed_error_pct": 3.9913827668192736,
+            "relative_neighbour_depth_spread": 0.0008256763219449644,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0005628577003345941
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2442.488193511963,
+            "primary_scale_camera_z_mm": 2532.9000926323597,
+            "primary_scale_camera_z_signed_error_pct": 3.701630958158164,
+            "relative_neighbour_depth_spread": 0.0017484598677488218,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.002332085642406696
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 6279.505252838135,
+            "primary_scale_camera_z_mm": 5194.256233985525,
+            "primary_scale_camera_z_signed_error_pct": -17.28239686338525,
+            "relative_neighbour_depth_spread": 0.014901889087730788,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.020584744669969637
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 6622.191429138184,
+            "primary_scale_camera_z_mm": 3906.160735612869,
+            "primary_scale_camera_z_signed_error_pct": -41.014077025538064,
+            "relative_neighbour_depth_spread": 0.020715561279340704,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.04603401062089721
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2086.533308029175,
+            "primary_scale_camera_z_mm": 2121.9268298352267,
+            "primary_scale_camera_z_signed_error_pct": 1.6962835757212469,
+            "relative_neighbour_depth_spread": 0.006871964130841836,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.004539349709748089
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 1602.645993232727,
+            "primary_scale_camera_z_mm": 1651.5533961888666,
+            "primary_scale_camera_z_signed_error_pct": 3.0516660050101008,
+            "relative_neighbour_depth_spread": 0.0028355584071215268,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00014437481191444516
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 6327.075958251953,
+            "primary_scale_camera_z_mm": 5196.278958510637,
+            "primary_scale_camera_z_signed_error_pct": -17.872347466707726,
+            "relative_neighbour_depth_spread": 0.01588453507412097,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.04765580713802592
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 1920.8276271820068,
+            "primary_scale_camera_z_mm": 1906.6791982005082,
+            "primary_scale_camera_z_signed_error_pct": -0.7365798357583775,
+            "relative_neighbour_depth_spread": 0.005610069847375353,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0014026893136488182
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2257.516860961914,
+            "primary_scale_camera_z_mm": 2353.602818805085,
+            "primary_scale_camera_z_signed_error_pct": 4.256267561263272,
+            "relative_neighbour_depth_spread": 0.0008457848703063034,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00041944696941107086
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2446.779251098633,
+            "primary_scale_camera_z_mm": 2536.7345535518934,
+            "primary_scale_camera_z_signed_error_pct": 3.676478064495181,
+            "relative_neighbour_depth_spread": 0.0006832674298893676,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0007015376196938159
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 5.626344945497408e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          2.203164759968957,
+          0.8356856944568191,
+          4.5965418391300545,
+          1.0848120051975296
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          1.8949450651738442,
+          0.8515633994640056,
+          5.892423358727421,
+          1.0854347095332364
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          907.5796824658463,
+          1999.5603864647517,
+          758.4526450998779,
+          4171.721319956532,
+          984.5537842648591
+        ]
+      },
+      "raw_cloud_sha256": "a04eb5e6be6c8ae31ad0eee8bdee41f4290c39da7419d8bb96eef07ae82ec6c3",
+      "input_preview_url": "/api/assets/3b20acb13fb34db4acde76f97505edf9/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.19998346560846564,
+            0.5409226190476192
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.4197255291005291,
+            0.533151455026455
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.3001818783068783,
+            0.4000496031746032
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.4508101851851852,
+            0.4132771164021164
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.7193287037037037,
+            0.3276289682539683
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.8195271164021165,
+            0.4797453703703704
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.3195271164021164,
+            0.4190641534391535
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.749917328042328,
+            0.44568452380952384
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.18047288359788363,
+            0.5736607142857144
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.4195601851851852,
+            0.5677083333333333
+          ]
+        }
+      ],
+      "repeat_arrays_equal": true,
+      "repeat_geometry_matches": true,
+      "repeat_raw_cloud_matches": true,
+      "repeat_input_tensor_matches": true,
+      "repeat_max_distance_delta_mm": 0.0,
+      "repeat_worker_wall_ms": 13751.749667004333
+    },
+    {
+      "scene": "kicker",
+      "image_condition": "rectified",
+      "resize_mode": "legacy14",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        907.579630404336,
+        1719.8135418869979,
+        772.8615953514021,
+        5347.843414099709,
+        985.1184325062123
+      ],
+      "layout": {
+        "resize_mode": "legacy14",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          84,
+          518,
+          434
+        ],
+        "mapping_rect": [
+          0.0,
+          84.0,
+          518.0,
+          434.0
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08680555555555555
+        ],
+        "source_padding": [
+          0,
+          0
+        ],
+        "source_box": [
+          0.0,
+          0.0,
+          6048.0,
+          4032.0
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 13805.34120798984,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "legacy14",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E09",
+        "image_condition": "rectified",
+        "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "af90cf449bdc2bb0e69c4a4b50e723ffb0a0ceb48898c8a47d8ed0b27b9247ec",
+      "model_timings": {
+        "geometry_load_ms": 6279.897083004471,
+        "geometry_inference_ms": 5537.620041999617,
+        "geometry_unproject_ms": 706.5179580094991
+      },
+      "job_id": "327b5fd3063945c88bcb658eb95222f4",
+      "geometry_sha256": "80a480d04755e65660570cac29130d959e8ab803a22053ebd9d2fd828d8b21da",
+      "calibration": {
+        "id": "83d4d6ad87314a338bb684a0d20505ba",
+        "job_id": "327b5fd3063945c88bcb658eb95222f4",
+        "geometry_job_id": "327b5fd3063945c88bcb658eb95222f4",
+        "geometry_sha256": "80a480d04755e65660570cac29130d959e8ab803a22053ebd9d2fd828d8b21da",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.45559075474739075,
+              -0.06144505366683006,
+              -0.830985963344574
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.12940959632396698,
+              -0.05237197130918503,
+              -0.8991662859916687
+            ]
+          }
+        ],
+        "distance_units": 0.33335420400855487,
+        "label": "Cabinet horizontal A-B",
+        "created_at": "2026-11-01T06:52:47.283050+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 907.579630404336,
+        "unit": "mm",
+        "source_note": "E09 ETH3D kicker/rectified/legacy14; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 907.579630404336,
+        "mm_per_unit": 2722.568425688865,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "kicker-1",
+          "label": "Back wall C-D",
+          "reference_mm": 1719.8135418869979,
+          "relative_distance_u": 0.6580748576786186,
+          "calibrated_mm": 1791.6538292555006,
+          "absolute_error_mm": 71.84028736850269,
+          "relative_error_pct": 4.177213728046283,
+          "measurement_record_id": "0d636b8ccc1b4d9fa2f604e179862223"
+        },
+        {
+          "segment_id": "kicker-2",
+          "label": "Side wall E-F",
+          "reference_mm": 772.8615953514021,
+          "relative_distance_u": 0.2757814122886227,
+          "calibrated_mm": 750.8337654888873,
+          "absolute_error_mm": 22.027829862514864,
+          "relative_error_pct": 2.8501648930426313,
+          "measurement_record_id": "4f4e4adc35f44b0d99fa224dd524dad4"
+        },
+        {
+          "segment_id": "kicker-3",
+          "label": "Back wall to side wall G-H",
+          "reference_mm": 5347.843414099709,
+          "relative_distance_u": 1.7106898964865065,
+          "calibrated_mm": 4657.4702983191155,
+          "absolute_error_mm": 690.3731157805933,
+          "relative_error_pct": 12.909374159318299,
+          "measurement_record_id": "19d638840a3a488bab76893e0bcc8e70"
+        },
+        {
+          "segment_id": "kicker-4",
+          "label": "Cabinet lower span I-J",
+          "reference_mm": 985.1184325062123,
+          "relative_distance_u": 0.36278358022661644,
+          "calibrated_mm": 987.7031208833491,
+          "absolute_error_mm": 2.5846883771367857,
+          "relative_error_pct": 0.2623733646482639,
+          "measurement_record_id": "5cdae94954eb4f85975ab818833cde82"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.427749995258637,
+        6.378584002959542,
+        6.939166007214226,
+        5.871917004697025,
+        6.558124994626269,
+        6.252041988773271,
+        6.947874993784353,
+        5.887708990485407,
+        6.565999996382743
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2722.568425688865,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            279.8702392578125,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            281.21771240234375,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2268.5890197753906,
+            "primary_scale_camera_z_mm": 2261.140409283056,
+            "primary_scale_camera_z_signed_error_pct": -0.3283367074161325,
+            "relative_neighbour_depth_spread": 0.0012748883153584605,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0015751179741088296
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2442.488193511963,
+            "primary_scale_camera_z_mm": 2447.0577360944767,
+            "primary_scale_camera_z_signed_error_pct": 0.18708555458535336,
+            "relative_neighbour_depth_spread": 0.0010310725463579461,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0015664033429333936
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 6279.505252838135,
+            "primary_scale_camera_z_mm": 5628.608505231481,
+            "primary_scale_camera_z_signed_error_pct": -10.365414493641346,
+            "relative_neighbour_depth_spread": 0.0028048984375311945,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0112245615651044
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 6622.191429138184,
+            "primary_scale_camera_z_mm": 4878.950821147903,
+            "primary_scale_camera_z_signed_error_pct": -26.32422554745064,
+            "relative_neighbour_depth_spread": 0.0535346935018212,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.1705232106002645
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2086.533308029175,
+            "primary_scale_camera_z_mm": 2044.2388239431864,
+            "primary_scale_camera_z_signed_error_pct": -2.0270217553314485,
+            "relative_neighbour_depth_spread": 0.007173758495554366,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.006723147783042228
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 1602.645993232727,
+            "primary_scale_camera_z_mm": 1590.784746274706,
+            "primary_scale_camera_z_signed_error_pct": -0.7401039910314489,
+            "relative_neighbour_depth_spread": 0.004701284193667711,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.001335405942919103
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 6327.075958251953,
+            "primary_scale_camera_z_mm": 5603.289563415606,
+            "primary_scale_camera_z_signed_error_pct": -11.439508544106614,
+            "relative_neighbour_depth_spread": 0.003966287765542403,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.011992892016513776
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 1920.8276271820068,
+            "primary_scale_camera_z_mm": 1833.0874602853007,
+            "primary_scale_camera_z_signed_error_pct": -4.567831368889008,
+            "relative_neighbour_depth_spread": 0.005819233469916974,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00830010552418416
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2257.516860961914,
+            "primary_scale_camera_z_mm": 2257.8606700055657,
+            "primary_scale_camera_z_signed_error_pct": 0.015229522737869594,
+            "relative_neighbour_depth_spread": 0.0006526008236444774,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0004779787853228016
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2446.779251098633,
+            "primary_scale_camera_z_mm": 2446.172075148333,
+            "primary_scale_camera_z_signed_error_pct": -0.024815313846848763,
+            "relative_neighbour_depth_spread": 0.0006496622891736762,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.001302030730349685
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 1.1288425483257924e-07,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          1.9741009705752217,
+          0.8272924384104822,
+          5.1317483802982276,
+          1.0882826011016988
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          1.8949450651738442,
+          0.8515633994640056,
+          5.892423358727421,
+          1.0854347095332364
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          907.5797375689672,
+          1791.6832424299953,
+          750.8356286341123,
+          4657.468449273334,
+          987.7039498985267
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              280.422484264329,
+              0.0,
+              259.9123694937807
+            ],
+            [
+              0.0,
+              284.1819755027823,
+              258.4971947385882
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 2729.5406163857383,
+          "checks": [
+            {
+              "segment_id": "kicker-1",
+              "calibrated_mm": 1794.9897628218307,
+              "relative_error_pct": 4.371184381555038
+            },
+            {
+              "segment_id": "kicker-2",
+              "calibrated_mm": 747.526161850396,
+              "relative_error_pct": 3.278133323404009
+            },
+            {
+              "segment_id": "kicker-3",
+              "calibrated_mm": 4671.574863184587,
+              "relative_error_pct": 12.645631117996547
+            },
+            {
+              "segment_id": "kicker-4",
+              "calibrated_mm": 987.746882334087,
+              "relative_error_pct": 0.2668156174062908
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "8d1462af76438a7172d3fee9a0a983bce4eb4127b50764d52f8ce66d34826596",
+      "input_preview_url": "/api/assets/6579ee2cc3f74e07a0d85a5c2ae98e5e/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.2043685768365823,
+            0.5410261378760857
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.42296520135378574,
+            0.5325645877843411
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.30514488720103816,
+            0.4013007189523208
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.4528503662853335,
+            0.41549950897663146
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.7155864996129286,
+            0.32853928206246735
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.8155310626859906,
+            0.479871226459589
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.3245863238370205,
+            0.4203644474242879
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.7449039443883863,
+            0.4462528958363425
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.18416969507337033,
+            0.5739419829315726
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.4227023946352426,
+            0.5663683879929726
+          ]
+        }
+      ],
+      "e08_audit_cloud_matches": true,
+      "model_arrays_equal_e08": true,
+      "repeat_arrays_equal": true,
+      "repeat_geometry_matches": true,
+      "repeat_raw_cloud_matches": true,
+      "repeat_input_tensor_matches": true,
+      "repeat_max_distance_delta_mm": 0.0,
+      "repeat_worker_wall_ms": 13929.397957996116
+    },
+    {
+      "scene": "kicker",
+      "image_condition": "rectified",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "view_count": 3,
+      "reference_lengths_mm": [
+        907.579630404336,
+        1719.8135418869979,
+        772.8615953514021,
+        5347.843414099709,
+        985.1184325062123
+      ],
+      "layout": {
+        "resize_mode": "isotropic",
+        "source_size": [
+          6048,
+          4032
+        ],
+        "target_size": 518,
+        "rect": [
+          0,
+          86,
+          518,
+          432
+        ],
+        "mapping_rect": [
+          0.0,
+          86.33333333333331,
+          518.0,
+          431.6666666666667
+        ],
+        "scale_xy": [
+          0.08564814814814815,
+          0.08564814814814815
+        ],
+        "source_padding": [
+          0,
+          30
+        ],
+        "source_box": [
+          0.0,
+          26.10810810810833,
+          6048.0,
+          4065.8918918918916
+        ]
+      },
+      "status": "succeeded",
+      "worker_wall_ms": 14605.532000001404,
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "resize_mode": "isotropic",
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown",
+        "experiment_id": "E09",
+        "image_condition": "rectified",
+        "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+        "measurement_sampling": "E08 bilinear camera-Z then predicted-K/extrinsic; same physical points, no snapping"
+      },
+      "input_tensor_sha256": "778c10b7f587c6c9d47cb363aab7bdca0b6f72ac9e61474059bdeea3bed90e16",
+      "model_timings": {
+        "geometry_load_ms": 6243.583041999955,
+        "geometry_inference_ms": 5783.113792000222,
+        "geometry_unproject_ms": 1018.3457500097575
+      },
+      "job_id": "6558249e023c47d3afa05a1c97d9fe1a",
+      "geometry_sha256": "1c609cf14ee6d1eaa4c81fc4b54714a016f6bf6f80e9e4e6328e2f01b39fc82f",
+      "calibration": {
+        "id": "8f4cb81b15cb452d98317764e00ab368",
+        "job_id": "6558249e023c47d3afa05a1c97d9fe1a",
+        "geometry_job_id": "6558249e023c47d3afa05a1c97d9fe1a",
+        "geometry_sha256": "1c609cf14ee6d1eaa4c81fc4b54714a016f6bf6f80e9e4e6328e2f01b39fc82f",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 0,
+            "position": [
+              -0.448249489068985,
+              -0.05961441993713379,
+              -0.8167787790298462
+            ]
+          },
+          {
+            "component_id": "measurement-anchors",
+            "point_index": 1,
+            "position": [
+              -0.12732122838497162,
+              -0.05078635364770889,
+              -0.8833737373352051
+            ]
+          }
+        ],
+        "distance_units": 0.32788377778073896,
+        "label": "Cabinet horizontal A-B",
+        "created_at": "2026-11-01T06:53:03.431080+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 907.579630404336,
+        "unit": "mm",
+        "source_note": "E09 ETH3D kicker/rectified/isotropic; fixed scanner points; derived camera-Z anchors; GT withheld.",
+        "known_length_mm": 907.579630404336,
+        "mm_per_unit": 2767.9918675673207,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "kicker-1",
+          "label": "Back wall C-D",
+          "reference_mm": 1719.8135418869979,
+          "relative_distance_u": 0.5840962214894256,
+          "calibrated_mm": 1616.7735909595306,
+          "absolute_error_mm": 103.03995092746732,
+          "relative_error_pct": 5.991344318315506,
+          "measurement_record_id": "95c311eb132e4e58b8f4c81e96ed90e4"
+        },
+        {
+          "segment_id": "kicker-2",
+          "label": "Side wall E-F",
+          "reference_mm": 772.8615953514021,
+          "relative_distance_u": 0.2709140777073194,
+          "calibrated_mm": 749.8879639033613,
+          "absolute_error_mm": 22.973631448040805,
+          "relative_error_pct": 2.972541472654652,
+          "measurement_record_id": "c67b8f3c2ed241bea90d47abf4cdf4c5"
+        },
+        {
+          "segment_id": "kicker-3",
+          "label": "Back wall to side wall G-H",
+          "reference_mm": 5347.843414099709,
+          "relative_distance_u": 1.7459611145136427,
+          "calibrated_mm": 4832.806166062538,
+          "absolute_error_mm": 515.0372480371707,
+          "relative_error_pct": 9.630746604869984,
+          "measurement_record_id": "0d836a64bc0c4b7d841c75c0b78817ac"
+        },
+        {
+          "segment_id": "kicker-4",
+          "label": "Cabinet lower span I-J",
+          "reference_mm": 985.1184325062123,
+          "relative_distance_u": 0.35631414816174545,
+          "calibrated_mm": 986.2746644108888,
+          "absolute_error_mm": 1.1562319046764742,
+          "relative_error_pct": 0.11736983762804405,
+          "measurement_record_id": "85fbf9286b0b4052be229edd6003c2a0"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.091708001098596,
+        7.726208001258783,
+        6.71620799403172,
+        6.461625001975335,
+        11.131416991702281,
+        6.223375006811693,
+        6.163374986499548,
+        6.080874998588115,
+        6.58237500465475
+      ],
+      "diagnostics": {
+        "primary_mm_per_unit": 2767.9918675673207,
+        "camera_z_scope": "conditional on primary scale and model camera; not causal proof",
+        "predicted_camera_K_grid": [
+          [
+            279.6826477050781,
+            0.0,
+            259.0
+          ],
+          [
+            0.0,
+            280.94366455078125,
+            259.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "points": [
+          {
+            "point_index": 0,
+            "true_camera_z_mm": 2268.5890197753906,
+            "primary_scale_camera_z_mm": 2259.9068447757163,
+            "primary_scale_camera_z_signed_error_pct": -0.3827125549842436,
+            "relative_neighbour_depth_spread": 0.0013121972211015951,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0017427950647561574
+          },
+          {
+            "point_index": 1,
+            "true_camera_z_mm": 2442.488193511963,
+            "primary_scale_camera_z_mm": 2444.423952783715,
+            "primary_scale_camera_z_signed_error_pct": 0.07925357743361339,
+            "relative_neighbour_depth_spread": 0.0013087183512429253,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0016394773196046954
+          },
+          {
+            "point_index": 2,
+            "true_camera_z_mm": 6279.505252838135,
+            "primary_scale_camera_z_mm": 5733.525158681208,
+            "primary_scale_camera_z_signed_error_pct": -8.694635519417094,
+            "relative_neighbour_depth_spread": 0.011102056302460655,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.01196998451393648
+          },
+          {
+            "point_index": 3,
+            "true_camera_z_mm": 6622.191429138184,
+            "primary_scale_camera_z_mm": 5500.582113522399,
+            "primary_scale_camera_z_signed_error_pct": -16.93713218075533,
+            "relative_neighbour_depth_spread": 0.007721268769863072,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.016709450719902312
+          },
+          {
+            "point_index": 4,
+            "true_camera_z_mm": 2086.533308029175,
+            "primary_scale_camera_z_mm": 2041.7101816242407,
+            "primary_scale_camera_z_signed_error_pct": -2.148210442289633,
+            "relative_neighbour_depth_spread": 0.006795978232310208,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0063797252973982425
+          },
+          {
+            "point_index": 5,
+            "true_camera_z_mm": 1602.645993232727,
+            "primary_scale_camera_z_mm": 1578.6966946952575,
+            "primary_scale_camera_z_signed_error_pct": -1.4943598672817915,
+            "relative_neighbour_depth_spread": 0.004667082560107658,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0013302577409742213
+          },
+          {
+            "point_index": 6,
+            "true_camera_z_mm": 6327.075958251953,
+            "primary_scale_camera_z_mm": 5781.658936350001,
+            "primary_scale_camera_z_signed_error_pct": -8.620364691380134,
+            "relative_neighbour_depth_spread": 0.0006759597543782809,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0027343805627169887
+          },
+          {
+            "point_index": 7,
+            "true_camera_z_mm": 1920.8276271820068,
+            "primary_scale_camera_z_mm": 1843.774902494849,
+            "primary_scale_camera_z_signed_error_pct": -4.011433592310409,
+            "relative_neighbour_depth_spread": 0.005535820914165934,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.00823851282704859
+          },
+          {
+            "point_index": 8,
+            "true_camera_z_mm": 2257.516860961914,
+            "primary_scale_camera_z_mm": 2252.8071428082444,
+            "primary_scale_camera_z_signed_error_pct": -0.20862383068371848,
+            "relative_neighbour_depth_spread": 0.0010419928908769471,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0007196525205467174
+          },
+          {
+            "point_index": 9,
+            "true_camera_z_mm": 2446.779251098633,
+            "primary_scale_camera_z_mm": 2443.695265858354,
+            "primary_scale_camera_z_signed_error_pct": -0.12604264315605462,
+            "relative_neighbour_depth_spread": 0.000642536695934567,
+            "pointmap_vs_depth_interpolation_delta_mm": 0.0012871408660506609
+          }
+        ],
+        "integer_unprojection_max_abs_raw_units": 9.863073646698695e-08,
+        "raw_length_ratios_to_reference": [
+          1.0,
+          1.7814123816763512,
+          0.8262503242489901,
+          5.324938996162214,
+          1.0867086824893737
+        ],
+        "true_length_ratios_to_reference": [
+          1.0,
+          1.8949450651738442,
+          0.8515633994640056,
+          5.892423358727421,
+          1.0854347095332364
+        ],
+        "pointmap_interpolation_check_lengths_mm_same_primary_scale": [
+          907.5797986178658,
+          1616.7796055815884,
+          749.8892717198097,
+          4832.80006891837,
+          986.2753845970508
+        ],
+        "known_K_auxiliary": {
+          "scope": "separate A-B-only diagnostic scale; not primary before/after metric",
+          "K_grid": [
+            [
+              280.422484264329,
+              0.0,
+              259.9123694937807
+            ],
+            [
+              0.0,
+              280.3928824960786,
+              258.4972321420737
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "mm_per_unit": 2776.830026129981,
+          "checks": [
+            {
+              "segment_id": "kicker-1",
+              "calibrated_mm": 1618.5424523913339,
+              "relative_error_pct": 5.888492387642685
+            },
+            {
+              "segment_id": "kicker-2",
+              "calibrated_mm": 752.699629529515,
+              "relative_error_pct": 2.6087421011934064
+            },
+            {
+              "segment_id": "kicker-3",
+              "calibrated_mm": 4850.631462098385,
+              "relative_error_pct": 9.297429141070468
+            },
+            {
+              "segment_id": "kicker-4",
+              "calibrated_mm": 986.297634098351,
+              "relative_error_pct": 0.11970150524325263
+            }
+          ]
+        }
+      },
+      "raw_cloud_sha256": "cf346a31bbeb3e0f85b0e6259c4ab93fd06ed5bbfee195b666d68e40c8a8fb83",
+      "input_preview_url": "/api/assets/0dad3ad85d484f3899676313373fd86f/image",
+      "preview_points": [
+        {
+          "id": "A",
+          "uv": [
+            0.2043685768365823,
+            0.5404791227044046
+          ]
+        },
+        {
+          "id": "B",
+          "uv": [
+            0.42296520135378574,
+            0.5321303932805499
+          ]
+        },
+        {
+          "id": "C",
+          "uv": [
+            0.30514488720103816,
+            0.4026167093662898
+          ]
+        },
+        {
+          "id": "D",
+          "uv": [
+            0.4528503662853335,
+            0.4166261821902764
+          ]
+        },
+        {
+          "id": "E",
+          "uv": [
+            0.7155864996129286,
+            0.3308254249683011
+          ]
+        },
+        {
+          "id": "F",
+          "uv": [
+            0.8155310626859906,
+            0.4801396101067945
+          ]
+        },
+        {
+          "id": "G",
+          "uv": [
+            0.3245863238370205,
+            0.42142625479196405
+          ]
+        },
+        {
+          "id": "H",
+          "uv": [
+            0.7449039443883863,
+            0.4469695238918579
+          ]
+        },
+        {
+          "id": "I",
+          "uv": [
+            0.18416969507337033,
+            0.5729560898258184
+          ]
+        },
+        {
+          "id": "J",
+          "uv": [
+            0.4227023946352426,
+            0.5654834761530663
+          ]
+        }
+      ],
+      "repeat_arrays_equal": true,
+      "repeat_geometry_matches": true,
+      "repeat_raw_cloud_matches": true,
+      "repeat_input_tensor_matches": true,
+      "repeat_max_distance_delta_mm": 0.0,
+      "repeat_worker_wall_ms": 16325.587583996821
+    }
+  ],
+  "source_run_summary_sha256": "4b7760a111baed76c70a42d4ab2345f7ff01906f1f9feca8f2b2e1e13986f47b",
+  "repeat_run_summary_sha256": "175220075581b89277c7a12a8b625ade05b63cccbccd39172f2ac86469aa939f",
+  "preview_scope": "JPEG viewer derivatives of frozen lossless518 input tensor previews; markers use continuous source mapping"
+}
