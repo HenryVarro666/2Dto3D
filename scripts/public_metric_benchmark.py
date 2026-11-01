@@ -206,7 +206,7 @@ def annotated_photo(path, scene, input_size, output):
     image.save(output, quality=90)
 
 
-def run(root, selection, runtime_root, sizes, run_name):
+def run(root, selection, runtime_root, sizes, run_name, device):
     run_folder = root / "runs" / run_name
     summary_path = run_folder / "summary.json"
     if summary_path.exists():
@@ -227,7 +227,7 @@ def run(root, selection, runtime_root, sizes, run_name):
             try:
                 worker = VggtReconstructor(runtime_python=runtime_root/"services/multiview/.venv/bin/python",
                     worker_script=ROOT/"services/multiview/infer.py", cache_dir=runtime_root/"models/huggingface",
-                    device="mps", input_size=input_size)
+                    device=device, input_size=input_size)
                 metadata = worker.reconstruct(paths, destination, lambda stage: print(
                     f"{scene['id']} {input_size}: {stage}", flush=True))
                 row["worker_wall_ms"] = (time.perf_counter()-started)*1000
@@ -260,6 +260,7 @@ def main():
     parser.add_argument("--runtime-root", type=Path, default=ROOT)
     parser.add_argument("--sizes", type=int, nargs="+", choices=[336, 518], default=[336, 518])
     parser.add_argument("--run-name", default="2026-11-01-vggt-metric")
+    parser.add_argument("--device", choices=["auto", "cpu", "mps", "cuda"], default="auto")
     args = parser.parse_args()
     selection = json.loads(SELECTION.read_text())
     root = args.data_dir.resolve()
@@ -267,7 +268,7 @@ def main():
         download_sources(root, selection)
     verify_sources(root, selection)
     if args.run:
-        run(root, selection, args.runtime_root.resolve(), args.sizes, args.run_name)
+        run(root, selection, args.runtime_root.resolve(), args.sizes, args.run_name, args.device)
 
 
 if __name__ == "__main__":
