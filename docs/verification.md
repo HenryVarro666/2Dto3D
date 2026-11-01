@@ -101,3 +101,10 @@ E05最终代码`9c98a60`新增解析演示入口限制，完整前端66项通过
 
 
 E07交付补充：GitHub8f55a62干净clone的锁定安装/119API+2optional skips/68frontend/build/Ruff/8SVG均通过；新模型虚拟环境复用已校验源和checkpoint，额外真实运行两组336，GLB及测距值与主轮完全相同。完整ML生产环境另121后端通过。数据已持久放到正式`data/measurement-public/`，8004使用此runtime；[机器证明](measurement/public-metric-clone-verification.json)及范围见E07。
+
+
+## 2026-11-01 E08 固定实际取点的去畸变对照
+
+详见[E08完整证据](quality/2026-11-01-undistortion-fixed-points.md)。协议先于推理冻结在f148c36；8次真实VGGT调用（两场景/原图去畸变/主轮逆序复跑），同模型/518/20个实际点/共用参考长度。MAPE4.24%→2.97%，4改善4退步，跨墙最大12.91%；深度顺序仍错，known-K辅助仍12.65%，不能保证现场精度。原图张量和数组与E07一致，数值差来自亚像素固定点方法。
+
+本轮开发后端130 passed/2 ML skip；正式ML环境显式本分支PYTHONPATH132 passed；前端70 passed、生产build、Ruff通过。支持mask/半像素/亚像素/GLB来源/不干扰无关queued任务先RED后GREEN。主轮/复跑数组、原始样本云、审计云、收据测量完全相同；重复运行不增加样本。真实浏览器及新克隆/最终审查/远端提交核验继续追加在E08报告，不将待做项冒充完成。

@@ -124,13 +124,47 @@ def metric(zh):
     return svg(title, "Measured held-out percentage errors from frozen E07 JSON. Orange:336px; green:518px.", body, 586)
 
 
+def undistortion(zh):
+    data = json.loads((ROOT / "docs/measurement/undistortion-results.json").read_text())
+    checks = {condition: [c for r in data["runs"] if r["condition"] == condition for c in r["checks"]]
+              for condition in ["original", "rectified"]}
+    title = "固定实际位置：去畸变改善部分长度，仍有退步" if zh else "Fixed physical points: undistortion helps some lengths, others regress"
+    body = text(32, 44, title, 24, weight=650)
+    body += text(32, 73, "E08 · 相同六图 / VGGT / 518 px / 20个扫描点 · 每场景一条参照、四条独立检查" if zh else
+                 "E08 · Same six photos / VGGT / 518 px / 20 scanner points · One scale reference + four checks per scene", 13)
+    means = [sum(c["relative_error_pct"] for c in checks[k])/8 for k in ["original", "rectified"]]
+    body += text(32, 111, f"MAPE {means[0]:.2f}% → {means[1]:.2f}%", 23, weight=650)
+    body += text(390, 110, "4条改善 · 4条退步 · 复跑完全一致" if zh else "4 improve · 4 regress · Identical repeat", 16)
+    body += box(800, 96, 13, 10, "#bd8a48", "none", 2) + text(820, 107, "原图" if zh else "Original", 12)
+    body += box(922, 96, 13, 10, "#247e6b", "none", 2) + text(942, 107, "去畸变" if zh else "Rectified", 12)
+    names = ["柜体横向 C–D", "橙色面板 E–F", "管道纵向 G–H", "柜体至管道 I–J",
+             "后墙 C–D", "侧墙 E–F", "后墙至侧墙 G–H", "柜体下段 I–J"]
+    for tick in range(0, 15, 2):
+        x = 340+tick*43
+        body += f'<path d="M{x},148 V499" stroke="#dce5dd"/>'
+        body += text(x, 141, f"{tick}%", 12, "#678077", anchor="middle")
+    for i, c in enumerate(checks["original"]):
+        y = 160+i*42
+        scene = "pipes" if i < 4 else "kicker"
+        body += text(32, y+14, scene+" · "+(names[i] if zh else c["label"]), 14)
+        for j, (k, color) in enumerate([("original", "#bd8a48"), ("rectified", "#247e6b")]):
+            v = checks[k][i]["relative_error_pct"]
+            body += f'<rect x="340" y="{y+j*13}" width="{v*43:.2f}" height="9" rx="3" fill="{color}"/>'
+            body += text(346+v*43, y+9+j*13, f"{v:.2f}%", 12, color)
+    body += text(32, 535, "后墙深度顺序仍错误；跨墙误差 11.86%→12.91%（约690 mm）。比例标定不能修正形变。" if zh else
+                 "Back-wall depth order remains wrong. Cross-wall error: 11.86%→12.91% (~690 mm). Scale cannot repair shape.", 13, "#986a23")
+    body += text(32, 562, "去畸变依赖已知相机标定；激光参考不用于推理。亚像素取样不同于E07最近顶点；不代表现场精度。" if zh else
+                 "Rectification needs known calibration; scan truth is withheld. Subpixel sampling differs from E07. Field accuracy is unverified.", 12, "#59756a")
+    return svg(title, "E08 fixed-physical-point held-out percentage errors; original and rectified. Both improvements and regressions retained.", body, 590)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     ASSETS.mkdir(parents=True, exist_ok=True)
     for name, generator in [("workflow", workflow), ("architecture", architecture), ("scale-validation", scale),
-                            ("public-metric-errors", metric)]:
+                            ("public-metric-errors", metric), ("undistortion-errors", undistortion)]:
         for lang in ["zh", "en"]:
             path = ASSETS / f"{name}.{lang}.svg"
             expected = generator(lang == "zh")
@@ -138,7 +172,7 @@ def main():
                 if not path.exists() or path.read_text() != expected:
                     raise SystemExit(f"Outdated diagram: {path}")
             else: path.write_text(expected, encoding="utf-8")
-    print("8 SVG diagrams verified" if args.check else "8 SVG diagrams rendered")
+    print("10 SVG diagrams verified" if args.check else "10 SVG diagrams rendered")
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ type Run = {
   }[];
 };
 
-const labels: Record<string, MessageKey> = {
+export const metricCheckLabels: Record<string, MessageKey> = {
   "pipes-1": "柜体横向 C–D",
   "pipes-2": "橙色面板纵向 E–F",
   "pipes-3": "管道纵向 G–H",
@@ -136,7 +136,9 @@ export function PublicMetricBenchmark({
                     <tbody>
                       {run.checks?.map((check) => (
                         <tr key={check.segment_id}>
-                          <th scope="row">{t(labels[check.segment_id])}</th>
+                          <th scope="row">
+                            {t(metricCheckLabels[check.segment_id])}
+                          </th>
                           <td>{check.reference_mm.toFixed(1)} mm</td>
                           <td>{check.calibrated_mm.toFixed(1)} mm</td>
                           <td>{check.absolute_error_mm.toFixed(1)} mm</td>

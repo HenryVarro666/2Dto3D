@@ -94,6 +94,16 @@ The [official ETH3D data](https://eth3d.ethz.ch/datasets) provides **two real sc
 
 Open “Multi-view point cloud → Public metric validation” for the frozen results. Preparing local data enables point-cloud and receipt replay. About 6GB of raw data remains outside Git; the script downloads official sources and verifies hashes, while result summaries are checked in. [Full results, failures, timing and reproduction](docs/quality/2026-11-01-public-metric-measurement.md) · [Frozen point protocol](docs/measurement/public-metric-selection.json) · [Numerical results](docs/measurement/public-metric-results.json). ETH3D data is CC BY-NC-SA 4.0. This experiment audits geometry grouped by photo view; it is not a PV component-recognition evaluation.
 
+### Fixed-physical-point undistortion comparison: E08
+
+![Before/after errors for eight lengths at the same physical points](docs/assets/undistortion-errors.en.svg)
+
+With the same six photos, VGGT/518 and 20 fixed scanner points, held-out length MAPE changes from **4.24% to 2.97%**: **four improve and four regress**. The kicker back wall improves from 12.85% to 4.18%, but the cross-wall distance regresses from 11.86% to 12.91% (~690 mm). Back-wall depth ordering remains wrong; replacing rays with known camera K alone does not resolve the cross-wall error. Arrays, clouds and measurements match exactly on repeat. This subpixel method recomputes the original baseline and differs from E07's nearest-vertex evaluation; percentages measure dimension error.
+
+![Actual web comparison of frozen original and rectified results](docs/assets/undistortion.en.jpg)
+
+The trilingual comparison adds matching A–J photo overlays, all regressions, depth diagnostics and both cloud/measurement replays. Rectification requires known camera calibration, which arbitrary field photos may lack. Derived sampling anchors retain explicit provenance; original arrays and valid-support model samples remain separate. [Protocol, full results, timings, failures and reproduction](docs/quality/2026-11-01-undistortion-fixed-points.md) · [Machine-readable results](docs/measurement/undistortion-results.json). Field millimetre accuracy remains unverified; the default 336 setting is unchanged.
+
 ## Architecture
 
 ![Local web, API, durable evidence, bounded perception queue and isolated geometry worker](docs/assets/architecture.en.svg)

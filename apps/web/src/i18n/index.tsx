@@ -9,6 +9,8 @@ const storageKey = "pv3d.locale";
 type Params = Record<string, string | number>;
 
 const serverMessages: Record<string, MessageKey> = {
+  DERIVED_SUBPIXEL_ANCHORS_NOT_RAW_POINTS:
+    "本审计包含按固定图像位置插值的端点；原始模型样本另存。",
   PUBLIC_SCAN_REFERENCE_NOT_FIELD_CERTIFICATION:
     "公开扫描参考验证，不代表现场尺寸精度。",
   WHOLE_SCENE_AUDIT_NOT_PV_COMPONENT_RECOGNITION:

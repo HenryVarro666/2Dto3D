@@ -39,18 +39,18 @@
 
 **Interfaces:**camera projector accepts(...,2) normalized rays; rectification returns pinholeK/remap; fixed-endpoint sampler returns neighbour/weight/Z/camera/world-point diagnostics.
 
-- [ ] Add RED tests:vector projector matches scalar; full-field boundary and inverse map; noninteger depth-plane sampling and extrinsic transforms; missing/letterbox support rejection.
-- [ ] Implement minimal functions, verify GREEN; freeze image preprocessing and all20 fixed GT endpoints before inference.
-- [ ] Save source/input/weights/protocol hashes and mapping residuals; preserve original RGB/tensor equivalence and corrected-image coverage diagnostics.
+- [x] Add RED tests:vector projector matches scalar; full-field boundary and inverse map; noninteger depth-plane sampling and extrinsic transforms; missing/letterbox support rejection.
+- [x] Implement minimal functions, verify GREEN; freeze image preprocessing and all20 fixed GT endpoints before inference.
+- [x] Save source/input/weights/protocol hashes and mapping residuals; preserve original RGB/tensor equivalence and corrected-image coverage diagnostics.
 
 ### Task2: Real controlled evaluation and hard-case analysis
 
 **Files:**existing E07 seed/evaluate helpers receive optional derived anchors and a measurement-only app; focused API test; new runner; tracked compact results and ignored raw evidence.
 
-- [ ] RED/GREEN:eval must not mark an unrelated queued job interrupted; API receipts use derived component indices/positions while preserving raw cloud.
-- [ ] Run original/rectified518 on both scenes, repeat in reverse order; use the sameGT reference lengths, same weights and pixel positions defined by projection.
-- [ ] Persist raw clouds, anchor audits, GLB/PLY/receipts, timing and all checks. Compare E08 original baseline against E07 without conflating nearest-vertex and subpixel measurements.
-- [ ] Diagnose kickerC–D andG–H using raw length ratios, predicted camera and calibrated camera-Z residuals; report the known-K auxiliary result separately.
+- [x] RED/GREEN:eval must not mark an unrelated queued job interrupted; API receipts use derived component indices/positions while preserving raw cloud.
+- [x] Run original/rectified518 on both scenes, repeat in reverse order; use the sameGT reference lengths, same weights and pixel positions defined by projection.
+- [x] Persist raw clouds, anchor audits, GLB/PLY/receipts, timing and all checks. Compare E08 original baseline against E07 without conflating nearest-vertex and subpixel measurements.
+- [x] Diagnose kickerC–D andG–H using raw length ratios, predicted camera and calibrated camera-Z residuals; report the known-K auxiliary result separately.
 
 ### Task3: Web, documentation and delivery
 

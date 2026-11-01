@@ -1,5 +1,107 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  同点去畸变对照: [
+    "Fixed-point undistortion comparison",
+    "Comparación de corrección de distorsión con puntos fijos",
+  ],
+  固定20个扫描参考点: [
+    "20 fixed scanner reference points",
+    "20 puntos fijos de referencia del escáner",
+  ],
+  原图输入: ["Original input", "Entrada original"],
+  去畸变输入: ["Rectified input", "Entrada corregida"],
+  原图点云: ["Original cloud", "Nube original"],
+  去畸变点云: ["Rectified cloud", "Nube rectificada"],
+  "模型、分辨率和实际参考点固定；每场景只用 A–B 标定，四条检查线不参与拟合。": [
+    "Model, resolution and physical reference points are fixed. Only A–B sets scale in each scene; four check lengths are excluded from the fit.",
+    "El modelo, la resolución y los puntos físicos de referencia son fijos. Solo A–B fija la escala de cada escena; las cuatro comprobaciones no intervienen en el ajuste.",
+  ],
+  "{better} 条改善，{worse} 条退步；复跑不增加独立样本数。": [
+    "{better} checks improve and {worse} worsen; repeated runs add no independent samples.",
+    "Mejoran {better} comprobaciones y empeoran {worse}; las repeticiones no añaden muestras independientes.",
+  ],
+  "对照条件不一致或运行未完成，暂不汇总误差。": [
+    "Conditions differ or runs are incomplete; aggregate errors are withheld.",
+    "Las condiciones difieren o faltan ejecuciones; no se resumen los errores.",
+  ],
+  "E08 使用固定扫描坐标和亚像素深度取样，已重算原图基线；请与 E07 的最近顶点结果分开阅读。":
+    [
+      "E08 uses fixed scan coordinates and subpixel depth sampling, with a recomputed original baseline. Read it separately from E07's nearest-vertex results.",
+      "E08 usa coordenadas fijas del escáner y profundidad subpíxel, con una nueva línea base original. Distíngalo de los resultados del vértice más cercano de E07.",
+    ],
+  "去畸变使用数据集已知相机标定，保留源视场边界；无效白边约1.24%。相机标定是额外信息，普通现场照片未必具备。":
+    [
+      "Rectification uses known dataset camera calibration and preserves sampled source-field boundaries; invalid white borders occupy about 1.24%. Calibration is additional information that field photos may lack.",
+      "La corrección usa la calibración de cámara del conjunto y conserva los límites muestreados del campo original; los bordes blancos no válidos ocupan aproximadamente el 1.24%. Las fotos de campo pueden carecer de esta calibración adicional.",
+    ],
+  "同一实际位置，前后参考长度一致": [
+    "Same physical locations and identical reference lengths",
+    "Mismas posiciones físicas y longitudes de referencia idénticas",
+  ],
+  共同扫描参考: ["Shared scan reference", "Referencia común del escáner"],
+  "原图：校准长度 / 误差": [
+    "Original: calibrated length / error",
+    "Original: longitud calibrada / error",
+  ],
+  "去畸变：校准长度 / 误差": [
+    "Rectified: calibrated length / error",
+    "Corregida: longitud calibrada / error",
+  ],
+  "误差变化（百分点）": [
+    "Error change (percentage points)",
+    "Cambio de error (puntos porcentuales)",
+  ],
+  "此场景对照暂不可用。": [
+    "This scene comparison is unavailable.",
+    "La comparación de esta escena no está disponible.",
+  ],
+  同一物理点的照片对照: [
+    "Photo comparison of the same physical points",
+    "Comparación fotográfica de los mismos puntos físicos",
+  ],
+  "橙色 A–B 只用于标定，绿色 C–J 用于检查；同名标记对应同一扫描点，像素位置随去畸变映射变化。":
+    [
+      "Orange A–B only calibrates scale; green C–J are checks. Matching labels identify the same scan point; pixel positions change through the rectification map.",
+      "A–B en naranja solo calibra la escala; C–J en verde son comprobaciones. Las etiquetas iguales corresponden al mismo punto del escáner; su posición en píxeles cambia con la corrección.",
+    ],
+  "本机尚无该归档照片；可先准备数据，或载入新运行的任务 ID。": [
+    "The archived photo is unavailable locally. Prepare the data or load a new run's job ID.",
+    "La foto archivada no está disponible localmente. Prepare los datos o cargue el ID de una nueva ejecución.",
+  ],
+  固定实际取点标记: [
+    "Fixed physical point markers",
+    "Marcadores de puntos físicos fijos",
+  ],
+  "固定点 {scene} {id}": [
+    "Fixed point {scene} {id}",
+    "Punto fijo {scene} {id}",
+  ],
+  "518 难例的深度诊断": [
+    "Depth diagnostics for hard 518 cases",
+    "Diagnóstico de profundidad de los casos difíciles a 518",
+  ],
+  "下列深度使用各自 A–B 比例并依赖相机估计，用于定位问题，不能单独确定根因。": [
+    "These depths use each run's A–B scale and depend on camera estimates. They help locate problems, not establish a unique cause.",
+    "Estas profundidades usan la escala A–B de cada ejecución y dependen de la cámara estimada. Ayudan a localizar problemas, no a establecer una causa única.",
+  ],
+  固定点: ["Fixed point", "Punto fijo"],
+  "扫描 Z": ["Scan Z", "Z del escáner"],
+  "原图 Z（校准后）": ["Original Z (calibrated)", "Z original (calibrada)"],
+  "去畸变 Z（校准后）": ["Rectified Z (calibrated)", "Z corregida (calibrada)"],
+  "同一预测深度使用已知内参并另用 A–B 标定后，跨墙误差仍为 {error}%；此辅助结果不计入主对照。":
+    [
+      "Using known intrinsics with the same predicted depths and a separate A–B scale still gives {error}% cross-wall error. This auxiliary result is excluded from the primary comparison.",
+      "Con intrínsecos conocidos, las mismas profundidades y una escala A–B separada, el error entre paredes sigue siendo del {error}%. Este diagnóstico no entra en la comparación principal.",
+    ],
+  "点云另含明确标记的插值端点审计层，原始模型样本另存。原始 GLB / PLY 仍为相对尺度；这些结果不代表现场毫米精度。":
+    [
+      "The audit cloud includes an identified interpolated-endpoint layer; raw model samples are saved separately. GLB/PLY keep relative scale. These results do not establish millimeter accuracy in the field.",
+      "La nube incluye una capa identificada de extremos interpolados; las muestras originales se guardan aparte. GLB/PLY conservan escala relativa. Los resultados no establecen precisión milimétrica en campo.",
+    ],
+  "本审计包含按固定图像位置插值的端点；原始模型样本另存。": [
+    "This audit includes endpoints interpolated at fixed image positions. Raw model samples are saved separately.",
+    "Esta auditoría incluye extremos interpolados en posiciones fijas de imagen. Las muestras originales se guardan aparte.",
+  ],
   "只读几何审计：可查看、测距和导出记录；本次重放不执行组件识别或重建。": [
     "Read-only geometry audit: view, measure and export records. This replay does not run component recognition or reconstruction.",
     "Auditoría de geometría de solo lectura: consulte, mida y exporte registros. Esta reproducción no ejecuta reconocimiento de componentes ni reconstrucción.",

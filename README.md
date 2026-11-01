@@ -94,6 +94,16 @@ make dev
 
 网页“多角度点云 → 公开尺寸验证”可直接看冻结结果；准备本机数据后可打开点云、参照和逐条测量记录。原始数据约6GB不随Git克隆，脚本从官方源下载并校验哈希；结果摘要在仓库中。[完整结果、问题、耗时与复现](docs/quality/2026-11-01-public-metric-measurement.md) · [冻结取点协议](docs/measurement/public-metric-selection.json) · [原始数值汇总](docs/measurement/public-metric-results.json)。ETH3D 数据为 CC BY-NC-SA 4.0；本实验按照片视图分组审计几何，没有把它当作PV组件识别评测。
 
+### 固定实际位置的去畸变对照：E08
+
+![同一实际取点的8条长度前后误差](docs/assets/undistortion-errors.zh.svg)
+
+同一批六图、同VGGT/518、20个固定扫描点，8条独立长度的MAPE **4.24%→2.97%**，但有 **4条改善、4条退步**。kicker后墙12.85%→4.18%，跨墙11.86%→12.91%（约690mm）；后墙深度顺序仍错，单换已知K射线也未解决跨墙误差。两次运行数组/点云/测量完全一致。亚像素固定点方法已重算原图基线，请与E07最近顶点方法分开理解；这些百分比是尺寸误差。
+
+![真实网页：原图和去畸变的冻结结果](docs/assets/undistortion.zh.jpg)
+
+网页新增“同点去畸变对照”：同名A–J照片叠加、所有退步、深度诊断、两条件点云/测量重放；中英西同步。需要数据集已知相机标定，普通现场照片未必具备。派生取样端点有单独来源，原始模型数组和有效区样本另存。[协议、全部结果、耗时、失败记录与复现](docs/quality/2026-11-01-undistortion-fixed-points.md) · [机器可读结果](docs/measurement/undistortion-results.json)。不代表现场毫米精度；本轮未修改默认336。
+
 ## 如何实现
 
 ![本地网页、API、证据存储、共享识别队列和隔离几何 worker](docs/assets/architecture.zh.svg)

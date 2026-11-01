@@ -15,6 +15,7 @@ import { PhotoPanel } from "./PhotoPanel";
 import { AnnotationPanel } from "./AnnotationPanel";
 import { MeasurementPanel } from "./MeasurementPanel";
 import { PublicMetricBenchmark } from "./PublicMetricBenchmark";
+import { UndistortionComparison } from "./UndistortionComparison";
 import { ComponentList } from "./ComponentList";
 
 const SceneViewer = lazy(() =>
@@ -350,6 +351,14 @@ export function MultiviewWorkbench({
         </div>
       </div>
       <PublicMetricBenchmark
+        disabled={locked}
+        onRestore={(jobId) => {
+          setRestoreId(jobId);
+          setViewerError(null);
+          void flow.restore(jobId);
+        }}
+      />
+      <UndistortionComparison
         disabled={locked}
         onRestore={(jobId) => {
           setRestoreId(jobId);
