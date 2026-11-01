@@ -1,0 +1,1347 @@
+{
+  "schema_version": 1,
+  "experiment_id": "E10-M",
+  "selection_before_model_inference": true,
+  "independence_scope": "New to project E07-E09 development; exclusion from VGGT training is not established. No model inference performed during selection.",
+  "source_url": "https://eth3d.ethz.ch/datasets",
+  "documentation_url": "https://www.eth3d.net/documentation",
+  "license": "CC BY-NC-SA 4.0",
+  "reference_scope": "Original-image sparse laser camera-Z; no physical ruler; scanner registration uncertainty not independently measured. Cross-wall is the endpoint Euclidean line, not perpendicular wall separation.",
+  "reference_guard": {
+    "radius": 10,
+    "minimum_support": 20,
+    "max_shift_px": 3,
+    "max_spread_m": 0.03,
+    "max_selected_median_deviation_m": 0.03
+  },
+  "scenes": [
+    {
+      "id": "office",
+      "camera": {
+        "id": 0,
+        "model": "THIN_PRISM_FISHEYE",
+        "size": [
+          6048,
+          4032
+        ],
+        "params": [
+          3437.84,
+          3435.95,
+          3040.23,
+          2010.15,
+          0.209024,
+          0.193056,
+          0.000466489,
+          -7.84834e-05,
+          -0.108072,
+          0.356239,
+          0.00105437,
+          -0.000409613
+        ]
+      },
+      "selected_camera_ids": [
+        0,
+        0,
+        0
+      ],
+      "views": [
+        {
+          "path": "office/images/dslr_images/DSC_0219.JPG",
+          "sha256": "09b869a7dc0e296aed7278423b48a0d1bbf50b85fc0e32b532283ea6716bff5d",
+          "camera_pose_qwxyz_txyz": [
+            -0.139525,
+            -0.126183,
+            0.695768,
+            -0.693194,
+            -1.51701,
+            -0.156173,
+            0.557613
+          ]
+        },
+        {
+          "path": "office/images/dslr_images/DSC_0220.JPG",
+          "sha256": "6926bd5271bf54c738149c3db4c3d8a684502cf48b2ec9ef3849df5a993f27a5",
+          "camera_pose_qwxyz_txyz": [
+            0.034324,
+            0.0461705,
+            0.705342,
+            -0.706529,
+            -1.45168,
+            -0.160064,
+            0.0807551
+          ]
+        },
+        {
+          "path": "office/images/dslr_images/DSC_0253.JPG",
+          "sha256": "58868cd1506867d27b2faf013d46e2f44c78664b8d43d9c6fba3e8c5f99e415d",
+          "camera_pose_qwxyz_txyz": [
+            0.201628,
+            0.254145,
+            0.747628,
+            -0.57949,
+            0.326944,
+            -0.0289722,
+            -0.693395
+          ]
+        }
+      ],
+      "reference_files": [
+        {
+          "path": "office/ground_truth_depth/dslr_images/DSC_0219.JPG",
+          "sha256": "67422ce1e8716fd688fa85173d12fb4b636d981d01e2a531d167b895d85000f2"
+        },
+        {
+          "path": "office/dslr_calibration_jpg/cameras.txt",
+          "sha256": "90b925ec5e634ed2c72b05bb173b43976e321596643b3d48f82eca69a3ba93af"
+        },
+        {
+          "path": "office/dslr_calibration_jpg/images.txt",
+          "sha256": "591d5d980fd1ad22426371f65e1e0802af0790bef1d92aacb8ceda9745b2417d"
+        }
+      ],
+      "archives": [
+        {
+          "filename": "office_dslr_jpg.7z",
+          "url": "https://eth3d.ethz.ch/data/office_dslr_jpg.7z",
+          "size_bytes": 231734054,
+          "sha256": "bc2bfdf784b0cb8139832b8339ad533be022901a635969fefe9d8bc2b9fff07d",
+          "selected_members": [
+            "office/images/dslr_images/DSC_0219.JPG",
+            "office/images/dslr_images/DSC_0220.JPG",
+            "office/images/dslr_images/DSC_0253.JPG",
+            "office/dslr_calibration_jpg/cameras.txt",
+            "office/dslr_calibration_jpg/images.txt"
+          ]
+        },
+        {
+          "filename": "office_dslr_depth.7z",
+          "url": "https://eth3d.ethz.ch/data/office_dslr_depth.7z",
+          "size_bytes": 441352937,
+          "sha256": "aa2e421079eff69a25332e41c81f2f7ecfea54de97bd30f49e2435cc7c700d8b",
+          "selected_members": [
+            "office/ground_truth_depth/dslr_images/DSC_0219.JPG"
+          ]
+        }
+      ],
+      "requested_preview_positions_1200x800": [
+        [
+          350,
+          180
+        ],
+        [
+          350,
+          450
+        ],
+        [
+          300,
+          280
+        ],
+        [
+          1040,
+          280
+        ],
+        [
+          150,
+          350
+        ],
+        [
+          440,
+          350
+        ],
+        [
+          420,
+          100
+        ],
+        [
+          1020,
+          100
+        ],
+        [
+          1060,
+          230
+        ],
+        [
+          1060,
+          450
+        ]
+      ],
+      "reference_points": [
+        {
+          "requested_pixel_xy": [
+            1766.02,
+            909.22
+          ],
+          "sample_pixel_xy": [
+            1767,
+            908
+          ],
+          "sample_shift_px": 1.564864211361517,
+          "depth_z_m": 3.06917142868042,
+          "support_count": 107,
+          "depth_spread_m": 0.028727054595947266,
+          "selected_depth_deviation_m": 0.0025281906127929688,
+          "xyz_m": [
+            -1.164107763363436,
+            -1.0076474144607326,
+            3.06917142868042
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            1766.02,
+            2270.02
+          ],
+          "sample_pixel_xy": [
+            1767,
+            2270
+          ],
+          "sample_shift_px": 0.9802040603874456,
+          "depth_z_m": 3.0469727516174316,
+          "support_count": 131,
+          "depth_spread_m": 0.02994847297668457,
+          "selected_depth_deviation_m": 0.0028929710388183594,
+          "xyz_m": [
+            -1.1456833293648554,
+            0.23438360412672407,
+            3.0469727516174316
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            1514.02,
+            1413.22
+          ],
+          "sample_pixel_xy": [
+            1515,
+            1413
+          ],
+          "sample_shift_px": 1.0043903623592012,
+          "depth_z_m": 2.711909294128418,
+          "support_count": 120,
+          "depth_spread_m": 0.024851322174072266,
+          "selected_depth_deviation_m": 0.000232696533203125,
+          "xyz_m": [
+            -1.2307292857109455,
+            -0.48168247717090146,
+            2.711909294128418
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5243.62,
+            1413.22
+          ],
+          "sample_pixel_xy": [
+            5243,
+            1414
+          ],
+          "sample_shift_px": 0.9963934965664027,
+          "depth_z_m": 2.7316060066223145,
+          "support_count": 94,
+          "depth_spread_m": 0.003354787826538086,
+          "selected_depth_deviation_m": 0.00012803077697753906,
+          "xyz_m": [
+            1.812361875242821,
+            -0.49056742901339107,
+            2.7316060066223145
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            758.02,
+            1766.02
+          ],
+          "sample_pixel_xy": [
+            758,
+            1765
+          ],
+          "sample_shift_px": 1.0201960595885293,
+          "depth_z_m": 2.006725311279297,
+          "support_count": 102,
+          "depth_spread_m": 0.012383699417114258,
+          "selected_depth_deviation_m": 4.4345855712890625e-05,
+          "xyz_m": [
+            -1.3802937579999006,
+            -0.14804186289881927,
+            2.006725311279297
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            2219.62,
+            1766.02
+          ],
+          "sample_pixel_xy": [
+            2219,
+            1766
+          ],
+          "sample_shift_px": 0.6203224967707233,
+          "depth_z_m": 3.298762321472168,
+          "support_count": 138,
+          "depth_spread_m": 0.0041561126708984375,
+          "selected_depth_deviation_m": 0.0005557537078857422,
+          "xyz_m": [
+            -0.7934389010025074,
+            -0.23563087585542353,
+            3.298762321472168
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            2118.82,
+            506.02
+          ],
+          "sample_pixel_xy": [
+            2119,
+            507
+          ],
+          "sample_shift_px": 0.9963934965664804,
+          "depth_z_m": 3.319042682647705,
+          "support_count": 119,
+          "depth_spread_m": 0.004979848861694336,
+          "selected_depth_deviation_m": 0.0004405975341796875,
+          "xyz_m": [
+            -0.9126163909290531,
+            -1.4890002285640398,
+            3.319042682647705
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5142.82,
+            506.02
+          ],
+          "sample_pixel_xy": [
+            5142,
+            506
+          ],
+          "sample_shift_px": 0.8202438661761038,
+          "depth_z_m": 2.741372585296631,
+          "support_count": 86,
+          "depth_spread_m": 0.0031900405883789062,
+          "selected_depth_deviation_m": 0.00021910667419433594,
+          "xyz_m": [
+            1.7417718482536724,
+            -1.2474360452313997,
+            2.741372585296631
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5344.42,
+            1161.22
+          ],
+          "sample_pixel_xy": [
+            5344,
+            1162
+          ],
+          "sample_shift_px": 0.8858893836140145,
+          "depth_z_m": 2.714017868041992,
+          "support_count": 79,
+          "depth_spread_m": 0.002761363983154297,
+          "selected_depth_deviation_m": 3.0040740966796875e-05,
+          "xyz_m": [
+            1.8876591627307808,
+            -0.6952542810564709,
+            2.714017868041992
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5344.42,
+            2270.02
+          ],
+          "sample_pixel_xy": [
+            5344,
+            2271
+          ],
+          "sample_shift_px": 1.0662082348209925,
+          "depth_z_m": 2.718508720397949,
+          "support_count": 86,
+          "depth_spread_m": 0.0025963783264160156,
+          "selected_depth_deviation_m": 7.367134094238281e-05,
+          "xyz_m": [
+            1.8870408039407234,
+            0.21420207409483602,
+            2.718508720397949
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "id": "office-AB",
+          "label": "左墙纵向参照",
+          "kind": "calibration",
+          "point_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "office-CD",
+          "label": "左右墙跨墙线1",
+          "kind": "cross_wall",
+          "point_indices": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "office-EF",
+          "label": "左墙横向",
+          "kind": "same_wall",
+          "point_indices": [
+            4,
+            5
+          ]
+        },
+        {
+          "id": "office-GH",
+          "label": "左右墙跨墙线2",
+          "kind": "cross_wall",
+          "point_indices": [
+            6,
+            7
+          ]
+        },
+        {
+          "id": "office-IJ",
+          "label": "右墙纵向",
+          "kind": "same_wall",
+          "point_indices": [
+            8,
+            9
+          ]
+        }
+      ],
+      "reference_lengths_mm": [
+        1242.3660057184877,
+        3043.1678752128105,
+        1421.7700566829633,
+        2727.2390654935875,
+        909.4676531067921
+      ],
+      "selection_basis": "RGB overlap and scan support only; three distinct positions; first photo supplies GT anchors. No selection by predictions.",
+      "exclusions": []
+    },
+    {
+      "id": "delivery_area",
+      "camera": {
+        "id": 0,
+        "model": "THIN_PRISM_FISHEYE",
+        "size": [
+          6048,
+          4032
+        ],
+        "params": [
+          3408.59,
+          3408.87,
+          3036.9,
+          2012.66,
+          0.209259,
+          0.220061,
+          7.28021e-05,
+          -2.99402e-05,
+          -0.186234,
+          0.421684,
+          0.000884047,
+          0.00052266
+        ]
+      },
+      "selected_camera_ids": [
+        0,
+        0,
+        0
+      ],
+      "views": [
+        {
+          "path": "delivery_area/images/dslr_images/DSC_0683.JPG",
+          "sha256": "02b22c4d52f4617862309c0ca806e744f72638662ce5bbc1f345cc6d2a531f4b",
+          "camera_pose_qwxyz_txyz": [
+            0.626575,
+            0.52787,
+            -0.372407,
+            0.43597,
+            5.00587,
+            -4.08092,
+            -3.21565
+          ]
+        },
+        {
+          "path": "delivery_area/images/dslr_images/DSC_0682.JPG",
+          "sha256": "f12078e2f466c6fe18d3b411fe456e9918179e977bb59c341540462e7eb889ae",
+          "camera_pose_qwxyz_txyz": [
+            0.621013,
+            0.525341,
+            -0.377423,
+            0.44262,
+            4.26594,
+            -3.98109,
+            -2.78426
+          ]
+        },
+        {
+          "path": "delivery_area/images/dslr_images/DSC_0684.JPG",
+          "sha256": "43165a2111e06893017cbd29f6ca14430cf9621029f4ba4b1a56cbf04be99b65",
+          "camera_pose_qwxyz_txyz": [
+            0.601298,
+            0.510993,
+            -0.397541,
+            0.468282,
+            6.12888,
+            -3.97646,
+            -2.86656
+          ]
+        }
+      ],
+      "reference_files": [
+        {
+          "path": "delivery_area/ground_truth_depth/dslr_images/DSC_0683.JPG",
+          "sha256": "baead6b314509ffd2e207a6979b0b598121c096f3297fbe35e06801d6cdd8c5c"
+        },
+        {
+          "path": "delivery_area/dslr_calibration_jpg/cameras.txt",
+          "sha256": "dab2abb65d2b1f171c10adea5350594c997e9ac1ab6a91a0b1a50427be37ee36"
+        },
+        {
+          "path": "delivery_area/dslr_calibration_jpg/images.txt",
+          "sha256": "2b7449bdb827314d612ba0237860202f946e1fcc0329be1f5a219d707d948496"
+        }
+      ],
+      "archives": [
+        {
+          "filename": "delivery_area_dslr_jpg.7z",
+          "url": "https://eth3d.ethz.ch/data/delivery_area_dslr_jpg.7z",
+          "size_bytes": 372958192,
+          "sha256": "f8190ebdf670935fb93ed2a6e66210a2bcc4633b6f698033855a75cac254f973",
+          "selected_members": [
+            "delivery_area/images/dslr_images/DSC_0683.JPG",
+            "delivery_area/images/dslr_images/DSC_0682.JPG",
+            "delivery_area/images/dslr_images/DSC_0684.JPG",
+            "delivery_area/dslr_calibration_jpg/cameras.txt",
+            "delivery_area/dslr_calibration_jpg/images.txt"
+          ]
+        },
+        {
+          "filename": "delivery_area_dslr_depth.7z",
+          "url": "https://eth3d.ethz.ch/data/delivery_area_dslr_depth.7z",
+          "size_bytes": 388144128,
+          "sha256": "e6edc65b5b6de343876382040c839405eef79abed33319aa377883f4ddc5775a",
+          "selected_members": [
+            "delivery_area/ground_truth_depth/dslr_images/DSC_0683.JPG"
+          ]
+        }
+      ],
+      "requested_preview_positions_1200x800": [
+        [
+          720,
+          430
+        ],
+        [
+          720,
+          530
+        ],
+        [
+          650,
+          450
+        ],
+        [
+          850,
+          450
+        ],
+        [
+          1150,
+          200
+        ],
+        [
+          1150,
+          300
+        ],
+        [
+          820,
+          420
+        ],
+        [
+          1100,
+          300
+        ],
+        [
+          800,
+          530
+        ],
+        [
+          500,
+          500
+        ]
+      ],
+      "reference_points": [
+        {
+          "requested_pixel_xy": [
+            3630.82,
+            2169.22
+          ],
+          "sample_pixel_xy": [
+            3631,
+            2169
+          ],
+          "sample_shift_px": 0.28425340807077937,
+          "depth_z_m": 13.846612930297852,
+          "support_count": 52,
+          "depth_spread_m": 0.02734088897705078,
+          "selected_depth_deviation_m": 0.00020599365234375,
+          "xyz_m": [
+            2.424408126087894,
+            0.6392780968929422,
+            13.846612930297852
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            3630.82,
+            2673.22
+          ],
+          "sample_pixel_xy": [
+            3632,
+            2674
+          ],
+          "sample_shift_px": 1.4144963768069276,
+          "depth_z_m": 13.538951873779297,
+          "support_count": 60,
+          "depth_spread_m": 0.02727794647216797,
+          "selected_depth_deviation_m": 0.002414703369140625,
+          "xyz_m": [
+            2.383327999654489,
+            2.6484931085865577,
+            13.538951873779297
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            3278.02,
+            2270.02
+          ],
+          "sample_pixel_xy": [
+            3278,
+            2271
+          ],
+          "sample_shift_px": 0.9802040603874456,
+          "depth_z_m": 14.285333633422852,
+          "support_count": 59,
+          "depth_spread_m": 0.02896881103515625,
+          "selected_depth_deviation_m": 0.0016937255859375,
+          "xyz_m": [
+            1.013738962692329,
+            1.0860368272482643,
+            14.285333633422852
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            4286.02,
+            2270.02
+          ],
+          "sample_pixel_xy": [
+            4287,
+            2269
+          ],
+          "sample_shift_px": 1.4144963768066383,
+          "depth_z_m": 12.923315048217773,
+          "support_count": 51,
+          "depth_spread_m": 0.02402973175048828,
+          "selected_depth_deviation_m": 0.000316619873046875,
+          "xyz_m": [
+            4.810370697139393,
+            0.9871146822743936,
+            12.923315048217773
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5798.02,
+            1010.02
+          ],
+          "sample_pixel_xy": [
+            5797,
+            1009
+          ],
+          "sample_shift_px": 1.4424978336208527,
+          "depth_z_m": 3.4509520530700684,
+          "support_count": 33,
+          "depth_spread_m": 0.005962848663330078,
+          "selected_depth_deviation_m": 0.0008511543273925781,
+          "xyz_m": [
+            2.902626766465025,
+            -1.0564151274490117,
+            3.4509520530700684
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5798.02,
+            1514.02
+          ],
+          "sample_pixel_xy": [
+            5797,
+            1513
+          ],
+          "sample_shift_px": 1.4424978336208527,
+          "depth_z_m": 3.383225917816162,
+          "support_count": 30,
+          "depth_spread_m": 0.0052645206451416016,
+          "selected_depth_deviation_m": 0.0007829666137695312,
+          "xyz_m": [
+            2.8464925222435604,
+            -0.5159681271770604,
+            3.383225917816162
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            4134.82,
+            2118.82
+          ],
+          "sample_pixel_xy": [
+            4135,
+            2119
+          ],
+          "sample_shift_px": 0.2545584412272472,
+          "depth_z_m": 13.203344345092773,
+          "support_count": 49,
+          "depth_spread_m": 0.026006698608398438,
+          "selected_depth_deviation_m": 0.0002155303955078125,
+          "xyz_m": [
+            4.303304392577132,
+            0.41778117373026513,
+            13.203344345092773
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5546.02,
+            1514.02
+          ],
+          "sample_pixel_xy": [
+            5546,
+            1514
+          ],
+          "sample_shift_px": 0.02828427124775773,
+          "depth_z_m": 3.7377514839172363,
+          "support_count": 23,
+          "depth_spread_m": 0.012276172637939453,
+          "selected_depth_deviation_m": 0.001789093017578125,
+          "xyz_m": [
+            2.855863365162655,
+            -0.5681476989448024,
+            3.7377514839172363
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            4034.02,
+            2673.22
+          ],
+          "sample_pixel_xy": [
+            4033,
+            2672
+          ],
+          "sample_shift_px": 1.5902201105505724,
+          "depth_z_m": 13.020891189575195,
+          "support_count": 50,
+          "depth_spread_m": 0.026582717895507812,
+          "selected_depth_deviation_m": 0.0009746551513671875,
+          "xyz_m": [
+            3.8560145127066794,
+            2.5527771139183533,
+            13.020891189575195
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            2522.02,
+            2522.02
+          ],
+          "sample_pixel_xy": [
+            2522,
+            2523
+          ],
+          "sample_shift_px": 0.9802040603874456,
+          "depth_z_m": 10.54145622253418,
+          "support_count": 78,
+          "depth_spread_m": 0.022779464721679688,
+          "selected_depth_deviation_m": 0.0003032684326171875,
+          "xyz_m": [
+            -1.5996290625908973,
+            1.5877493350998115,
+            10.54145622253418
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "id": "delivery_area-AB",
+          "label": "后墙纵向参照",
+          "kind": "calibration",
+          "point_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "delivery_area-CD",
+          "label": "后墙横向",
+          "kind": "same_wall",
+          "point_indices": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "delivery_area-EF",
+          "label": "近侧柱面纵向",
+          "kind": "same_structure",
+          "point_indices": [
+            4,
+            5
+          ]
+        },
+        {
+          "id": "delivery_area-GH",
+          "label": "后墙至近侧柱面",
+          "kind": "cross_surface",
+          "point_indices": [
+            6,
+            7
+          ]
+        },
+        {
+          "id": "delivery_area-IJ",
+          "label": "后墙至拖车表面",
+          "kind": "cross_surface",
+          "point_indices": [
+            8,
+            9
+          ]
+        }
+      ],
+      "reference_lengths_mm": [
+        2033.0489088314807,
+        4034.760555995956,
+        547.5589857482898,
+        9626.2448277277,
+        6069.837163414093
+      ],
+      "selection_basis": "RGB overlap and scan support only; three distinct positions; first photo supplies GT anchors. No selection by predictions.",
+      "exclusions": [
+        {
+          "view": "DSC_0683.JPG",
+          "preview_xy": [
+            985,
+            380
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        },
+        {
+          "view": "DSC_0683.JPG",
+          "preview_xy": [
+            1040,
+            530
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        },
+        {
+          "view": "DSC_0683.JPG",
+          "preview_xy": [
+            1000,
+            420
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        },
+        {
+          "view": "DSC_0683.JPG",
+          "preview_xy": [
+            800,
+            680
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        }
+      ]
+    },
+    {
+      "id": "terrains",
+      "camera": {
+        "id": 0,
+        "model": "THIN_PRISM_FISHEYE",
+        "size": [
+          6048,
+          4032
+        ],
+        "params": [
+          3429.76,
+          3429.06,
+          3034.2,
+          2004.51,
+          0.213659,
+          0.189908,
+          -0.000960506,
+          0.000352841,
+          -0.119008,
+          0.36575,
+          0.000525215,
+          0.00145048
+        ]
+      },
+      "selected_camera_ids": [
+        0,
+        0,
+        0
+      ],
+      "views": [
+        {
+          "path": "terrains/images/dslr_images/DSC_0658.JPG",
+          "sha256": "75a79936fa851f7a655c3a25206152ee932ee406145eae469c331a8c41225e15",
+          "camera_pose_qwxyz_txyz": [
+            0.337098,
+            0.332499,
+            0.619229,
+            -0.62639,
+            -0.746913,
+            -0.208397,
+            -1.00594
+          ]
+        },
+        {
+          "path": "terrains/images/dslr_images/DSC_0657.JPG",
+          "sha256": "124d5b5d7a658e4832c56a9800205ad960786c7ced543d50f7e8a7290a3b0a43",
+          "camera_pose_qwxyz_txyz": [
+            0.337959,
+            0.332343,
+            0.619782,
+            -0.625461,
+            -0.358273,
+            -0.206642,
+            -0.941002
+          ]
+        },
+        {
+          "path": "terrains/images/dslr_images/DSC_0659.JPG",
+          "sha256": "f6c4de84e0ec5d4c8a11f7e9b9654fcd89daf1350e93c44ea400a1f77c0d4956",
+          "camera_pose_qwxyz_txyz": [
+            0.339253,
+            0.334283,
+            0.618417,
+            -0.625078,
+            -0.978304,
+            -0.20918,
+            -1.0185
+          ]
+        }
+      ],
+      "reference_files": [
+        {
+          "path": "terrains/ground_truth_depth/dslr_images/DSC_0658.JPG",
+          "sha256": "5add2f274858b88540c83fb542950f498621380233779b60a793b3f1e096b646"
+        },
+        {
+          "path": "terrains/dslr_calibration_jpg/cameras.txt",
+          "sha256": "6e055cc596332d2e208dd89739d771c548b4c11b64fb990fabb52efa05f169a3"
+        },
+        {
+          "path": "terrains/dslr_calibration_jpg/images.txt",
+          "sha256": "ecb6e1f51c1b18f62644ab341b93a17f7b73583fc9a6d590ddb86ae6e5c4159c"
+        }
+      ],
+      "archives": [
+        {
+          "filename": "terrains_dslr_jpg.7z",
+          "url": "https://eth3d.ethz.ch/data/terrains_dslr_jpg.7z",
+          "size_bytes": 357963793,
+          "sha256": "12439ea4f997eb3dc3692c40dae1903c61222d44c0ffe2492bbd47cdd872216a",
+          "selected_members": [
+            "terrains/images/dslr_images/DSC_0658.JPG",
+            "terrains/images/dslr_images/DSC_0657.JPG",
+            "terrains/images/dslr_images/DSC_0659.JPG",
+            "terrains/dslr_calibration_jpg/cameras.txt",
+            "terrains/dslr_calibration_jpg/images.txt"
+          ]
+        },
+        {
+          "filename": "terrains_dslr_depth.7z",
+          "url": "https://eth3d.ethz.ch/data/terrains_dslr_depth.7z",
+          "size_bytes": 529179696,
+          "sha256": "57785263fe658e3836218d7383702324473b459429cac84a913734e31f6ea725",
+          "selected_members": [
+            "terrains/ground_truth_depth/dslr_images/DSC_0658.JPG"
+          ]
+        }
+      ],
+      "requested_preview_positions_1200x800": [
+        [
+          50,
+          300
+        ],
+        [
+          50,
+          600
+        ],
+        [
+          100,
+          550
+        ],
+        [
+          900,
+          600
+        ],
+        [
+          50,
+          550
+        ],
+        [
+          150,
+          550
+        ],
+        [
+          150,
+          600
+        ],
+        [
+          1000,
+          650
+        ],
+        [
+          1050,
+          650
+        ],
+        [
+          1050,
+          750
+        ]
+      ],
+      "reference_points": [
+        {
+          "requested_pixel_xy": [
+            254.02,
+            1514.02
+          ],
+          "sample_pixel_xy": [
+            254,
+            1515
+          ],
+          "sample_shift_px": 0.9802040603874461,
+          "depth_z_m": 2.3405609130859375,
+          "support_count": 210,
+          "depth_spread_m": 0.016837358474731445,
+          "selected_depth_deviation_m": 0.0003771781921386719,
+          "xyz_m": [
+            -1.9738123095493245,
+            -0.34771709578708726,
+            2.3405609130859375
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            254.02,
+            3026.02
+          ],
+          "sample_pixel_xy": [
+            254,
+            3027
+          ],
+          "sample_shift_px": 0.9802040603874461,
+          "depth_z_m": 2.340344190597534,
+          "support_count": 192,
+          "depth_spread_m": 0.016983985900878906,
+          "selected_depth_deviation_m": 0.00014066696166992188,
+          "xyz_m": [
+            -1.9744513740598477,
+            0.7257279434189245,
+            2.340344190597534
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            506.02,
+            2774.02
+          ],
+          "sample_pixel_xy": [
+            507,
+            2774
+          ],
+          "sample_shift_px": 0.9802040603874456,
+          "depth_z_m": 2.58563494682312,
+          "support_count": 236,
+          "depth_spread_m": 0.02103877067565918,
+          "selected_depth_deviation_m": 0.0004096031188964844,
+          "xyz_m": [
+            -1.9817212940662792,
+            0.6031064802311213,
+            2.58563494682312
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            4538.02,
+            3026.02
+          ],
+          "sample_pixel_xy": [
+            4538,
+            3027
+          ],
+          "sample_shift_px": 0.9802040603874548,
+          "depth_z_m": 1.3303437232971191,
+          "support_count": 128,
+          "depth_spread_m": 0.01528620719909668,
+          "selected_depth_deviation_m": 0.00014448165893554688,
+          "xyz_m": [
+            0.5984505283748612,
+            0.407092048986075,
+            1.3303437232971191
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            254.02,
+            2774.02
+          ],
+          "sample_pixel_xy": [
+            254,
+            2774
+          ],
+          "sample_shift_px": 0.028284271247456274,
+          "depth_z_m": 2.337540626525879,
+          "support_count": 211,
+          "depth_spread_m": 0.01689887046813965,
+          "selected_depth_deviation_m": 6.079673767089844e-05,
+          "xyz_m": [
+            -1.9722759597647224,
+            0.5455191547368442,
+            2.337540626525879
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            758.02,
+            2774.02
+          ],
+          "sample_pixel_xy": [
+            759,
+            2774
+          ],
+          "sample_shift_px": 0.9802040603874456,
+          "depth_z_m": 2.8984181880950928,
+          "support_count": 261,
+          "depth_spread_m": 0.02584218978881836,
+          "selected_depth_deviation_m": 0.0014753341674804688,
+          "xyz_m": [
+            -1.9951348917959157,
+            0.6745599411158956,
+            2.8984181880950928
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            758.02,
+            3026.02
+          ],
+          "sample_pixel_xy": [
+            758,
+            3027
+          ],
+          "sample_shift_px": 0.9802040603874456,
+          "depth_z_m": 2.8940634727478027,
+          "support_count": 242,
+          "depth_spread_m": 0.026387453079223633,
+          "selected_depth_deviation_m": 0.0002830028533935547,
+          "xyz_m": [
+            -1.995469861335962,
+            0.8960879109289807,
+            2.8940634727478027
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5042.02,
+            3278.02
+          ],
+          "sample_pixel_xy": [
+            5042,
+            3277
+          ],
+          "sample_shift_px": 1.0201960595885382,
+          "depth_z_m": 1.0073657035827637,
+          "support_count": 56,
+          "depth_spread_m": 0.008423089981079102,
+          "selected_depth_deviation_m": 0.0003731250762939453,
+          "xyz_m": [
+            0.6110258987516505,
+            0.387413686388342,
+            1.0073657035827637
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5294.02,
+            3278.02
+          ],
+          "sample_pixel_xy": [
+            5295,
+            3279
+          ],
+          "sample_shift_px": 1.3859292911253374,
+          "depth_z_m": 0.8972094058990479,
+          "support_count": 44,
+          "depth_spread_m": 0.007492542266845703,
+          "selected_depth_deviation_m": 0.000809788703918457,
+          "xyz_m": [
+            0.614176102776014,
+            0.3463640858337672,
+            0.8972094058990479
+          ]
+        },
+        {
+          "requested_pixel_xy": [
+            5294.02,
+            3782.02
+          ],
+          "sample_pixel_xy": [
+            5293,
+            3781
+          ],
+          "sample_shift_px": 1.4424978336208527,
+          "depth_z_m": 0.8975236415863037,
+          "support_count": 44,
+          "depth_spread_m": 0.007439851760864258,
+          "selected_depth_deviation_m": 0.0001035928726196289,
+          "xyz_m": [
+            0.6145352371711238,
+            0.48354065987824013,
+            0.8975236415863037
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "id": "terrains-AB",
+          "label": "左墙纵向参照",
+          "kind": "calibration",
+          "point_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "terrains-CD",
+          "label": "走廊左右墙跨墙线1",
+          "kind": "cross_wall",
+          "point_indices": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "terrains-EF",
+          "label": "左墙横向",
+          "kind": "same_wall",
+          "point_indices": [
+            4,
+            5
+          ]
+        },
+        {
+          "id": "terrains-GH",
+          "label": "走廊左右墙跨墙线2",
+          "kind": "cross_wall",
+          "point_indices": [
+            6,
+            7
+          ]
+        },
+        {
+          "id": "terrains-IJ",
+          "label": "右墙纵向",
+          "kind": "same_wall",
+          "point_indices": [
+            8,
+            9
+          ]
+        }
+      ],
+      "reference_lengths_mm": [
+        1073.4452513137696,
+        2876.01535921437,
+        575.9841094984808,
+        3257.6368867998553,
+        137.17740407282702
+      ],
+      "selection_basis": "RGB overlap and scan support only; three distinct positions; first photo supplies GT anchors. No selection by predictions.",
+      "exclusions": [
+        {
+          "view": "DSC_0656.JPG",
+          "preview_xy": [
+            450,
+            340
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        },
+        {
+          "view": "DSC_0656.JPG",
+          "preview_xy": [
+            450,
+            500
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        },
+        {
+          "view": "DSC_0656.JPG",
+          "preview_xy": [
+            440,
+            420
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        },
+        {
+          "view": "DSC_0656.JPG",
+          "preview_xy": [
+            320,
+            520
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        },
+        {
+          "view": "DSC_0656.JPG",
+          "preview_xy": [
+            420,
+            520
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        },
+        {
+          "view": "DSC_0656.JPG",
+          "preview_xy": [
+            370,
+            600
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        },
+        {
+          "view": "DSC_0656.JPG",
+          "preview_xy": [
+            870,
+            650
+          ],
+          "reason": "DEPTH_DISCONTINUITY",
+          "before_inference": true
+        }
+      ]
+    }
+  ]
+}

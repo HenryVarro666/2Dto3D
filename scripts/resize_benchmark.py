@@ -111,8 +111,9 @@ def prepare(args):
 
 
 def verify_prepared(args, protocol):
-    assert protocol["e08_protocol_sha256"] == sha256(E08_PROTOCOL)
-    assert protocol["e08_results_sha256"] == sha256(ARCHIVE)
+    if protocol.get("experiment_id", "E09") == "E09":
+        assert protocol["e08_protocol_sha256"] == sha256(E08_PROTOCOL)
+        assert protocol["e08_results_sha256"] == sha256(ARCHIVE)
     assert protocol["configuration"] == CONFIG
     for scene in protocol["scenes"]:
         for case in scene["cases"]:
@@ -140,6 +141,8 @@ def preview_asset(runtime, preview):
 
 def run(args, protocol):
     verify_prepared(args, protocol)
+    experiment_id = protocol.get("experiment_id", "E09")
+    protocol_path = getattr(args, "protocol_path", PROTOCOL)
     data_root, runtime, runtime_root = args.data_dir.resolve(), args.runtime_dir.resolve(), args.runtime_root.resolve()
     folder = data_root/"runs"/args.run_name
     if (folder/"summary.json").exists():
@@ -149,15 +152,17 @@ def run(args, protocol):
     check_file(weights, "f164acf60724910d8fe1578bb499d800850c7bb0948db7555c413f9fbe60467e")
     files = [Path(__file__), ROOT/"services/api/src/pv3d/reconstruction.py", ROOT/"services/api/src/pv3d/undistortion.py",
              ROOT/"services/multiview/infer.py"]
-    summary = {"schema_version": 1, "experiment_id": "E09", "created_at": datetime.now(UTC).isoformat(),
-               "protocol_sha256": sha256(PROTOCOL), "configuration": CONFIG, "order_reversed": args.reverse_order,
+    if experiment_id == "E10-M":
+        files.append(ROOT/"scripts/independent_benchmark.py")
+    summary = {"schema_version": 1, "experiment_id": experiment_id, "created_at": datetime.now(UTC).isoformat(),
+               "protocol_sha256": sha256(protocol_path), "configuration": CONFIG, "order_reversed": args.reverse_order,
                "code_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                "code_file_sha256": {str(p.relative_to(ROOT)): sha256(p) for p in files}, "runs": []}
     cases = [(scene, case) for scene in protocol["scenes"] for case in scene["cases"]
              if case["image_condition"] in args.image_conditions and case["resize_mode"] in args.resize_modes]
     if args.reverse_order:
         cases.reverse()
-    archive = json.loads(ARCHIVE.read_text())
+    archive = json.loads(ARCHIVE.read_text()) if experiment_id == "E09" else None
     for scene, case in cases:
         name, condition, mode = scene["id"], case["image_condition"], case["resize_mode"]
         paths = [args.image_dir.resolve()/p["path"] for p in case["inputs"]]
@@ -191,13 +196,13 @@ def run(args, protocol):
             points = [s["world_xyz"] for s in samples]
             eval_scene = {**scene, "resolutions": {"518": {"points": case["point_mappings"],
                                                        "reference_lengths_mm": scene["reference_lengths_mm"]}}}
-            meta["model"].update(experiment_id="E09", image_condition=condition, protocol_sha256=sha256(PROTOCOL),
+            meta["model"].update(experiment_id=experiment_id, image_condition=condition, protocol_sha256=sha256(protocol_path),
                                  measurement_sampling=CONFIG["sampling"])
             job, indices, job_folder = seed_job(runtime, eval_scene, paths, geometry, meta, 518,
                                                 measurement_points=points, support_masks=np.tile(mask, (3, 1, 1)))
             measured, receipt = evaluate_api(runtime, job, indices, eval_scene, 518, geometry,
                 point_component_id="measurement-anchors", expected_positions=points,
-                source_note=f"E09 ETH3D {name}/{condition}/{mode}; fixed scanner points; derived camera-Z anchors; GT withheld.")
+                source_note=f"{experiment_id} ETH3D {name}/{condition}/{mode}; fixed scanner points; derived camera-Z anchors; GT withheld.")
             write_json(destination/"receipt.json", receipt)
             diagnostic_scene = {**scene, "conditions": {condition: {"rect": case["mapping_rect"]}}}
             diagnostics = point_diagnostics(diagnostic_scene, condition, samples, geometry, measured["calibration"]["mm_per_unit"])
@@ -208,7 +213,7 @@ def run(args, protocol):
                        input_preview_url=preview_asset(runtime, data_root/case["input_preview"]),
                        preview_points=[{"id": chr(65+i), "uv": [(p["grid_xy"][0]+.5)/518, (p["grid_xy"][1]+.5)/518]}
                                        for i, p in enumerate(case["point_mappings"])])
-            if mode == "legacy14":
+            if mode == "legacy14" and archive is not None:
                 previous = next(r for r in archive["runs"] if (r["scene"], r["condition"]) == (name, condition))
                 row["e08_audit_cloud_matches"] = row["geometry_sha256"] == previous["geometry_sha256"]
                 assert row["e08_audit_cloud_matches"]
@@ -228,7 +233,7 @@ def run(args, protocol):
         write_json(folder/"summary.json", summary)
     print(f"Summary: {folder/'summary.json'}", flush=True)
     if not cases or any(r["status"] != "succeeded" for r in summary["runs"]):
-        raise SystemExit("E09 incomplete or failed; evidence preserved in summary.json")
+        raise SystemExit(f"{experiment_id} incomplete or failed; evidence preserved in summary.json")
 
 
 def main():
