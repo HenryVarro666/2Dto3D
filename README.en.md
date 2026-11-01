@@ -79,7 +79,7 @@ Raw **GLB / PLY always retain relative scale**; calibration does not silently re
 
 ![Actual web replay: public multi-angle photographs, point cloud and check endpoints](docs/assets/public-cloud.en.jpg)
 
-Actual pipes / 518 replay: an ETH3D photograph on the left, the inferred VGGT cloud and check endpoint display markers A/B on the right. Picks use original, un-exploded coordinates. See [asset provenance](docs/assets/README.md) for source and CC BY-NC-SA 4.0 attribution of photo-derived images.
+Actual pipes / 518 replay: an ETH3D photograph on the left, the inferred VGGT cloud on the right. Check C–D uses the viewer’s generic endpoint markers A/B. Picks use original, un-exploded coordinates. See [asset provenance](docs/assets/README.md) for source and CC BY-NC-SA 4.0 attribution of photo-derived images.
 
 ![All held-out length errors, including the regression](docs/assets/public-metric-errors.en.svg)
 

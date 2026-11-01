@@ -148,3 +148,8 @@ macOS系统tar可解7z；Linux需`7zz`或`7z`可执行程序。官方源归档�
 - `public-metric.en.jpg`：`62e5a27a5cfa3c0f49205c6b2213a4f8b1ccf9be369d90f2814116cf817b927c`
 - `public-cloud.zh.jpg`：`432c9d586d687e07f1f1d238967135560a5b2cfe877befff7759859699464e8b`
 - `public-cloud.en.jpg`：`37fc2d8677107665049ebc25578eaba59beedf5d06ade96be162562ce1636f5c`
+
+
+审查修复提交`d3e06af`再次由同一独立审查者只读复核：无剩余P1/P2；8项参考测试、来源/参考复核、相关前端2文件6项测试通过，冻结选择及两份结果JSON未改。复核没有重复完整套件/模型/浏览器；完整套件及浏览器由主会话按上文实际执行。
+
+说明：冻结协议中的`inference_started:false`是其创建时（推理前）的历史状态，不是当前未运行的声明。E07绕过SAM/DINO、跨视角组件关联及组件体素化；验证的是VGGT原始点图→正常GLB导出→正常测量API，不能替代完整组件管线的测量取点验证。

@@ -79,7 +79,7 @@ make dev
 
 ![真实网页：公开多角度照片、点云与检查线端点](docs/assets/public-cloud.zh.jpg)
 
-真实网页重放 pipes / 518：左侧为 ETH3D 照片，右侧为实际 VGGT 点云和检查线 A/B 显示标记；顶点取自未分解坐标。照片与点云衍生图来源及 CC BY-NC-SA 4.0 说明见[素材记录](docs/assets/README.md)。
+真实网页重放 pipes / 518：左侧为 ETH3D 照片，右侧为实际 VGGT 点云；检查线 C–D 在通用查看器中显示为 A/B 标记；顶点取自未分解坐标。照片与点云衍生图来源及 CC BY-NC-SA 4.0 说明见[素材记录](docs/assets/README.md)。
 
 ![逐条独立长度误差：保留改善与退步](docs/assets/public-metric-errors.zh.svg)
 
