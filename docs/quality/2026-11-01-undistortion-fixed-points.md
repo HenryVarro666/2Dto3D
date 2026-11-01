@@ -166,3 +166,6 @@ PV3D_DATA_DIR="$PWD/data/measurement-public/runtime" make serve
 中英文E08 SVG已在真实浏览器检查排版，数值/全部退步可读；10张SVG确定性检查通过。过程环境记录 **ENV-001**：临时配图服务器使用系统Python3.15时虽监听但连接超时，改用项目锁定的Python3.12后HTTP200且实际图已显示；具体原因未定位，未改变防火墙或生产服务。其临时预览服务已停止，8004正式工作台保留。初始浏览器失效重建会话、错误editable路径与系统Python缺numpy等辅助环境问题均通过回到项目环境纠正，不计作模型改进。
 
 本轮使用独立worktree，未切换、重置或改写canonical checkout内其他会话的组件语义分支；未关闭其他服务。仓库当前仍private，原始照片/权重/数组/DB保持ignored。
+
+
+最终交付：内容提交`95c7985016600516767186ab3736c8ef2eb4f82f`已原子推送到GitHub私有`main`与`eval/undistortion-fixed-points`，两远端引用逐字匹配；新GitHub克隆已快进至该内容提交且工作区干净、10SVG与凭证存在。随后仅补本文交付收据与计划勾选，模型/代码/结果均未改变。8004工作台在中文E08结果区保留，原图/去畸变kicker任务均可重放。后续不要删除ignored原始证据，也不要把未测试的保比例resize当作已修复。
