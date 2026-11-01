@@ -52,4 +52,4 @@
 - [x] UI RED/GREEN for stratum switching, same-refguard, complete/worse rows and language/jobID preservation. Productionbuild and browser show real data/diagnostics/replay.
 - [x] Save allissues/failures/improvements, before/aftertable,times/provenance and nextactions. Preserve E08 ashistory. Update12SVG expectedcount if one bilingualchartpair added.
 - [x] Fullbackend/frontend/build/Ruff/figures/links; fresh independent wholebranchreview; fix materialfindingsRED/GREEN.
-- [ ] Privatefeature/main sync; freshGitHubclone setup/test/build/preparation and bounded real modelsmoke fromindependent runtime with explicitlycachedsources/weights; recordexactSHAs and keep productionwebavailable.
+- [x] Privatefeature/main sync; freshGitHubclone setup/test/build/preparation and bounded real modelsmoke fromindependent runtime with explicitlycachedsources/weights; recordexactSHAs and keep productionwebavailable.
