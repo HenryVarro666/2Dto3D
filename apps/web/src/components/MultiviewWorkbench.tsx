@@ -16,6 +16,8 @@ import { AnnotationPanel } from "./AnnotationPanel";
 import { MeasurementPanel } from "./MeasurementPanel";
 import { PublicMetricBenchmark } from "./PublicMetricBenchmark";
 import { UndistortionComparison } from "./UndistortionComparison";
+import { ResizeComparison } from "./ResizeComparison";
+import resizeResults from "../../../../docs/measurement/resize-results.json";
 import { ComponentList } from "./ComponentList";
 
 const SceneViewer = lazy(() =>
@@ -359,6 +361,15 @@ export function MultiviewWorkbench({
         }}
       />
       <UndistortionComparison
+        disabled={locked}
+        onRestore={(jobId) => {
+          setRestoreId(jobId);
+          setViewerError(null);
+          void flow.restore(jobId);
+        }}
+      />
+      <ResizeComparison
+        data={resizeResults}
         disabled={locked}
         onRestore={(jobId) => {
           setRestoreId(jobId);

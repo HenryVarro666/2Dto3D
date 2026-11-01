@@ -158,13 +158,53 @@ def undistortion(zh):
     return svg(title, "E08 fixed-physical-point held-out percentage errors; original and rectified. Both improvements and regressions retained.", body, 590)
 
 
+def resize_comparison(zh):
+    data = json.loads((ROOT / "docs/measurement/resize-results.json").read_text())
+    groups = {condition: {mode: [c for r in data["runs"] if r["image_condition"] == condition
+                                and r["resize_mode"] == mode for c in r["checks"]]
+                          for mode in ["legacy14", "isotropic"]} for condition in ["original", "rectified"]}
+    assert all(len(c) == 8 for modes in groups.values() for c in modes.values())
+    title = "保比例缩放：去畸变条件部分改善，原图有明显退步" if zh else "Isotropic resizing: mixed gains after rectification, regressions on original RGB"
+    body = text(32, 44, title, 23, weight=650)
+    body += text(32, 73, "E09 · 相同六图 / VGGT / 518×518 / 20个实际点 · 两个RGB分层分别比较" if zh else
+                 "E09 · Same six photos / VGGT / 518×518 / 20 physical points · RGB strata compared separately", 13)
+    for j, condition in enumerate(["original", "rectified"]):
+        x = 320+j*400
+        means = [sum(c["relative_error_pct"] for c in groups[condition][m])/8 for m in ["legacy14", "isotropic"]]
+        label = ("固定原图" if j == 0 else "固定去畸变图") if zh else ("Fixed original RGB" if j == 0 else "Fixed rectified RGB")
+        body += text(x, 112, label, 17, weight=650)
+        body += text(x, 139, f"MAPE {means[0]:.2f}% → {means[1]:.2f}%", 17)
+        for tick in range(0, 26, 5):
+            xx = x+tick*12
+            body += f'<path d="M{xx},167 V514" stroke="#dce5dd"/>'
+            body += text(xx, 162, f"{tick}%", 12, "#678077", anchor="middle")
+    body += box(32, 105, 12, 9, "#bd8a48", "none", 2) + text(50, 115, "当前14对齐" if zh else "Current 14-aligned", 13)
+    body += box(32, 132, 12, 9, "#247e6b", "none", 2) + text(50, 142, "保比例" if zh else "Isotropic", 13)
+    names = ["柜体横向 C–D", "橙色面板 E–F", "管道纵向 G–H", "柜体至管道 I–J", "后墙 C–D", "侧墙 E–F", "后墙至侧墙 G–H", "柜体下段 I–J"]
+    for i, c in enumerate(groups["original"]["legacy14"]):
+        y = 178+i*42
+        body += text(32, y+13, ("pipes" if i < 4 else "kicker")+" · "+(names[i] if zh else c["label"]), 13)
+        for j, condition in enumerate(["original", "rectified"]):
+            for k, (mode, color) in enumerate([("legacy14", "#bd8a48"), ("isotropic", "#247e6b")]):
+                value = next(d["relative_error_pct"] for d in groups[condition][mode] if d["segment_id"] == c["segment_id"])
+                x = 320+j*400
+                body += f'<rect x="{x}" y="{y+k*12}" width="{value*12:.2f}" height="8" rx="3" fill="{color}"/>'
+                body += text(x+value*12+4, y+8+k*12, f"{value:.2f}%", 11, color)
+    body += text(32, 549, "去畸变跨墙偏差 690→515 mm；后墙却 4.18%→5.99%。原图跨墙升至21.99%，不宜全局切换。" if zh else
+                 "Rectified cross-wall error: 690→515 mm; back wall: 4.18%→5.99%. Original cross-wall reaches 21.99%; no global switch.", 13, "#986a23")
+    body += text(32, 577, "每分层8条未参与标定的长度；16次调用包含复跑，不是16个独立场景。现场精度仍未验证。" if zh else
+                 "Eight held-out lengths per stratum. Sixteen calls include repeats, not 16 independent scenes. Field accuracy remains unverified.", 13, "#59756a")
+    return svg(title, "E09 percentage errors for original and rectified strata; equal axes; current versus isotropic resize. All regressions retained.", body, 607)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     ASSETS.mkdir(parents=True, exist_ok=True)
     for name, generator in [("workflow", workflow), ("architecture", architecture), ("scale-validation", scale),
-                            ("public-metric-errors", metric), ("undistortion-errors", undistortion)]:
+                            ("public-metric-errors", metric), ("undistortion-errors", undistortion),
+                            ("resize-errors", resize_comparison)]:
         for lang in ["zh", "en"]:
             path = ASSETS / f"{name}.{lang}.svg"
             expected = generator(lang == "zh")
@@ -172,7 +212,7 @@ def main():
                 if not path.exists() or path.read_text() != expected:
                     raise SystemExit(f"Outdated diagram: {path}")
             else: path.write_text(expected, encoding="utf-8")
-    print("10 SVG diagrams verified" if args.check else "10 SVG diagrams rendered")
+    print("12 SVG diagrams verified" if args.check else "12 SVG diagrams rendered")
 
 
 if __name__ == "__main__":

@@ -50,3 +50,17 @@ SVG 由标准库生成，无脚本、外部资源或嵌入照片：
 [E08报告](../quality/2026-11-01-undistortion-fixed-points.md)保存方法、结果、问题与验证，屏幕正常视口1280×720。图表为作者重画，不代表现场PV精度；数学投影残差也不是物理误差上界。
 
 `undistortion-cloud.zh.jpg`：8004真实生产网页，去畸变kicker任务`af0aa4da3b15428aa901a81a4c8ccb34`，显示G–H派生索引6/7（通用查看器显示A/B）与实际VGGT点云。照片和点云衍生内容沿用本节ETH3D归属及CC BY-NC-SA4.0；截图未修图，不能以可视化外观证明深度或长度正确。
+
+
+## E09 缩放方式同点对照（2026-11-01）
+
+| 文件 | 用途与来源 |
+|---|---|
+| `resize-errors.zh.svg` / `.en.svg` | 作者按冻结resize-results.json重画两RGB分层、同横轴的全部长度误差；包含原图显著退步，12 SVG由脚本验证 |
+| `resize.zh.jpg` / `.en.jpg` | 8004真实生产页面；固定去畸变RGB，2.97/2.52与逐线误差，分别原生中/英截图 |
+| `resize-original.zh.jpg` | 原图保护分层真实截图：4.24/5.95，不混入去畸变结果 |
+| `resize-inputs.zh.jpg` | 从真实准备张量导出的518输入查看预览及同一实际A–J；含白色letterbox。橙色标定、绿色未参与比例拟合，同名点对应同一扫描位置 |
+
+含照片的截图来源ETH3D pipes/DSC_0635、kicker/DSC_6503（完整三视图顺序和SHA见E08/E09协议）；归属与CC BY-NC-SA4.0沿用E07/E08所列ETH3D作者、项目及许可。处理包括已知标定去畸变、PIL bicubic当前/统一比例缩放、JPEG查看预览、SVG端点叠加和原生1280×720捕获，无生成式修图。真实推理读取独立无损RGB并在worker准备张量，JPEG只展示。截图/图表不证明现场尺寸精度；原始照片/PNG/数组/DB/权重继续ignored。
+
+`resize-cloud.zh.jpg`：真实8004工作台，kicker/rectified/isotropic任务6558249e023c47d3afa05a1c97d9fe1a；查看G–H派生索引6/7时通用查看器显示A/B。实际选点读原始GLB坐标，保留“原始几何·相对尺度”和“参照校准·几何仍为估算”。照片/点云衍生内容仍按上述ETH3D归属与CC BY-NC-SA4.0保存；不以点云外观看作尺寸正确证明。

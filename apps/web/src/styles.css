@@ -3307,3 +3307,16 @@ input[type="range"] {
     flex-wrap: wrap;
   }
 }
+
+.resize-condition {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+}
+.resize-condition legend { padding: 0 6px; font-size: 12px; color: var(--muted); }
+.resize-condition label { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.resize-condition input { accent-color: var(--teal); }

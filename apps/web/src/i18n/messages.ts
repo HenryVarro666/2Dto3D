@@ -1,5 +1,70 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  缩放方式同点对照: [
+    "Fixed-point resize comparison",
+    "Comparación de escala con puntos fijos",
+  ],
+  "图像条件（缩放对照）": ["Fixed RGB condition", "Condición RGB fija"],
+  固定去畸变图: ["Fixed rectified RGB", "RGB rectificado fijo"],
+  固定原图: ["Fixed original RGB", "RGB original fijo"],
+  当前14对齐: ["Current 14-aligned resize", "Escala actual alineada a 14"],
+  保比例缩放: ["Isotropic resize", "Escala isotrópica"],
+  "图像条件固定；只比较缩放方式。每场景 A–B 标定，四条长度仅验证。": [
+    "RGB is held fixed; only resizing changes. A–B sets scale in each scene; four lengths are held out.",
+    "El RGB es fijo; solo cambia el escalado. A–B fija la escala en cada escena; cuatro longitudes se reservan para validar.",
+  ],
+  "当前有效内容 {width}×{height}；纵横拉伸 {stretch}%。": [
+    "Current content: {width}×{height}; relative vertical stretch {stretch}%.",
+    "Contenido actual: {width}×{height}; estiramiento vertical relativo del {stretch}%.",
+  ],
+  "保比例有效内容 {width}×{height}，存储高度 {stored}；实际取点使用连续映射。":
+    [
+      "Isotropic content: {width}×{height}, stored height {stored}; physical points use the continuous mapping.",
+      "Contenido isotrópico: {width}×{height}, altura almacenada {stored}; los puntos físicos usan el mapeo continuo.",
+    ],
+  "原图与去畸变分层不混算；有效像素覆盖和白边也随缩放变化，不能单独确定深度模型的根因。":
+    [
+      "Original and rectified strata are kept separate. Pixel coverage and white borders also change; this does not isolate a unique depth-model cause.",
+      "Los estratos original y rectificado se mantienen separados. También cambian la cobertura y los bordes blancos; esto no aísla una causa única del modelo de profundidad.",
+    ],
+  查看当前点云: ["Current cloud", "Nube con escala actual"],
+  查看保比例点云: ["Isotropic cloud", "Nube con escala isotrópica"],
+  "当前：校准长度 / 误差": [
+    "Current: calibrated length / error",
+    "Actual: longitud calibrada / error",
+  ],
+  "保比例：校准长度 / 误差": [
+    "Isotropic: calibrated length / error",
+    "Isotrópica: longitud calibrada / error",
+  ],
+  实际518输入与同点标记: [
+    "Actual 518 inputs and matching physical points",
+    "Entradas reales de 518 y puntos físicos coincidentes",
+  ],
+  "橙色 A–B 用于标定，绿色 C–J 仅验证；同名标记对应同一扫描点，按各自缩放映射取样。":
+    [
+      "Orange A–B sets scale; green C–J are held out. Matching labels identify the same scanner points sampled through each resize mapping.",
+      "A–B en naranja fija la escala; C–J en verde solo valida. Las mismas etiquetas identifican los mismos puntos del escáner bajo cada mapeo de escala.",
+    ],
+  "模型输入预览来自实际准备张量；JPEG仅供查看，原始PNG和哈希保留。": [
+    "Previews come from the actual prepared tensors. JPEG is for viewing; lossless PNGs and hashes are retained.",
+    "Las vistas provienen de los tensores preparados reales. El JPEG es solo para visualizar; se conservan los PNG sin pérdida y los hashes.",
+  ],
+  跨墙与后墙深度诊断: [
+    "Cross-wall and back-wall depth diagnostics",
+    "Diagnóstico de profundidad entre paredes y pared trasera",
+  ],
+  "当前 Z（校准后）": ["Current Z (calibrated)", "Z actual (calibrada)"],
+  "保比例 Z（校准后）": [
+    "Isotropic Z (calibrated)",
+    "Z isotrópica (calibrada)",
+  ],
+  "已知 K 辅助跨墙误差：当前 {before}%，保比例 {after}%；各自只用 A–B 拟合辅助比例，不计入主结果。":
+    [
+      "Known-K auxiliary cross-wall error: current {before}%, isotropic {after}%. Each auxiliary scale uses A–B only and is excluded from the primary comparison.",
+      "Error auxiliar entre paredes con K conocida: actual {before}%, isotrópico {after}%. Cada escala auxiliar usa solo A–B y se excluye de la comparación principal.",
+    ],
+
   同点去畸变对照: [
     "Fixed-point undistortion comparison",
     "Comparación de corrección de distorsión con puntos fijos",

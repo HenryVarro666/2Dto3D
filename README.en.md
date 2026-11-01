@@ -104,6 +104,16 @@ With the same six photos, VGGT/518 and 20 fixed scanner points, held-out length 
 
 The trilingual comparison adds matching A–J photo overlays, all regressions, depth diagnostics and both cloud/measurement replays. Rectification requires known camera calibration, which arbitrary field photos may lack. Derived sampling anchors retain explicit provenance; original arrays and valid-support model samples remain separate. [Protocol, full results, timings, failures and reproduction](docs/quality/2026-11-01-undistortion-fixed-points.md) · [Machine-readable results](docs/measurement/undistortion-results.json). Field millimetre accuracy remains unverified; the default 336 setting is unchanged.
 
+### Current versus isotropic resizing: E09
+
+![All resize comparisons in both RGB strata, including regressions](docs/assets/resize-errors.en.svg)
+
+The same six photos, VGGT, 518-square input and 20 physical points are held fixed. Resizing is compared separately within original and rectified RGB. Rectified MAPE changes from **2.97% to 2.52%** (five improve, three regress); kicker cross-wall error falls from **12.91% to 9.63%**, still about **515 mm** off, while its back wall regresses from **4.18% to 5.99%**. Original-RGB MAPE rises from **4.24% to 5.95%**, and kicker cross-wall reaches **21.99%**. **The effect depends on the RGB condition; the production default is retained.**
+
+![Actual web comparison with the RGB condition held fixed](docs/assets/resize.en.jpg)
+
+Isotropic sampling uses one scalar and a continuous point mapping: content is 518×345.333, with an integer storage height of 346. It does not silently round the short side and call that exact aspect preservation. All arrays, supported raw clouds, audit clouds and measurements match across 16 primary/reversed-repeat calls; repeats add no independent samples. The trilingual panel adds stratum switching, actual 518-input overlays, depth diagnostics and both cloud replays. Known-K auxiliary cross-wall error remains about 9.30%; back-wall depth order is still wrong. Field millimetre accuracy is unverified. [Protocol, full results, timings, failures and reproduction](docs/quality/2026-11-01-aspect-ratio-fixed-points.md) · [Numeric summary](docs/measurement/resize-results.json).
+
 ## Architecture
 
 ![Local web, API, durable evidence, bounded perception queue and isolated geometry worker](docs/assets/architecture.en.svg)

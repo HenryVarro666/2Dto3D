@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — aspect-preserving resize evaluation (E09)
+
+- Add an experimental isotropic preprocessing mode with continuous point mapping, fractional Pillow source boxes and separate integer storage bounds. Legacy14 remains the default and reproduces E08 arrays/clouds/measurements exactly.
+- Compare all eight conditions twice at fixed VGGT/518 and physical points: rectified MAPE 2.97%→2.52%, but original 4.24%→5.95% and cross-wall 21.99%; retain all regressions and avoid a global default change.
+- Add trilingual stratum selection, real 518-input point overlays, depth diagnostics and immutable cloud replay; update both READMEs, source-attributed figures/screenshots and durable issue/evidence records.
+
 ## Unreleased — fixed-point undistortion evaluation (E08)
 
 - Freeze 20 physical scanner endpoints before evaluating the same six photos with VGGT/518, calibrated full-field rectification and subpixel camera-Z sampling. Preserve raw arrays, supported model samples and derived-anchor provenance.

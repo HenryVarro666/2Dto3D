@@ -79,7 +79,7 @@
 
 E08曾退步的四项，在rectified分层本次表现：pipes柜体至管道0.558%→0.076%改善；kicker跨墙12.909%→9.631%改善；kicker下柜0.262%→0.117%改善；kicker侧墙2.850%→2.973%继续退步。此外pipes橙色面板0.701%→0.819%新增退步。所有数值保留，不按原误差大小删线。
 
-**已知K辅助（不算入主结果）：** rectified保留相同预测Z，仅用已知pinhole K反投影，并各自仅A–B另拟合辅助比例。kicker跨墙12.64563%→9.29725%附近（精确值见JSON），仍明显偏差；后墙4.371%→5.888%。因此替换K射线并未消除形变，不能唯一判定深度头、相机估计或训练分布是根因。原图不是pinhole，不做这个辅助检验。
+**已知K辅助（不算入主结果）：** rectified保留相同预测Z，仅用已知pinhole K反投影，并各自仅A–B另拟合辅助比例。kicker跨墙12.64563%→9.29743%（完整数值见JSON），仍明显偏差；后墙4.371%→5.888%。因此替换K射线并未消除形变，不能唯一判定深度头、相机估计或训练分布是根因。原图不是pinhole，不做这个辅助检验。
 
 **结论与下一步：** 保留当前legacy14产品默认，不把小样本上条件性的改善升级为全局默认。下一轮应冻结这四组主结果，在未参与开发的新场景/新独立实测长度上验证；如要进一步定位，再单独测试像素平移/边框/有效区域覆盖，或已知相机约束的多视图几何优化，不能同时换所有变量后只报均值。现场PV设备/毫米级精度、隐藏背面和5080仍未验证。
 
@@ -127,3 +127,28 @@ PV3D_DATA_DIR="$PWD/data/measurement-public/runtime" make serve
 ignored `data/measurement-resize/`保存准备518无损预览/mask、主轮/复跑geometry.npz/json、真实worker日志、input manifest、derived-anchor-audit、diagnostics、receipt和全部失败/通过日志。实际RGB输入复用`data/measurement-undistortion/inputs/`，原始下载仍在`data/measurement-public/`；不是把新JPEG预览作为模型输入。重放/预览asset追加到原测量runtime，无关任务不启动/中断。Git仅保存协议、摘要、代码、测试、图表和有来源截图，原始数据/DB/权重仍不随克隆。
 
 Pillow、NumPy主环境与独立worker使用各自锁文件，不升级；模型许可CC-BY-NC4.0，ETH3D照片及衍生截图CC BY-NC-SA4.0，来源与变更见[素材记录](../assets/README.md)。场景/相机/真实深度来源见E07/E08，不将教程建议或模型尺寸当作真值。
+
+
+## 网页与构建验证
+
+生产8004实际核对：固定去畸变2.97/2.52与5改善3退步，切原图4.24/5.95和21.99%；不会把两分层混算。中/英/西切换保留当前分层、误差与40个输入叠加标记的位置；4张实际预览均518宽且载入成功。英/西已知K辅助12.65/9.30及C/D/G/H深度说明正确翻译，原始来源备注保留。无本机照片的回退由前端测试覆盖。
+
+实际重放当前kicker/rectified任务327b5fd3063945c88bcb658eb95222f4与保比例任务6558249e023c47d3afa05a1c97d9fe1a：各1参照/8条测距、云实际加载、无错误提示；两条件G–H均为measurement-anchors #6/#7，对应4657.47/4832.81mm，独立误差690.37/515.04mm。通用查看器把该检查线显示为A/B，不是参照标定的A–B。
+
+中英文新SVG已由原生浏览器实际检查排版，等横轴显示全部退步；12图确定性检查通过。真实截图无修图：
+
+![真实结果网页](../assets/resize.zh.jpg)
+
+![同一实际点在两种真实518输入上的标记](../assets/resize-inputs.zh.jpg)
+
+![实际保比例点云与G–H检查端点](../assets/resize-cloud.zh.jpg)
+
+截图SHA256：
+
+- `resize.zh.jpg`：`92e6e5203523e1ee4a990432f684a8eb5e67921bcb0ce7154cde91a5ba8ba7e0`
+- `resize.en.jpg`：`712b8fe6bb3b9c8e0281fa5c0098b0b0d20fa037987ed5da962c01f5e20d49b9`
+- `resize-original.zh.jpg`：`02e4efc50c1af20e8120f177421e142de1baa14797e974721c61fca403d7261c`
+- `resize-inputs.zh.jpg`：`46c08f4d24e34caaaa7af4cc2ae458ef4de54229c3a3e5baabb020bf3636e1fa`
+- `resize-cloud.zh.jpg`：`23b08a67e832090ff2b47c0941160d9e1789dfa45407412ac52a7dccb68ad0f3`
+
+所有截图为正常1280×720原生JPEG。生产页面72前端/144正式ML后端、build/Ruff通过；开发142后端/2可选ML skip。浏览器连接复用了ENV-001已记录的会话重建方式恢复，没有重启模型/生产服务来修改结果。
