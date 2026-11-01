@@ -4,7 +4,7 @@
 
 | 实验 | 版本／输入 | 状态 | 结论和证据 |
 |---|---|---|---|
-| CI-001 | main8253f36与测量分支失败日志 | 本机131后端/70前端通过，GitHub待验证 | [CI记录](2026-11-01-ci-viewer-preload.md)；独立工作区排查真实查看器冷加载，非模型实验 |
+| CI-001 | main8253f36与测量分支失败日志 | 7172cb9 GitHub全部通过：131后端/70前端 | [CI记录](2026-11-01-ci-viewer-preload.md)；独立工作区；真实查看器预载入与单条长流程15秒预算，保留两层超时失败，非模型实验 |
 | E00 | V1/V2/V3功能与发布检查 | 历史完成，质量边界保留 | [验证记录](../verification.md)、[V3发布](../v3/release-notes.md)；包括失败回归、手工校正、浏览器和克隆检查；玩具链路不代表光伏精度 |
 | E01 | ae4816c，新增13张×single/multiple | 已运行26次 | [本机报告](../../data/collections/sungrow/evaluation/runs/2026-10-31_v2_ae4816c_13photos/report.md)，发现映射、大框、主机选择、人物和几何问题 |
 | E02 | ae4816c→00d0594，同13张 | 已运行26次＋主线0522a85补测26次 | [本机前后报告](../../data/collections/sungrow/evaluation/runs/2026-10-31_v2_perception_fix_13photos/report.md)，改善大框与主机；新增空槽假线束，保留中间版及审查反例 |
