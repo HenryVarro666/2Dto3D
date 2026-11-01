@@ -7,6 +7,26 @@ import { IndependentScenes } from "./IndependentScenes";
 
 const scenes = ["office", "delivery_area", "terrains"];
 function fixture() {
+  const layout = () => ({
+    rect: [0, 84, 518, 434],
+    mapping_rect: [0, 84, 518, 434],
+    scale_xy: [1, 1],
+  });
+  const protocol = {
+    model_revision: "860abec7937da0a4c03c41d3c269c366e82abdf9",
+    model_code_revision: "a288dd0f14786c93483e45524328726ab7b1b4ce",
+    scenes: scenes.map((id) => ({
+      id,
+      cases: ["original", "rectified"].flatMap((image_condition) =>
+        ["legacy14", "isotropic"].map((resize_mode) => ({
+          image_condition,
+          resize_mode,
+          input_tensor_sha256: `${id}-${image_condition}-${resize_mode}-tensor`,
+          layout: layout(),
+        })),
+      ),
+    })),
+  };
   const sources = {
     scenes: scenes.map((id) => ({
       id,
@@ -46,11 +66,14 @@ function fixture() {
             view_count: 3,
             reference_lengths_mm: [100, 200, 300, 400, 500],
             worker_wall_ms: 20000,
+            input_tensor_sha256: `${scene}-${image_condition}-${resize_mode}-tensor`,
+            layout: layout(),
             model: {
               revision: "860abec7937da0a4c03c41d3c269c366e82abdf9",
               code_revision: "a288dd0f14786c93483e45524328726ab7b1b4ce",
               protocol_sha256: "frozen",
               resize_mode,
+              image_condition,
             },
             job_id: `${scene}-${image_condition}-${resize_mode}`,
             input_preview_url: `/authored-${scene}-${image_condition}-${resize_mode}.jpg`,
@@ -69,7 +92,7 @@ function fixture() {
       ),
     ),
   };
-  return { sources, data };
+  return { sources, data, protocol };
 }
 
 it("shows every held-out line and real views, retains selection/numbers across languages and replays the selected policy", async () => {
@@ -133,19 +156,40 @@ it("shows every held-out line and real views, retains selection/numbers across l
   ).toBeInTheDocument();
 });
 
-it.each(["missing", "duplicate", "reference", "model"])(
+it.each([
+  "missing",
+  "duplicate",
+  "reference",
+  "model",
+  "stratum",
+  "stratum_and_model",
+  "tensor",
+  "layout",
+])(
   "withholds aggregates for %s cases rather than hiding invalid comparisons",
   async (invalid) => {
-    const { data, sources } = fixture();
+    const { data, sources, protocol } = fixture();
     if (invalid === "missing") data.runs.pop();
     if (invalid === "duplicate") data.runs[1] = data.runs[0];
     if (invalid === "reference") data.runs[0].checks[0].reference_mm += 1;
     if (invalid === "model") data.runs[0].model.code_revision = "different";
+    if (invalid.startsWith("stratum")) {
+      [data.runs[0].image_condition, data.runs[2].image_condition] = [
+        data.runs[2].image_condition,
+        data.runs[0].image_condition,
+      ];
+      if (invalid === "stratum_and_model")
+        for (const i of [0, 2])
+          data.runs[i].model.image_condition = data.runs[i].image_condition;
+    }
+    if (invalid === "tensor") data.runs[0].input_tensor_sha256 = "wrong-input";
+    if (invalid === "layout") data.runs[0].layout.mapping_rect[1] += 1;
     render(
       <I18nProvider>
         <IndependentScenes
           data={data}
           sources={sources}
+          protocol={protocol}
           disabled={false}
           onRestore={vi.fn()}
         />

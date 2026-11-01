@@ -7,6 +7,20 @@ type Check = {
   calibrated_mm: number;
   relative_error_pct: number;
 };
+type Layout = { rect: number[]; mapping_rect: number[]; scale_xy: number[] };
+type Protocol = {
+  model_revision: string;
+  model_code_revision: string;
+  scenes: {
+    id: string;
+    cases: {
+      image_condition: string;
+      resize_mode: string;
+      input_tensor_sha256: string;
+      layout: Layout;
+    }[];
+  }[];
+};
 type Run = {
   scene: string;
   image_condition: string;
@@ -15,11 +29,14 @@ type Run = {
   input_size: number;
   view_count: number;
   reference_lengths_mm: number[];
+  input_tensor_sha256?: string;
+  layout?: Layout;
   model?: {
     revision?: string;
     code_revision?: string;
     protocol_sha256?: string;
     resize_mode?: string;
+    image_condition?: string;
   };
   checks?: Check[];
   job_id?: string;
@@ -60,7 +77,7 @@ const scenes = {
   terrains: "材料展示走廊",
 } as const;
 
-function complete(data: Results, sources: Sources) {
+function complete(data: Results, sources: Sources, protocol: Protocol) {
   if (!sources.scenes.length || data.runs.length !== sources.scenes.length * 4)
     return false;
   return sources.scenes.every((s) =>
@@ -73,14 +90,27 @@ function complete(data: Results, sources: Sources) {
       );
       if (matches.length !== 1) return false;
       const r = matches[0];
+      const frozen = protocol.scenes
+        .find((s) => s.id === r.scene)
+        ?.cases.find(
+          (c) => c.image_condition === condition && c.resize_mode === mode,
+        );
+      if (!frozen) return false;
       return (
         r.status === "succeeded" &&
         r.input_size === 518 &&
         r.view_count === 3 &&
-        r.model?.revision === "860abec7937da0a4c03c41d3c269c366e82abdf9" &&
-        r.model?.code_revision === "a288dd0f14786c93483e45524328726ab7b1b4ce" &&
+        r.model?.revision === protocol.model_revision &&
+        r.model?.code_revision === protocol.model_code_revision &&
         r.model?.protocol_sha256 === data.protocol_sha256 &&
         r.model?.resize_mode === mode &&
+        r.model?.image_condition === condition &&
+        r.input_tensor_sha256 === frozen.input_tensor_sha256 &&
+        (["rect", "mapping_rect", "scale_xy"] as const).every(
+          (k) =>
+            r.layout?.[k]?.length === frozen.layout[k].length &&
+            r.layout[k].every((v, i) => v === frozen.layout[k][i]),
+        ) &&
         r.reference_lengths_mm.length === 5 &&
         s.reference_lengths_mm.length === 5 &&
         r.reference_lengths_mm.every(
@@ -194,18 +224,20 @@ function PreparedPreview({ run }: { run: Run }) {
 export function IndependentScenes({
   data,
   sources,
+  protocol,
   disabled,
   onRestore,
 }: {
   data: Results;
   sources: Sources;
+  protocol: Protocol;
   disabled: boolean;
   onRestore: (id: string) => void;
 }) {
   const { t, localize } = useI18n();
   const [scene, setScene] = useState(sources.scenes[0]?.id ?? "office"),
     [condition, setCondition] = useState("rectified");
-  const ready = complete(data, sources);
+  const ready = complete(data, sources, protocol);
   const sceneName = (id: string) =>
     Object.hasOwn(scenes, id) ? t(scenes[id as keyof typeof scenes]) : id;
   const title = (condition: string, mode: string) =>

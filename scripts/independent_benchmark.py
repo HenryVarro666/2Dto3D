@@ -15,7 +15,7 @@ import numpy as np
 from PIL import Image
 from PIL import __version__ as pillow_version
 from public_metric_benchmark import check_file, sha256, write_json
-from pv3d.metric_benchmark import camera_project, photo_to_grid
+from pv3d.metric_benchmark import camera_project, photo_to_grid, read_depth, reference_point
 from pv3d.reconstruction import VGGT_CODE_REVISION, VGGT_REVISION, image_layout, prepare_images
 from pv3d.undistortion import (
     bilinear_footprint,
@@ -122,6 +122,16 @@ def verify_source_files(data_root, source):
         camera, ids, _ = camera_for_views(data_root/"source-data"/scene["id"]/"dslr_calibration_jpg",
                                          [Path(v["path"]).name for v in scene["views"]])
         assert camera == scene["camera"] and ids == scene["selected_camera_ids"]
+        depth_file = next(f for f in scene["reference_files"] if "/ground_truth_depth/" in f["path"])
+        depth = read_depth(data_root/"source-data"/depth_file["path"], *camera["size"])
+        for index, point in enumerate(scene["reference_points"]):
+            measured = reference_point(depth, point["requested_pixel_xy"], camera["params"])
+            for field, value in measured.items():
+                expected, stored = np.asarray(value, dtype=float), np.asarray(point.get(field), dtype=float)
+                tolerance = 1e-9 if field == "xyz_m" else 1e-12
+                if (stored.shape != expected.shape or not np.isfinite(stored).all()
+                    or not np.allclose(stored, expected, atol=tolerance, rtol=0)):
+                    raise ValueError(f"INDEPENDENT_SCAN_REFERENCE_CHANGED: {scene['id']}/{index}/{field}")
         xyz = np.array([p["xyz_m"] for p in scene["reference_points"]])
         assert xyz.shape == (10, 3) and np.isfinite(xyz).all()
         for j, segment in enumerate(scene["segments"]):

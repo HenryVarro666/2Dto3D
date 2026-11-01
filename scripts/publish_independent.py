@@ -27,7 +27,13 @@ def validate_round(summary, protocol, fingerprint):
         raise ValueError("INDEPENDENT_PROTOCOL_CHANGED")
     for row in summary["runs"]:
         scene = next(s for s in protocol["scenes"] if s["id"] == row["scene"])
+        case = next(c for c in scene["cases"] if
+                    (c["image_condition"], c["resize_mode"]) == (row["image_condition"], row["resize_mode"]))
         model = row.get("model", {})
+        if (model.get("image_condition") != row["image_condition"]
+            or row.get("input_tensor_sha256") != case["input_tensor_sha256"]
+            or row.get("layout") != case["layout"]):
+            raise ValueError("INDEPENDENT_INPUT_CASE_CHANGED")
         if (row["status"] != "succeeded" or row["input_size"] != 518 or row["view_count"] != 3
             or model.get("revision") != protocol["model_revision"]
             or model.get("code_revision") != protocol["model_code_revision"]
@@ -35,6 +41,10 @@ def validate_round(summary, protocol, fingerprint):
             raise ValueError("INDEPENDENT_MODEL_OR_FAILED_CASE")
         if row["reference_lengths_mm"] != scene["reference_lengths_mm"] or row["calibration"]["known_length_mm"] != scene["reference_lengths_mm"][0]:
             raise ValueError("INDEPENDENT_REFERENCE_CHANGED")
+        scale, calibration_distance = row["calibration"]["mm_per_unit"], row["calibration"]["distance_units"]
+        if (not np.isfinite([scale, calibration_distance]).all() or min(scale, calibration_distance) <= 0
+            or not np.isclose(scale*calibration_distance, scene["reference_lengths_mm"][0], atol=1e-8, rtol=1e-10)):
+            raise ValueError("INDEPENDENT_INCONSISTENT_ERROR: calibration scale")
         if len(row["checks"]) != 4 or [c["segment_id"] for c in row["checks"]] != [s["id"] for s in scene["segments"][1:]]:
             raise ValueError("INDEPENDENT_CHECK_SET_CHANGED")
         for i, check in enumerate(row["checks"], 1):
@@ -43,6 +53,12 @@ def validate_round(summary, protocol, fingerprint):
             values = [check["calibrated_mm"], check["relative_error_pct"]]
             if not np.isfinite(values).all() or values[0] <= 0 or values[1] < 0:
                 raise ValueError("INDEPENDENT_NONFINITE_RESULT")
+            absolute = abs(check["calibrated_mm"]-check["reference_mm"])
+            error = absolute/check["reference_mm"]*100
+            if (not np.isclose(check["relative_error_pct"], error, atol=1e-8, rtol=1e-10)
+                or not np.isclose(check["absolute_error_mm"], absolute, atol=1e-8, rtol=1e-10)
+                or not np.isclose(check["relative_distance_u"]*scale, check["calibrated_mm"], atol=1e-8, rtol=1e-10)):
+                raise ValueError("INDEPENDENT_INCONSISTENT_ERROR")
 
 
 def publish(data_root, runtime, check_only=False):

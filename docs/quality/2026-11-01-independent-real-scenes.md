@@ -16,7 +16,7 @@
 
 | ID | 现象、根因及处理 | 验证与边界 |
 |---|---|---|
-| DATA-001 | bsdtar3.5.3/libarchive3.7.4选择性解delivery_area固实7z时报Truncated7-Zip body，并生成字节数正确的全零深度 | 改用7-Zip26.05；另一独立py7zr解包输出SHA一致。深度SHA baead6b314509ffd2e207a6979b0b598121c096f3297fbe35e06801d6cdd8c5c；不把全零读取失败算模型误差 |
+| DATA-METRIC-001 | bsdtar3.5.3/libarchive3.7.4选择性解delivery_area固实7z时报Truncated7-Zip body，并生成字节数正确的全零深度 | 改用7-Zip26.05；另一独立py7zr解包输出SHA一致。深度SHA baead6b314509ffd2e207a6979b0b598121c096f3297fbe35e06801d6cdd8c5c；不把全零读取失败算模型误差 |
 | SCALE-013 | terrains有camera1/0两组标定，第一行并非所选照片相机 | 从images.txt的camera ID查cameras.txt，拒绝混用；先RED后GREEN回归。发现于协议冻结及推理前，旧E07–E09相机/结果不受影响 |
 | SCALE-014 | 较远/倾斜/边界区域无法通过原21×21/30mm扫描支持门槛 | 卸货区排除4个候选，走廊0656排除7个并改选0658；原因完整保存在来源JSON，全部发生在推理前。未放宽阈值；选择偏向有扫描支持的可见表面，不能代表无真值区域 |
 
@@ -132,3 +132,9 @@ known-K仅对去畸变图使用已知内参，每个辅助配置重新仅用AB�
 环境问题ENV-METRIC-001：从工作树用跨data符号链接的长相对`npm --prefix`首次报Missing web@3.0.0；在新克隆实际目录执行README的`npm --prefix apps/web ci`成功，锁文件未改。失败/重试日志都保留在ignored data；根因未定位，不改依赖来掩盖。主机未隔离其他文档/构建/浏览器负载，其延迟影响未量化。
 
 代码954bb78的[GitHub CI 41286509288](https://github.com/HenryVarro666/2Dto3D/actions/runs/41286509288)全部通过；云端不运行模型，不能替代上述真实模型/扫描证据。新克隆之后仅修正文案中12种“场景/配置组合”的说法，不把它们叫12种独立策略；实际为4种策略×3场景。
+
+## 独立审查后的验证加固
+
+[审查及全部处置](2026-11-01-independent-real-scenes-review.md)：现有30点、120组映射、12组实际张量和24组原始/审计云及误差正确；发现两处验证缺口，已用失败回归补齐。publisher/网页将RGB条件、模型条件、输入SHA和layout绑定到各自冻结case，重算AB比例与相对/绝对误差；源数据核验也重新从实际扫描取每个点，不仅检查存储XYZ/长度自洽。原24次实验、四个冻结JSON均未改变，检查仍完全通过。
+
+新增16个后端/4个前端案例先失败后通过，完整164后端/2可选ML skip、82前端、build/Ruff/14SVG通过。文档原解包问题的临时重用ID DATA-001纠正为DATA-METRIC-001，原设备身份问题仍保留DATA-001；E09的16调用/144收据叙述已恢复归属，旧记录不覆盖。修复只加强校验，不将软件检查当新增物理精度。

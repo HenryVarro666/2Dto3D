@@ -21,6 +21,7 @@ import resizeResults from "../../../../docs/measurement/resize-results.json";
 import { IndependentScenes } from "./IndependentScenes";
 import independentResults from "../../../../docs/measurement/independent-results.json";
 import independentSources from "../../../../docs/measurement/independent-sources.json";
+import independentProtocol from "../../../../docs/measurement/independent-selection.json";
 import { ComponentList } from "./ComponentList";
 
 const SceneViewer = lazy(() =>
@@ -383,6 +384,7 @@ export function MultiviewWorkbench({
       <IndependentScenes
         data={independentResults}
         sources={independentSources}
+        protocol={independentProtocol}
         disabled={locked}
         onRestore={(jobId) => {
           setRestoreId(jobId);

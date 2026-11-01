@@ -136,3 +136,5 @@ E09云端已通过：[56ee118/run41283299273](https://github.com/HenryVarro666/2
 开发148后端通过/2可选ML跳过；显式本工作树PYTHONPATH的正式ML环境150后端通过；78前端、生产build、Ruff及14SVG通过。来源重叠/正确相机ID/固定点映射/输入变更拒绝/无旧场景依赖/发布完整性及UI匹配/三语保持/缺图叠加移除先RED后GREEN。浏览器实际看四方案、实景照片、三语切换保持20投影坐标、office和terrains云与GH收据；原生截图留于docs/assets，尚未将后续新克隆/私有同步步骤冒充完成，凭证继续追加。
 
 E10-M GitHub954bb78全新克隆148后端/2skip、78前端、build/Ruff/14SVG通过且工作树干净；重新7zz提取9图/3深度、重建12冻结输入、重算30GT点完全一致。新DB2job/18记录、两次真实rectified/isotropic518 smoke全部数组/云/长度等于主轮，0mm差；[凭证](measurement/independent-clone-verification.json)。同M4/缓存源包和权重，未复制旧DB；不声称跨硬件。954bb78云端CI41286509288全部通过。
+
+E10-M独立整分支审查确认实际数据正确，发现publisher/UI逐case绑定与实际扫描样本绑定不足；均在一个修复阶段RED/GREEN完成，并修复问题ID/旧实验叙述归属。当前164开发后端/2skip、82前端、build/Ruff/14SVG通过；所有冻结输入/结果逐字节未变。[审查处置](quality/2026-11-01-independent-real-scenes-review.md)。
