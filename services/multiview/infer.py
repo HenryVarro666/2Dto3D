@@ -2,6 +2,7 @@
 
 import argparse
 import gc
+import hashlib
 import json
 import sys
 import time
@@ -60,6 +61,7 @@ def infer(manifest, output):
     model = model.to(device).eval()
     loaded = time.perf_counter()
     images, rects = prepare_images(manifest["images"], manifest["input_size"])
+    input_tensor_sha256 = hashlib.sha256(images.tobytes()).hexdigest()
     inputs = torch.from_numpy(images).to(device)
     report("estimating_geometry")
     precision = (
@@ -91,6 +93,7 @@ def infer(manifest, output):
         intrinsics=intrinsic,
     )
     meta = {
+        "input_tensor_sha256": input_tensor_sha256,
         "model": {
             "model_id": VGGT_ID,
             "revision": VGGT_REVISION,

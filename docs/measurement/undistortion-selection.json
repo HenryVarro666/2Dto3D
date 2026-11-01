@@ -1,0 +1,2332 @@
+{
+  "schema_version": 1,
+  "experiment_id": "E08",
+  "created_at": "2026-11-01T06:12:26.686664+00:00",
+  "inference_started_at_freeze": false,
+  "baseline_commit": "8253f36",
+  "source_e07_selection_sha256": "af690b554f66a09f50413577004078162d4933eddaa80487e27d43dadfb4337a",
+  "model_revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+  "model_code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+  "configuration": {
+    "input_size": 518,
+    "boundary_samples_per_edge": 257,
+    "boundary_validation_per_edge": 1025,
+    "full_field_margin_fraction": 0.002,
+    "remap": "OpenCV INTER_LINEAR; white BORDER_CONSTANT",
+    "resize": "unchanged PIL BICUBIC/14-aligned letterbox",
+    "support": "erode source validity by ceil(2*max_downscale)+2px before grid lookup",
+    "sampling": "bilinear camera-Z then predicted-K/extrinsic unprojection; no pixel snapping",
+    "auxiliary_known_K": "rectified only; separate A-B-only diagnostic scale; not primary metric"
+  },
+  "versions": {
+    "numpy": "2.5.4",
+    "opencv": "4.14.0",
+    "pillow": "12.3.0"
+  },
+  "scenes": [
+    {
+      "id": "pipes",
+      "source_views": [
+        {
+          "path": "pipes/images/dslr_images/DSC_0635.JPG",
+          "sha256": "f8d3c315d7ff26b53719016d15a58e670a1312aef9369480a1937754b06073bf"
+        },
+        {
+          "path": "pipes/images/dslr_images/DSC_0634.JPG",
+          "sha256": "ecdbc6513d261882ce4d0d88e95b0e02a50c2ab409545ef8d3a14145c8021c9d"
+        },
+        {
+          "path": "pipes/images/dslr_images/DSC_0636.JPG",
+          "sha256": "daa93528691f7b6ca3a02af1ab63329e6fbe886cb637c2a796544f8dc2479000"
+        }
+      ],
+      "camera": {
+        "path": "pipes/dslr_calibration_jpg/cameras.txt",
+        "sha256": "716ff4341a488591ab1b63bf95aae3d4385815ece70a770436d991caa1a0af5c",
+        "model": "THIN_PRISM_FISHEYE",
+        "size": [
+          6048,
+          4032
+        ],
+        "params": [
+          3430.27,
+          3429.23,
+          3032.95,
+          2003.59,
+          0.218983,
+          0.155576,
+          -0.000274629,
+          -0.000387159,
+          -0.0364669,
+          0.302935,
+          0.00133613,
+          0.00101227
+        ]
+      },
+      "fixed_points": [
+        {
+          "physical_xyz_m": [
+            -1.1124174877173263,
+            -0.3617791759444605,
+            2.0337655544281006
+          ],
+          "source_pixel_xy": [
+            1207,
+            1410
+          ],
+          "source_depth_z_m": 2.0337655544281006
+        },
+        {
+          "physical_xyz_m": [
+            -1.103461960035954,
+            0.7429232541391365,
+            2.0083208084106445
+          ],
+          "source_pixel_xy": [
+            1209,
+            3232
+          ],
+          "source_depth_z_m": 2.0083208084106445
+        },
+        {
+          "physical_xyz_m": [
+            -1.3313384632071494,
+            -0.0377129390865642,
+            2.02187442779541
+          ],
+          "source_pixel_xy": [
+            846,
+            1942
+          ],
+          "source_depth_z_m": 2.02187442779541
+        },
+        {
+          "physical_xyz_m": [
+            -0.8027688603446846,
+            -0.03753802298815851,
+            2.0306100845336914
+          ],
+          "source_pixel_xy": [
+            1697,
+            1941
+          ],
+          "source_depth_z_m": 2.0306100845336914
+        },
+        {
+          "physical_xyz_m": [
+            1.4898577294483923,
+            -0.41871892450496173,
+            2.343344211578369
+          ],
+          "source_pixel_xy": [
+            5144,
+            1411
+          ],
+          "source_depth_z_m": 2.343344211578369
+        },
+        {
+          "physical_xyz_m": [
+            1.4712565181196857,
+            0.8553541186167831,
+            2.306631565093994
+          ],
+          "source_pixel_xy": [
+            5143,
+            3230
+          ],
+          "source_depth_z_m": 2.306631565093994
+        },
+        {
+          "physical_xyz_m": [
+            -0.18324477662580294,
+            -0.5196202952473572,
+            2.209589958190918
+          ],
+          "source_pixel_xy": [
+            2750,
+            1202
+          ],
+          "source_depth_z_m": 2.209589958190918
+        },
+        {
+          "physical_xyz_m": [
+            -0.181232926444876,
+            0.4760530857521266,
+            2.1789321899414062
+          ],
+          "source_pixel_xy": [
+            2749,
+            2748
+          ],
+          "source_depth_z_m": 2.1789321899414062
+        },
+        {
+          "physical_xyz_m": [
+            -0.8793229264863326,
+            0.5440157601906388,
+            2.0157995223999023
+          ],
+          "source_pixel_xy": [
+            1571,
+            2908
+          ],
+          "source_depth_z_m": 2.0157995223999023
+        },
+        {
+          "physical_xyz_m": [
+            0.0743982425316088,
+            -0.38570430475854367,
+            2.2223081588745117
+          ],
+          "source_pixel_xy": [
+            3147,
+            1410
+          ],
+          "source_depth_z_m": 2.2223081588745117
+        }
+      ],
+      "segments": [
+        {
+          "id": "pipes-0",
+          "label": "Cabinet vertical A-B",
+          "role": "calibration",
+          "point_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "pipes-1",
+          "label": "Cabinet horizontal C-D",
+          "role": "held_out",
+          "point_indices": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "pipes-2",
+          "label": "Orange panel vertical E-F",
+          "role": "held_out",
+          "point_indices": [
+            4,
+            5
+          ]
+        },
+        {
+          "id": "pipes-3",
+          "label": "Pipe vertical G-H",
+          "role": "held_out",
+          "point_indices": [
+            6,
+            7
+          ]
+        },
+        {
+          "id": "pipes-4",
+          "label": "Cabinet to pipe I-J",
+          "role": "held_out",
+          "point_indices": [
+            8,
+            9
+          ]
+        }
+      ],
+      "reference_lengths_mm": [
+        1105.031717014742,
+        528.6418138631055,
+        1274.7375975801,
+        996.1472922846974,
+        1347.8164876349686
+      ],
+      "rectified_camera_K_colmap": [
+        [
+          3292.8112945391567,
+          0.0,
+          3033.084701716202
+        ],
+        [
+          0.0,
+          3291.812969699911,
+          2004.4199374316586
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_boundary_min_margin_px": 4.03004445509373,
+      "conditions": {
+        "original": {
+          "inputs": [
+            {
+              "path": "inputs/pipes/original/DSC_0635.png",
+              "file_sha256": "d161f15e5e25d2919cfe9b5001605f89b6dad3fda78c581bdedc774bad96ea78",
+              "rgb_sha256": "865edc764affe96516c5ed83e1fd98a28c084287f3b7bd3c200a346936013ed1",
+              "original_jpeg_sha256": "f8d3c315d7ff26b53719016d15a58e670a1312aef9369480a1937754b06073bf"
+            },
+            {
+              "path": "inputs/pipes/original/DSC_0634.png",
+              "file_sha256": "2da2776c68086437014a7a2eb66f184e147fc09498e38165fb51002be730b6cd",
+              "rgb_sha256": "e7eddf2b39167f79a1d6dc58d8d7a975d6a9bf826820d221cf5f15601e4099b9",
+              "original_jpeg_sha256": "ecdbc6513d261882ce4d0d88e95b0e02a50c2ab409545ef8d3a14145c8021c9d"
+            },
+            {
+              "path": "inputs/pipes/original/DSC_0636.png",
+              "file_sha256": "2832ab68f5ed391d49773e67777db1c07d3fac897f411b429f7af3047b9710e7",
+              "rgb_sha256": "142403dcc78d5733046dd153fff404eac06417539d1ca8916b2fe37830ae904c",
+              "original_jpeg_sha256": "daa93528691f7b6ca3a02af1ab63329e6fbe886cb637c2a796544f8dc2479000"
+            }
+          ],
+          "rect": [
+            0,
+            84,
+            518,
+            434
+          ],
+          "input_tensor_sha256": "8cfda9d9c5c6dd06a713a9564695883c7a6ca5c1f40f5fc958c87a969d993248",
+          "point_mappings": [
+            {
+              "physical_point_index": 0,
+              "photo_xy": [
+                1206.9999999999998,
+                1410.0000000000002
+              ],
+              "grid_xy": [
+                102.92013888888887,
+                205.93923611111114
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    102,
+                    205
+                  ],
+                  "weight": 0.004852671682097299
+                },
+                {
+                  "xy": [
+                    103,
+                    205
+                  ],
+                  "weight": 0.05591121720676001
+                },
+                {
+                  "xy": [
+                    102,
+                    206
+                  ],
+                  "weight": 0.07500843942903118
+                },
+                {
+                  "xy": [
+                    103,
+                    206
+                  ],
+                  "weight": 0.8642276716821116
+                }
+              ]
+            },
+            {
+              "physical_point_index": 1,
+              "photo_xy": [
+                1209.0000000000002,
+                3232.000000000001
+              ],
+              "grid_xy": [
+                103.0914351851852,
+                364.09895833333337
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    103,
+                    364
+                  ],
+                  "weight": 0.8186547550153801
+                },
+                {
+                  "xy": [
+                    104,
+                    364
+                  ],
+                  "weight": 0.08238691165124865
+                },
+                {
+                  "xy": [
+                    103,
+                    365
+                  ],
+                  "weight": 0.08991005979941522
+                },
+                {
+                  "xy": [
+                    104,
+                    365
+                  ],
+                  "weight": 0.009048273533956009
+                }
+              ]
+            },
+            {
+              "physical_point_index": 2,
+              "photo_xy": [
+                846.0000000000005,
+                1942.0
+              ],
+              "grid_xy": [
+                72.00115740740745,
+                252.11979166666666
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    72,
+                    252
+                  ],
+                  "weight": 0.8791895736882459
+                },
+                {
+                  "xy": [
+                    73,
+                    252
+                  ],
+                  "weight": 0.0010187596450969485
+                },
+                {
+                  "xy": [
+                    72,
+                    253
+                  ],
+                  "weight": 0.11965301890430673
+                },
+                {
+                  "xy": [
+                    73,
+                    253
+                  ],
+                  "weight": 0.00013864776235045982
+                }
+              ]
+            },
+            {
+              "physical_point_index": 3,
+              "photo_xy": [
+                1697.0,
+                1941.0
+              ],
+              "grid_xy": [
+                144.8877314814815,
+                252.03298611111111
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    144,
+                    252
+                  ],
+                  "weight": 0.10856521669237325
+                },
+                {
+                  "xy": [
+                    145,
+                    252
+                  ],
+                  "weight": 0.8584486721965124
+                },
+                {
+                  "xy": [
+                    144,
+                    253
+                  ],
+                  "weight": 0.00370330182613159
+                },
+                {
+                  "xy": [
+                    145,
+                    253
+                  ],
+                  "weight": 0.02928280928498268
+                }
+              ]
+            },
+            {
+              "physical_point_index": 4,
+              "photo_xy": [
+                5144.0,
+                1411.0
+              ],
+              "grid_xy": [
+                440.11689814814815,
+                206.02604166666669
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    440,
+                    206
+                  ],
+                  "weight": 0.8601044077931891
+                },
+                {
+                  "xy": [
+                    441,
+                    206
+                  ],
+                  "weight": 0.11385392554012534
+                },
+                {
+                  "xy": [
+                    440,
+                    207
+                  ],
+                  "weight": 0.022997444058658598
+                },
+                {
+                  "xy": [
+                    441,
+                    207
+                  ],
+                  "weight": 0.003044222608027016
+                }
+              ]
+            },
+            {
+              "physical_point_index": 5,
+              "photo_xy": [
+                5142.999999999999,
+                3230.000000000001
+              ],
+              "grid_xy": [
+                440.03124999999994,
+                363.9253472222223
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    440,
+                    363
+                  ],
+                  "weight": 0.07231987847216528
+                },
+                {
+                  "xy": [
+                    441,
+                    363
+                  ],
+                  "weight": 0.0023328993055493383
+                },
+                {
+                  "xy": [
+                    440,
+                    364
+                  ],
+                  "weight": 0.8964301215278916
+                },
+                {
+                  "xy": [
+                    441,
+                    364
+                  ],
+                  "weight": 0.028917100694393818
+                }
+              ]
+            },
+            {
+              "physical_point_index": 6,
+              "photo_xy": [
+                2750.0,
+                1202.0
+              ],
+              "grid_xy": [
+                235.0752314814815,
+                187.88368055555554
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    235,
+                    187
+                  ],
+                  "weight": 0.1075685603137961
+                },
+                {
+                  "xy": [
+                    236,
+                    187
+                  ],
+                  "weight": 0.008750884130660979
+                },
+                {
+                  "xy": [
+                    235,
+                    188
+                  ],
+                  "weight": 0.8171999582047087
+                },
+                {
+                  "xy": [
+                    236,
+                    188
+                  ],
+                  "weight": 0.06648059735083418
+                }
+              ]
+            },
+            {
+              "physical_point_index": 7,
+              "photo_xy": [
+                2749.0,
+                2748.0
+              ],
+              "grid_xy": [
+                234.98958333333334,
+                322.08506944444446
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    234,
+                    322
+                  ],
+                  "weight": 0.00953052662036157
+                },
+                {
+                  "xy": [
+                    235,
+                    322
+                  ],
+                  "weight": 0.9054000289351813
+                },
+                {
+                  "xy": [
+                    234,
+                    323
+                  ],
+                  "weight": 0.000886140046295622
+                },
+                {
+                  "xy": [
+                    235,
+                    323
+                  ],
+                  "weight": 0.08418330439816145
+                }
+              ]
+            },
+            {
+              "physical_point_index": 8,
+              "photo_xy": [
+                1571.0000000000002,
+                2907.9999999999995
+              ],
+              "grid_xy": [
+                134.09606481481484,
+                335.9739583333333
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    134,
+                    335
+                  ],
+                  "weight": 0.02353997878088072
+                },
+                {
+                  "xy": [
+                    135,
+                    335
+                  ],
+                  "weight": 0.0025016878858048924
+                },
+                {
+                  "xy": [
+                    134,
+                    336
+                  ],
+                  "weight": 0.8803952064042813
+                },
+                {
+                  "xy": [
+                    135,
+                    336
+                  ],
+                  "weight": 0.09356312692903308
+                }
+              ]
+            },
+            {
+              "physical_point_index": 9,
+              "photo_xy": [
+                3147.0,
+                1410.0
+              ],
+              "grid_xy": [
+                269.0775462962963,
+                205.93923611111111
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    269,
+                    205
+                  ],
+                  "weight": 0.05605187435699246
+                },
+                {
+                  "xy": [
+                    270,
+                    205
+                  ],
+                  "weight": 0.004712014531893271
+                },
+                {
+                  "xy": [
+                    269,
+                    206
+                  ],
+                  "weight": 0.8664018293467028
+                },
+                {
+                  "xy": [
+                    270,
+                    206
+                  ],
+                  "weight": 0.07283428176441145
+                }
+              ]
+            }
+          ],
+          "support_mask": "inputs/pipes/original/model-support.npy",
+          "support_mask_sha256": "41f5a40003483fc78fd8d6ad66829a7a7c429f4f9fb27f01164dbed6fcc4f32e",
+          "photo_invalid_fraction": 0.0,
+          "model_valid_pixel_count": 177844
+        },
+        "rectified": {
+          "inputs": [
+            {
+              "path": "inputs/pipes/rectified/DSC_0635.png",
+              "file_sha256": "593a1b3deb8a11018dd5746fa36723b3fdc405ffdb3e814a29c5ca696b2e63a4",
+              "rgb_sha256": "f81e8368a966901cb4d70d874e25f41a71d9e6bdac92fdf57913afa8a1f9fa42",
+              "original_jpeg_sha256": "f8d3c315d7ff26b53719016d15a58e670a1312aef9369480a1937754b06073bf"
+            },
+            {
+              "path": "inputs/pipes/rectified/DSC_0634.png",
+              "file_sha256": "8a309bf6f46fb66c9be96506a1bcaf00712c4c1e5a5b471573d9afc1ec2e568a",
+              "rgb_sha256": "bf2bac41817c3dfe2242d601940a9c215e2633c8e9cabc52a672b54116016707",
+              "original_jpeg_sha256": "ecdbc6513d261882ce4d0d88e95b0e02a50c2ab409545ef8d3a14145c8021c9d"
+            },
+            {
+              "path": "inputs/pipes/rectified/DSC_0636.png",
+              "file_sha256": "a1b25624962cfa4df5d7923eb6798fe8db5f7053aac8efd3fc432c4c2a9b951b",
+              "rgb_sha256": "7b87a4e27a58fef25e83364a59fa118a3c704f8f499123a633a51afe1aa68589",
+              "original_jpeg_sha256": "daa93528691f7b6ca3a02af1ab63329e6fbe886cb637c2a796544f8dc2479000"
+            }
+          ],
+          "rect": [
+            0,
+            84,
+            518,
+            434
+          ],
+          "input_tensor_sha256": "1f9f8a247e3720dae340ad870ea35600bfd835637100d798c91b51529db0e864",
+          "point_mappings": [
+            {
+              "physical_point_index": 0,
+              "photo_xy": [
+                1231.5015533547262,
+                1418.351270999894
+              ],
+              "grid_xy": [
+                105.01865156047424,
+                206.6641728298519
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    105,
+                    206
+                  ],
+                  "weight": 0.3295634693751831
+                },
+                {
+                  "xy": [
+                    106,
+                    206
+                  ],
+                  "weight": 0.006263700772909929
+                },
+                {
+                  "xy": [
+                    105,
+                    207
+                  ],
+                  "weight": 0.6517849701505772
+                },
+                {
+                  "xy": [
+                    106,
+                    207
+                  ],
+                  "weight": 0.01238785970132973
+                }
+              ]
+            },
+            {
+              "physical_point_index": 1,
+              "photo_xy": [
+                1223.3657811712333,
+                3221.635948352372
+              ],
+              "grid_xy": [
+                104.32183773920285,
+                363.1993010722545
+              ],
+              "roundtrip_residual_source_px": 6.431098710768743e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    104,
+                    363
+                  ],
+                  "weight": 0.543003795057734
+                },
+                {
+                  "xy": [
+                    105,
+                    363
+                  ],
+                  "weight": 0.2576951326877524
+                },
+                {
+                  "xy": [
+                    104,
+                    364
+                  ],
+                  "weight": 0.1351584657394174
+                },
+                {
+                  "xy": [
+                    105,
+                    364
+                  ],
+                  "weight": 0.06414260651509626
+                }
+              ]
+            },
+            {
+              "physical_point_index": 2,
+              "photo_xy": [
+                864.3757030580027,
+                1942.5195159692744
+              ],
+              "grid_xy": [
+                73.57500234524561,
+                252.1648885389995
+              ],
+              "roundtrip_residual_source_px": 4.547473508864641e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    73,
+                    252
+                  ],
+                  "weight": 0.35492041238373023
+                },
+                {
+                  "xy": [
+                    74,
+                    252
+                  ],
+                  "weight": 0.48019104861677814
+                },
+                {
+                  "xy": [
+                    73,
+                    253
+                  ],
+                  "weight": 0.0700772423706621
+                },
+                {
+                  "xy": [
+                    74,
+                    253
+                  ],
+                  "weight": 0.09481129662882953
+                }
+              ]
+            },
+            {
+              "physical_point_index": 3,
+              "photo_xy": [
+                1730.8250037905777,
+                1943.067215448999
+              ],
+              "grid_xy": [
+                147.78478041724856,
+                252.21243189661448
+              ],
+              "roundtrip_residual_source_px": 3.2155493553843715e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    147,
+                    252
+                  ],
+                  "weight": 0.16950007859897923
+                },
+                {
+                  "xy": [
+                    148,
+                    252
+                  ],
+                  "weight": 0.6180680247865452
+                },
+                {
+                  "xy": [
+                    147,
+                    253
+                  ],
+                  "weight": 0.04571950415246548
+                },
+                {
+                  "xy": [
+                    148,
+                    253
+                  ],
+                  "weight": 0.1667123924620101
+                }
+              ]
+            },
+            {
+              "physical_point_index": 4,
+              "photo_xy": [
+                5126.097184664575,
+                1415.7244945539599
+              ],
+              "grid_xy": [
+                438.5835551680307,
+                206.43615404114234
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    438,
+                    206
+                  ],
+                  "weight": 0.2348107355930295
+                },
+                {
+                  "xy": [
+                    439,
+                    206
+                  ],
+                  "weight": 0.3290352232646257
+                },
+                {
+                  "xy": [
+                    438,
+                    207
+                  ],
+                  "weight": 0.1816340963762429
+                },
+                {
+                  "xy": [
+                    439,
+                    207
+                  ],
+                  "weight": 0.2545199447661019
+                }
+              ]
+            },
+            {
+              "physical_point_index": 5,
+              "photo_xy": [
+                5132.863807118733,
+                3224.602869182931
+              ],
+              "grid_xy": [
+                439.16310385044704,
+                363.4568462832405
+              ],
+              "roundtrip_residual_source_px": 9.094947017729282e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    439,
+                    363
+                  ],
+                  "weight": 0.45456325417139504
+                },
+                {
+                  "xy": [
+                    440,
+                    363
+                  ],
+                  "weight": 0.08859046258809608
+                },
+                {
+                  "xy": [
+                    439,
+                    364
+                  ],
+                  "weight": 0.38233289538156107
+                },
+                {
+                  "xy": [
+                    440,
+                    364
+                  ],
+                  "weight": 0.07451338785894782
+                }
+              ]
+            },
+            {
+              "physical_point_index": 6,
+              "photo_xy": [
+                2759.506672961595,
+                1229.7976524919688
+              ],
+              "grid_xy": [
+                235.88946041569218,
+                190.29667122326117
+              ],
+              "roundtrip_residual_source_px": 4.547473508864641e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    235,
+                    190
+                  ],
+                  "weight": 0.0777456706124346
+                },
+                {
+                  "xy": [
+                    236,
+                    190
+                  ],
+                  "weight": 0.6255831061263941
+                },
+                {
+                  "xy": [
+                    235,
+                    191
+                  ],
+                  "weight": 0.03279391369538103
+                },
+                {
+                  "xy": [
+                    236,
+                    191
+                  ],
+                  "weight": 0.2638773095657902
+                }
+              ]
+            },
+            {
+              "physical_point_index": 7,
+              "photo_xy": [
+                2758.7047572668434,
+                2723.1152061869725
+              ],
+              "grid_xy": [
+                235.82077782146575,
+                319.92493109261915
+              ],
+              "roundtrip_residual_source_px": 6.431098710768743e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    235,
+                    319
+                  ],
+                  "weight": 0.01345401312098204
+                },
+                {
+                  "xy": [
+                    236,
+                    319
+                  ],
+                  "weight": 0.061614894259870996
+                },
+                {
+                  "xy": [
+                    235,
+                    320
+                  ],
+                  "weight": 0.16576816541326422
+                },
+                {
+                  "xy": [
+                    236,
+                    320
+                  ],
+                  "weight": 0.7591629272058827
+                }
+              ]
+            },
+            {
+              "physical_point_index": 8,
+              "photo_xy": [
+                1596.2094909341988,
+                2892.3010066883244
+              ],
+              "grid_xy": [
+                136.25521102908647,
+                334.61119849725037
+              ],
+              "roundtrip_residual_source_px": 6.431098710768743e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    136,
+                    334
+                  ],
+                  "weight": 0.28957507112253145
+                },
+                {
+                  "xy": [
+                    137,
+                    334
+                  ],
+                  "weight": 0.09922643162709796
+                },
+                {
+                  "xy": [
+                    136,
+                    335
+                  ],
+                  "weight": 0.455213899791001
+                },
+                {
+                  "xy": [
+                    137,
+                    335
+                  ],
+                  "weight": 0.15598459745936957
+                }
+              ]
+            },
+            {
+              "physical_point_index": 9,
+              "photo_xy": [
+                3142.8211566937216,
+                1432.592136738039
+              ],
+              "grid_xy": [
+                268.7196361057123,
+                207.90035909184365
+              ],
+              "roundtrip_residual_source_px": 4.547473508864641e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    268,
+                    207
+                  ],
+                  "weight": 0.027935713041074985
+                },
+                {
+                  "xy": [
+                    269,
+                    207
+                  ],
+                  "weight": 0.07170519511527064
+                },
+                {
+                  "xy": [
+                    268,
+                    208
+                  ],
+                  "weight": 0.2524281812466137
+                },
+                {
+                  "xy": [
+                    269,
+                    208
+                  ],
+                  "weight": 0.6479309105970407
+                }
+              ]
+            }
+          ],
+          "support_mask": "inputs/pipes/rectified/model-support.npy",
+          "support_mask_sha256": "e1e60f590dfc55b12ec01ef05c6fc503751ae2d4873fcf21f88be834b92352ce",
+          "photo_invalid_fraction": 0.012431918658667218,
+          "model_valid_pixel_count": 175210
+        }
+      },
+      "selected_camera_ids": [
+        0,
+        0,
+        0
+      ],
+      "original_tensor_matches_e07_jpeg": true
+    },
+    {
+      "id": "kicker",
+      "source_views": [
+        {
+          "path": "kicker/images/dslr_images/DSC_6503.JPG",
+          "sha256": "7280c82c3c85725080fee60f1c7f1b279b6e842b5681887af701132f309cb92e"
+        },
+        {
+          "path": "kicker/images/dslr_images/DSC_6502.JPG",
+          "sha256": "268dd7afe3cfd73860626ad8b349e7108273e55e191551ff53e3cd932454f7df"
+        },
+        {
+          "path": "kicker/images/dslr_images/DSC_6504.JPG",
+          "sha256": "c7546768095bac5587c3848d57ffe65c5685321b409b0d1eb29f8e83732d635e"
+        }
+      ],
+      "camera": {
+        "path": "kicker/dslr_calibration_jpg/cameras.txt",
+        "sha256": "171823de1d152a9f1e1ab661f6633bdd9f8574b31757010afba4c3f8f2c230d7",
+        "model": "THIN_PRISM_FISHEYE",
+        "size": [
+          6048,
+          4032
+        ],
+        "params": [
+          3410.34,
+          3409.98,
+          3039.41,
+          2014.61,
+          0.20987,
+          0.216659,
+          0.000220049,
+          8.06366e-06,
+          -0.180318,
+          0.415527,
+          0.000766344,
+          0.000344008
+        ]
+      },
+      "fixed_points": [
+        {
+          "physical_xyz_m": [
+            -1.2502891082311487,
+            0.16967076423844027,
+            2.2685890197753906
+          ],
+          "source_pixel_xy": [
+            1209,
+            2263
+          ],
+          "source_depth_z_m": 2.2685890197753906
+        },
+        {
+          "physical_xyz_m": [
+            -0.3598670332050854,
+            0.1450051767755771,
+            2.442488193511963
+          ],
+          "source_pixel_xy": [
+            2538,
+            2216
+          ],
+          "source_depth_z_m": 2.442488193511963
+        },
+        {
+          "physical_xyz_m": [
+            -2.29186515554011,
+            -1.1296627748526402,
+            6.279505252838135
+          ],
+          "source_pixel_xy": [
+            1815,
+            1411
+          ],
+          "source_depth_z_m": 6.279505252838135
+        },
+        {
+          "physical_xyz_m": [
+            -0.6101156330112786,
+            -1.0199205910544338,
+            6.622191429138184
+          ],
+          "source_pixel_xy": [
+            2726,
+            1491
+          ],
+          "source_depth_z_m": 6.622191429138184
+        },
+        {
+          "physical_xyz_m": [
+            0.8204198109616879,
+            -0.6520929023746458,
+            2.086533308029175
+          ],
+          "source_pixel_xy": [
+            4350,
+            973
+          ],
+          "source_depth_z_m": 2.086533308029175
+        },
+        {
+          "physical_xyz_m": [
+            0.9260351990980469,
+            -0.05878564476101767,
+            1.602645993232727
+          ],
+          "source_pixel_xy": [
+            4956,
+            1893
+          ],
+          "source_depth_z_m": 1.602645993232727
+        },
+        {
+          "physical_xyz_m": [
+            -2.0820063660630477,
+            -0.9183616551345583,
+            6.327075958251953
+          ],
+          "source_pixel_xy": [
+            1932,
+            1526
+          ],
+          "source_depth_z_m": 6.327075958251953
+        },
+        {
+          "physical_xyz_m": [
+            0.8592882350543557,
+            -0.1881624384063053,
+            1.9208276271820068
+          ],
+          "source_pixel_xy": [
+            4535,
+            1687
+          ],
+          "source_depth_z_m": 1.9208276271820068
+        },
+        {
+          "physical_xyz_m": [
+            -1.3284185414199037,
+            0.30428961685572925,
+            2.257516860961914
+          ],
+          "source_pixel_xy": [
+            1091,
+            2461
+          ],
+          "source_depth_z_m": 2.257516860961914
+        },
+        {
+          "physical_xyz_m": [
+            -0.36168707479640666,
+            0.29602250229162874,
+            2.446779251098633
+          ],
+          "source_pixel_xy": [
+            2537,
+            2425
+          ],
+          "source_depth_z_m": 2.446779251098633
+        }
+      ],
+      "segments": [
+        {
+          "id": "kicker-0",
+          "label": "Cabinet horizontal A-B",
+          "role": "calibration",
+          "point_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "kicker-1",
+          "label": "Back wall C-D",
+          "role": "held_out",
+          "point_indices": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "kicker-2",
+          "label": "Side wall E-F",
+          "role": "held_out",
+          "point_indices": [
+            4,
+            5
+          ]
+        },
+        {
+          "id": "kicker-3",
+          "label": "Back wall to side wall G-H",
+          "role": "held_out",
+          "point_indices": [
+            6,
+            7
+          ]
+        },
+        {
+          "id": "kicker-4",
+          "label": "Cabinet lower span I-J",
+          "role": "held_out",
+          "point_indices": [
+            8,
+            9
+          ]
+        }
+      ],
+      "reference_lengths_mm": [
+        907.579630404336,
+        1719.8135418869979,
+        772.8615953514021,
+        5347.843414099709,
+        985.1184325062123
+      ],
+      "rectified_camera_K_colmap": [
+        [
+          3274.1219784375708,
+          0.0,
+          3040.4903681436017
+        ],
+        [
+          0.0,
+          3273.7763577920523,
+          2015.967683388536
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source_boundary_min_margin_px": 4.028918676414378,
+      "conditions": {
+        "original": {
+          "inputs": [
+            {
+              "path": "inputs/kicker/original/DSC_6503.png",
+              "file_sha256": "527a781463ee6e2e5301692d07715488ec935699507b2ae916d1879a178e842c",
+              "rgb_sha256": "8195bbec75a87196ef1b2b35a031cb927f72547aaa99d45383aafe662375c9de",
+              "original_jpeg_sha256": "7280c82c3c85725080fee60f1c7f1b279b6e842b5681887af701132f309cb92e"
+            },
+            {
+              "path": "inputs/kicker/original/DSC_6502.png",
+              "file_sha256": "121895b41dba14b3a1ffec41ee49ade0d9e3b12ef643d57599b22ec3d78ed4fc",
+              "rgb_sha256": "fc1bb72afc6da853920d1dc0cf3086122bd4b730be8358912132c84e923bfb15",
+              "original_jpeg_sha256": "268dd7afe3cfd73860626ad8b349e7108273e55e191551ff53e3cd932454f7df"
+            },
+            {
+              "path": "inputs/kicker/original/DSC_6504.png",
+              "file_sha256": "caa25a121b34a32830119edfb1ef1dfda8f6266a2482aa88aa5eb70cb849eb55",
+              "rgb_sha256": "1eff156cc024268bb530bf93af9d2d885e97dacba28a9f58deab3fcba7754fdf",
+              "original_jpeg_sha256": "c7546768095bac5587c3848d57ffe65c5685321b409b0d1eb29f8e83732d635e"
+            }
+          ],
+          "rect": [
+            0,
+            84,
+            518,
+            434
+          ],
+          "input_tensor_sha256": "04ee9dbf723449aeb921982ed22fddbda2b928f04082ed45fd23277ff4358f54",
+          "point_mappings": [
+            {
+              "physical_point_index": 0,
+              "photo_xy": [
+                1209.0000000000002,
+                2263.0000000000005
+              ],
+              "grid_xy": [
+                103.0914351851852,
+                279.984375
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    103,
+                    279
+                  ],
+                  "weight": 0.014196325231481177
+                },
+                {
+                  "xy": [
+                    104,
+                    279
+                  ],
+                  "weight": 0.0014286747685188228
+                },
+                {
+                  "xy": [
+                    103,
+                    280
+                  ],
+                  "weight": 0.8943684895833142
+                },
+                {
+                  "xy": [
+                    104,
+                    280
+                  ],
+                  "weight": 0.09000651041668584
+                }
+              ]
+            },
+            {
+              "physical_point_index": 1,
+              "photo_xy": [
+                2538.0,
+                2216.0
+              ],
+              "grid_xy": [
+                216.91782407407408,
+                275.9045138888889
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    216,
+                    275
+                  ],
+                  "weight": 0.007846659593619121
+                },
+                {
+                  "xy": [
+                    217,
+                    275
+                  ],
+                  "weight": 0.08763945151746673
+                },
+                {
+                  "xy": [
+                    216,
+                    276
+                  ],
+                  "weight": 0.0743292663323047
+                },
+                {
+                  "xy": [
+                    217,
+                    276
+                  ],
+                  "weight": 0.8301846225566094
+                }
+              ]
+            },
+            {
+              "physical_point_index": 2,
+              "photo_xy": [
+                1815.0,
+                1411.0000000000002
+              ],
+              "grid_xy": [
+                154.99421296296296,
+                206.02604166666669
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    154,
+                    206
+                  ],
+                  "weight": 0.00563633294753178
+                },
+                {
+                  "xy": [
+                    155,
+                    206
+                  ],
+                  "weight": 0.9683220003857826
+                },
+                {
+                  "xy": [
+                    154,
+                    207
+                  ],
+                  "weight": 0.0001507040895063099
+                },
+                {
+                  "xy": [
+                    155,
+                    207
+                  ],
+                  "weight": 0.025890962577179304
+                }
+              ]
+            },
+            {
+              "physical_point_index": 3,
+              "photo_xy": [
+                2726.0,
+                1491.0
+              ],
+              "grid_xy": [
+                233.01967592592592,
+                212.97048611111111
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    233,
+                    212
+                  ],
+                  "weight": 0.028933175797322068
+                },
+                {
+                  "xy": [
+                    234,
+                    212
+                  ],
+                  "weight": 0.0005807130915636618
+                },
+                {
+                  "xy": [
+                    233,
+                    213
+                  ],
+                  "weight": 0.9513908982767542
+                },
+                {
+                  "xy": [
+                    234,
+                    213
+                  ],
+                  "weight": 0.019095212834360158
+                }
+              ]
+            },
+            {
+              "physical_point_index": 4,
+              "photo_xy": [
+                4350.0,
+                973.0000000000002
+              ],
+              "grid_xy": [
+                372.11226851851853,
+                168.00520833333334
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    372,
+                    168
+                  ],
+                  "weight": 0.8831078800154091
+                },
+                {
+                  "xy": [
+                    373,
+                    168
+                  ],
+                  "weight": 0.11168378665124816
+                },
+                {
+                  "xy": [
+                    372,
+                    169
+                  ],
+                  "weight": 0.0046236014660577165
+                },
+                {
+                  "xy": [
+                    373,
+                    169
+                  ],
+                  "weight": 0.000584731867285091
+                }
+              ]
+            },
+            {
+              "physical_point_index": 5,
+              "photo_xy": [
+                4956.000000000001,
+                1893.0000000000005
+              ],
+              "grid_xy": [
+                424.01504629629636,
+                247.86631944444449
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    424,
+                    247
+                  ],
+                  "weight": 0.131669158307564
+                },
+                {
+                  "xy": [
+                    425,
+                    247
+                  ],
+                  "weight": 0.0020113972479504937
+                },
+                {
+                  "xy": [
+                    424,
+                    248
+                  ],
+                  "weight": 0.8532845453960745
+                },
+                {
+                  "xy": [
+                    425,
+                    248
+                  ],
+                  "weight": 0.013034899048411068
+                }
+              ]
+            },
+            {
+              "physical_point_index": 6,
+              "photo_xy": [
+                1932.0,
+                1526.0000000000002
+              ],
+              "grid_xy": [
+                165.0150462962963,
+                216.00868055555557
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    165,
+                    216
+                  ],
+                  "weight": 0.9764037583590296
+                },
+                {
+                  "xy": [
+                    166,
+                    216
+                  ],
+                  "weight": 0.014915686085399057
+                },
+                {
+                  "xy": [
+                    165,
+                    217
+                  ],
+                  "weight": 0.008549945344665685
+                },
+                {
+                  "xy": [
+                    166,
+                    217
+                  ],
+                  "weight": 0.00013061021090566047
+                }
+              ]
+            },
+            {
+              "physical_point_index": 7,
+              "photo_xy": [
+                4535.0,
+                1687.0
+              ],
+              "grid_xy": [
+                387.9571759259259,
+                229.984375
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    387,
+                    229
+                  ],
+                  "weight": 0.0006691261574074403
+                },
+                {
+                  "xy": [
+                    388,
+                    229
+                  ],
+                  "weight": 0.01495587384259256
+                },
+                {
+                  "xy": [
+                    387,
+                    230
+                  ],
+                  "weight": 0.04215494791666874
+                },
+                {
+                  "xy": [
+                    388,
+                    230
+                  ],
+                  "weight": 0.9422200520833313
+                }
+              ]
+            },
+            {
+              "physical_point_index": 8,
+              "photo_xy": [
+                1091.0000000000002,
+                2461.000000000001
+              ],
+              "grid_xy": [
+                92.98495370370372,
+                297.1718750000001
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    92,
+                    297
+                  ],
+                  "weight": 0.012460214120352097
+                },
+                {
+                  "xy": [
+                    93,
+                    297
+                  ],
+                  "weight": 0.8156647858795342
+                },
+                {
+                  "xy": [
+                    92,
+                    298
+                  ],
+                  "weight": 0.002586082175924199
+                },
+                {
+                  "xy": [
+                    93,
+                    298
+                  ],
+                  "weight": 0.16928891782418948
+                }
+              ]
+            },
+            {
+              "physical_point_index": 9,
+              "photo_xy": [
+                2537.0,
+                2424.9999999999995
+              ],
+              "grid_xy": [
+                216.83217592592592,
+                294.046875
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    216,
+                    294
+                  ],
+                  "weight": 0.15995732060185386
+                },
+                {
+                  "xy": [
+                    217,
+                    294
+                  ],
+                  "weight": 0.7931676793981461
+                },
+                {
+                  "xy": [
+                    216,
+                    295
+                  ],
+                  "weight": 0.007866753472222321
+                },
+                {
+                  "xy": [
+                    217,
+                    295
+                  ],
+                  "weight": 0.03900824652777768
+                }
+              ]
+            }
+          ],
+          "support_mask": "inputs/kicker/original/model-support.npy",
+          "support_mask_sha256": "41f5a40003483fc78fd8d6ad66829a7a7c429f4f9fb27f01164dbed6fcc4f32e",
+          "photo_invalid_fraction": 0.0,
+          "model_valid_pixel_count": 177844
+        },
+        "rectified": {
+          "inputs": [
+            {
+              "path": "inputs/kicker/rectified/DSC_6503.png",
+              "file_sha256": "82df4aaa10c23e9ec08eb783ca815f5df2f14e110778c826c0e57df253fafff1",
+              "rgb_sha256": "fe4eb60b3503f5ccc3460ae3fd519668c8828a5445e95cfd39ccca35307c0c7f",
+              "original_jpeg_sha256": "7280c82c3c85725080fee60f1c7f1b279b6e842b5681887af701132f309cb92e"
+            },
+            {
+              "path": "inputs/kicker/rectified/DSC_6502.png",
+              "file_sha256": "0d98d1d42c5148101247855857cefa52dc5bbae7259eb0ebc36614b1b07563c3",
+              "rgb_sha256": "5a50d878295518e21d96fcfb36ba2ff78c02a749652b0a186ce4850c96b48636",
+              "original_jpeg_sha256": "268dd7afe3cfd73860626ad8b349e7108273e55e191551ff53e3cd932454f7df"
+            },
+            {
+              "path": "inputs/kicker/rectified/DSC_6504.png",
+              "file_sha256": "0304ab1de4d81685a6f06dbdc7ffde3171d98b457d18e6ffb04a1f10c70352ee",
+              "rgb_sha256": "4528bd5dd64620e82916d7d44a2edf293b3b632b538e29094b01507ef0bd5367",
+              "original_jpeg_sha256": "c7546768095bac5587c3848d57ffe65c5685321b409b0d1eb29f8e83732d635e"
+            }
+          ],
+          "rect": [
+            0,
+            84,
+            518,
+            434
+          ],
+          "input_tensor_sha256": "af90cf449bdc2bb0e69c4a4b50e723ffb0a0ceb48898c8a47d8ed0b27b9247ec",
+          "point_mappings": [
+            {
+              "physical_point_index": 0,
+              "photo_xy": [
+                1235.5211527076497,
+                2260.317734116239
+              ],
+              "grid_xy": [
+                105.36292280134963,
+                279.7515394198124
+              ],
+              "roundtrip_residual_source_px": 4.547473508864641e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    105,
+                    279
+                  ],
+                  "weight": 0.1582885704009701
+                },
+                {
+                  "xy": [
+                    106,
+                    279
+                  ],
+                  "weight": 0.0901720097866413
+                },
+                {
+                  "xy": [
+                    105,
+                    280
+                  ],
+                  "weight": 0.47878862824940394
+                },
+                {
+                  "xy": [
+                    106,
+                    280
+                  ],
+                  "weight": 0.27275079156298465
+                }
+              ]
+            },
+            {
+              "physical_point_index": 1,
+              "photo_xy": [
+                2557.593537787696,
+                2209.824618560766
+              ],
+              "grid_xy": [
+                218.595974301261,
+                275.3684564722887
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    218,
+                    275
+                  ],
+                  "weight": 0.25515981506764573
+                },
+                {
+                  "xy": [
+                    219,
+                    275
+                  ],
+                  "weight": 0.37638371264365533
+                },
+                {
+                  "xy": [
+                    218,
+                    276
+                  ],
+                  "weight": 0.14886588367134526
+                },
+                {
+                  "xy": [
+                    219,
+                    276
+                  ],
+                  "weight": 0.21959058861735367
+                }
+              ]
+            },
+            {
+              "physical_point_index": 2,
+              "photo_xy": [
+                1845.0162777918788,
+                1426.525858247321
+              ],
+              "grid_xy": [
+                157.56505157013777,
+                207.37377241730218
+              ],
+              "roundtrip_residual_source_px": 2.2737367544323206e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    157,
+                    207
+                  ],
+                  "weight": 0.2723767038308386
+                },
+                {
+                  "xy": [
+                    158,
+                    207
+                  ],
+                  "weight": 0.3538508788669839
+                },
+                {
+                  "xy": [
+                    157,
+                    208
+                  ],
+                  "weight": 0.16257172603139286
+                },
+                {
+                  "xy": [
+                    158,
+                    208
+                  ],
+                  "weight": 0.2112006912707846
+                }
+              ]
+            },
+            {
+              "physical_point_index": 3,
+              "photo_xy": [
+                2738.339015293697,
+                1511.2551498867917
+              ],
+              "grid_xy": [
+                234.07648973580274,
+                214.7287456498951
+              ],
+              "roundtrip_residual_source_px": 2.2737367544323206e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    234,
+                    214
+                  ],
+                  "weight": 0.2505061765300299
+                },
+                {
+                  "xy": [
+                    235,
+                    214
+                  ],
+                  "weight": 0.02074817357486705
+                },
+                {
+                  "xy": [
+                    234,
+                    215
+                  ],
+                  "weight": 0.6730040876672317
+                },
+                {
+                  "xy": [
+                    235,
+                    215
+                  ],
+                  "weight": 0.05574156222787127
+                }
+              ]
+            },
+            {
+              "physical_point_index": 4,
+              "photo_xy": [
+                4327.367149658992,
+                992.332170208285
+              ],
+              "grid_xy": [
+                370.173806799497,
+                169.68334810835808
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    370,
+                    169
+                  ],
+                  "weight": 0.26161563980096636
+                },
+                {
+                  "xy": [
+                    371,
+                    169
+                  ],
+                  "weight": 0.055036251840958623
+                },
+                {
+                  "xy": [
+                    370,
+                    170
+                  ],
+                  "weight": 0.5645775607020185
+                },
+                {
+                  "xy": [
+                    371,
+                    170
+                  ],
+                  "weight": 0.11877054765605653
+                }
+              ]
+            },
+            {
+              "physical_point_index": 5,
+              "photo_xy": [
+                4931.831867124871,
+                1895.384361925893
+              ],
+              "grid_xy": [
+                421.9450904713431,
+                248.0732953060671
+              ],
+              "roundtrip_residual_source_px": 2.2737367544323206e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    421,
+                    248
+                  ],
+                  "weight": 0.05088491794797197
+                },
+                {
+                  "xy": [
+                    422,
+                    248
+                  ],
+                  "weight": 0.8758197759849187
+                },
+                {
+                  "xy": [
+                    421,
+                    249
+                  ],
+                  "weight": 0.004024610708906627
+                },
+                {
+                  "xy": [
+                    422,
+                    249
+                  ],
+                  "weight": 0.0692706953582027
+                }
+              ]
+            },
+            {
+              "physical_point_index": 6,
+              "photo_xy": [
+                1962.5980865663,
+                1540.2859889817985
+              ],
+              "grid_xy": [
+                167.63571574757663,
+                217.24878376578113
+              ],
+              "roundtrip_residual_source_px": 4.547473508864641e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    167,
+                    217
+                  ],
+                  "weight": 0.2736562442907246
+                },
+                {
+                  "xy": [
+                    168,
+                    217
+                  ],
+                  "weight": 0.47755998992814847
+                },
+                {
+                  "xy": [
+                    167,
+                    218
+                  ],
+                  "weight": 0.09062800813264967
+                },
+                {
+                  "xy": [
+                    168,
+                    218
+                  ],
+                  "weight": 0.15815575764847728
+                }
+              ]
+            },
+            {
+              "physical_point_index": 7,
+              "photo_xy": [
+                4504.67905566096,
+                1694.7716804979566
+              ],
+              "grid_xy": [
+                385.3602431931841,
+                230.6590000432254
+              ],
+              "roundtrip_residual_source_px": 0.0,
+              "neighbours": [
+                {
+                  "xy": [
+                    385,
+                    230
+                  ],
+                  "weight": 0.2181570434704787
+                },
+                {
+                  "xy": [
+                    386,
+                    230
+                  ],
+                  "weight": 0.12284291330411688
+                },
+                {
+                  "xy": [
+                    385,
+                    231
+                  ],
+                  "weight": 0.4215997633454316
+                },
+                {
+                  "xy": [
+                    386,
+                    231
+                  ],
+                  "weight": 0.2374002798799728
+                }
+              ]
+            },
+            {
+              "physical_point_index": 8,
+              "photo_xy": [
+                1113.3583158037436,
+                2456.7384312665495
+              ],
+              "grid_xy": [
+                94.89990204800583,
+                296.80194715855464
+              ],
+              "roundtrip_residual_source_px": 6.431098710768743e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    94,
+                    296
+                  ],
+                  "weight": 0.019824683815307075
+                },
+                {
+                  "xy": [
+                    95,
+                    296
+                  ],
+                  "weight": 0.1782281576300531
+                },
+                {
+                  "xy": [
+                    94,
+                    297
+                  ],
+                  "weight": 0.0802732681788652
+                },
+                {
+                  "xy": [
+                    95,
+                    297
+                  ],
+                  "weight": 0.7216738903757747
+                }
+              ]
+            },
+            {
+              "physical_point_index": 9,
+              "photo_xy": [
+                2556.0040827539474,
+                2411.5440637737447
+              ],
+              "grid_xy": [
+                218.45984042105567,
+                292.8788249803598
+              ],
+              "roundtrip_residual_source_px": 6.431098710768743e-13,
+              "neighbours": [
+                {
+                  "xy": [
+                    218,
+                    292
+                  ],
+                  "weight": 0.06545384758741596
+                },
+                {
+                  "xy": [
+                    219,
+                    292
+                  ],
+                  "weight": 0.05572117205277488
+                },
+                {
+                  "xy": [
+                    218,
+                    293
+                  ],
+                  "weight": 0.47470573135691035
+                },
+                {
+                  "xy": [
+                    219,
+                    293
+                  ],
+                  "weight": 0.4041192490028988
+                }
+              ]
+            }
+          ],
+          "support_mask": "inputs/kicker/rectified/model-support.npy",
+          "support_mask_sha256": "8357b7079331c3e2dfb23a1779e9268b7de934e8d5d1e6f995729078d41e0dd2",
+          "photo_invalid_fraction": 0.012417360848660408,
+          "model_valid_pixel_count": 175154
+        }
+      },
+      "selected_camera_ids": [
+        0,
+        0,
+        0
+      ],
+      "original_tensor_matches_e07_jpeg": true
+    }
+  ]
+}

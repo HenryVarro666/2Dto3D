@@ -13,10 +13,11 @@ from pathlib import Path
 from uuid import uuid4
 
 import numpy as np
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from httpx import HTTPError
 from PIL import Image, ImageDraw
-from pv3d.app import create_app
+from pv3d.measurement import register_measurement_routes
 from pv3d.metric_benchmark import read_depth, reference_point
 from pv3d.multiview_schemas import MultiResult
 from pv3d.pointcloud import export_pointcloud
@@ -79,23 +80,23 @@ def verify_sources(root, selection):
     print("Source hashes and frozen metric reference points verified", flush=True)
 
 
-class NoInference:
-    def status(self):
-        return {"state": "not_loaded", "model_id": "measurement-only-api"}
-
-
-def seed_job(runtime, scene, paths, geometry, metadata, input_size):
+def seed_job(runtime, scene, paths, geometry, metadata, input_size, *,
+             measurement_points=None, support_masks=None):
     store = Store(runtime)
     assets = []
     for path in paths:
         identifier = uuid4().hex
         folder = runtime / "assets" / identifier
         folder.mkdir()
-        # Preserve original source bytes. These public inputs are already JPEG.
-        shutil.copyfile(path, folder / "image.jpg")
         with Image.open(path) as image:
             width, height = image.size
-        store.add_asset({"id": identifier, "width": width, "height": height, "sha256": sha256(path)})
+            if image.format == "JPEG":
+                shutil.copyfile(path, folder / "image.jpg")
+            else:
+                # Viewer preview only. Model inference reads the lossless source path.
+                image.convert("RGB").save(folder / "image.jpg", quality=95, subsampling=0)
+        store.add_asset({"id": identifier, "width": width, "height": height,
+                         "sha256": sha256(folder / "image.jpg")})
         assets.append(store.get_asset(identifier))
     capture = store.create_capture([a["id"] for a in assets])
     job = store.create_multiview_job(capture["id"], len(assets))
@@ -108,8 +109,10 @@ def seed_job(runtime, scene, paths, geometry, metadata, input_size):
         valid = np.zeros(geometry["depth"][i].shape, bool)
         valid[top:bottom, left:right] = True
         valid &= np.isfinite(geometry["points"][i]).all(axis=-1) & (geometry["depth"][i] > 0)
+        if support_masks is not None:
+            valid &= support_masks[i]
         flat = np.flatnonzero(valid)
-        if i == 0:
+        if i == 0 and measurement_points is None:
             lookup = {int(value): j for j, value in enumerate(flat)}
             for point in reference["points"]:
                 x, y = point["grid_xy"]
@@ -127,27 +130,58 @@ def seed_job(runtime, scene, paths, geometry, metadata, input_size):
                              "category": "unknown", "label": components[-1]["label"],
                              "bbox": [0, 0, 1, 1], "source": "manual", "score": None})
         vertices.append(points); colors.append(geometry["colors"][i][valid]); groups.append(np.full(len(points), i+1))
-    export_pointcloud({"vertices": np.concatenate(vertices).astype(np.float32), "colors": np.concatenate(colors),
-                       "indices": np.concatenate(groups), "components": components}, folder)
+    def export():
+        return export_pointcloud({"vertices": np.concatenate(vertices).astype(np.float32),
+                                  "colors": np.concatenate(colors), "indices": np.concatenate(groups),
+                                  "components": components}, folder)
+    export()
+    if measurement_points is not None:
+        for name in ["cloud.glb", "cloud.ply", "component-map.json"]:
+            shutil.copyfile(folder/name, folder/("raw-"+name))
+        anchors = np.asarray(measurement_points, dtype=np.float64) * [1, -1, -1]
+        if anchors.ndim != 2 or anchors.shape[1] != 3 or not np.isfinite(anchors).all():
+            raise ValueError("Invalid derived measurement anchors")
+        identifier, observation_id = "measurement-anchors", "derived-anchor-observation"
+        components.append({"id": identifier, "category": "unknown", "label": "Derived fixed-position samples",
+                           "source": "manual", "score": None, "observation_ids": [observation_id],
+                           "point_count": len(anchors), "color": "#ffb547",
+                           "position": np.mean(anchors, axis=0).tolist(),
+                           "dimensions": np.ptp(anchors, axis=0).tolist()})
+        observations.append({"id": observation_id, "component_id": identifier, "asset_id": assets[0]["id"],
+                             "category": "unknown", "label": components[-1]["label"], "bbox": [0, 0, 1, 1],
+                             "source": "manual", "score": None})
+        vertices.append(anchors); colors.append(np.tile([255, 181, 71], (len(anchors), 1)).astype(np.uint8))
+        groups.append(np.full(len(anchors), len(components)))
+        endpoint_indices = list(range(len(anchors)))
+        export()
     prefix = f"/api/multiview/jobs/{job['id']}"
     result = MultiResult.model_validate({"job_id": job["id"], "capture_id": capture["id"],
         "geometry_job_id": job["id"], "views": assets, "observations": observations,
         "components": components, "scene_url": prefix+"/cloud.glb", "ply_url": prefix+"/cloud.ply",
         "json_url": prefix+"/result.json", "point_count": sum(len(v) for v in vertices), "context_point_count": 0,
         "model": {**metadata["model"], "read_only_geometry": True},
-        "quality": {"evidence_scope": "public metric geometry audit; groups are image views, not physical parts"},
+        "quality": {"evidence_scope": "public metric geometry audit; groups are views/derived samples, not parts",
+                    "derived_anchor_count": 0 if measurement_points is None else len(measurement_points)},
         "timings": metadata["timings"], "warnings": ["PUBLIC_SCAN_REFERENCE_NOT_FIELD_CERTIFICATION",
-            "WHOLE_SCENE_AUDIT_NOT_PV_COMPONENT_RECOGNITION"]}).model_dump(mode="json")
+            "WHOLE_SCENE_AUDIT_NOT_PV_COMPONENT_RECOGNITION"] +
+            (["DERIVED_SUBPIXEL_ANCHORS_NOT_RAW_POINTS"] if measurement_points is not None else [])
+        }).model_dump(mode="json")
     write_json(folder / "result.json", result)
     store.update_multiview_job(job["id"], status="needs_review", stage="complete", result=result)
     return job["id"], endpoint_indices, folder
 
 
-def evaluate_api(runtime, job_id, indices, scene, input_size, geometry):
+def evaluate_api(runtime, job_id, indices, scene, input_size, geometry, *,
+                 point_component_id="benchmark-view-0", expected_positions=None, source_note=None):
     base = f"/api/multiview/jobs/{job_id}/measurements"
     reference = scene["resolutions"][str(input_size)]
     timings = []
-    with TestClient(create_app(runtime, NoInference(), reconstructor=NoInference())) as client:
+    # Use the real measurement handlers without starting a job runner/lifespan:
+    # create_app.interrupt_unfinished() would alter unrelated shared-runtime jobs.
+    app = FastAPI()
+    app.state.store = Store(runtime)
+    register_measurement_routes(app)
+    with TestClient(app) as client:
         fingerprint = client.get(base).json()["geometry_sha256"]
         def post(path, data):
             started = time.perf_counter()
@@ -156,12 +190,21 @@ def evaluate_api(runtime, job_id, indices, scene, input_size, geometry):
             timings.append((time.perf_counter()-started)*1000)
             return response.json()
         def pair(segment):
-            return [{"component_id": "benchmark-view-0", "point_index": indices[i]}
+            return [{"component_id": point_component_id, "point_index": indices[i]}
                     for i in segment["point_indices"]]
-        source = f"ETH3D {scene['id']}; scan-derived depth; GT data excluded from VGGT inputs."
+        def audit(record, segment):
+            for resolved, point_id in zip(record["points"], segment["point_indices"], strict=True):
+                if expected_positions is None:
+                    x, y = reference["points"][point_id]["grid_xy"]
+                    expected = geometry["points"][0, y, x]
+                else:
+                    expected = np.asarray(expected_positions[point_id])
+                np.testing.assert_allclose(resolved["position"], expected*[1, -1, -1], atol=1e-6, rtol=1e-6)
+        source = source_note or f"ETH3D {scene['id']}; scan-derived depth; GT data excluded from VGGT inputs."
         cal = post(base+"/calibrations", {"geometry_sha256": fingerprint, "points": pair(scene["segments"][0]),
             "known_length": reference["reference_lengths_mm"][0], "unit": "mm", "source_note": source,
             "label": scene["segments"][0]["label"]})
+        audit(cal, scene["segments"][0])
         rows = []
         for j, segment in enumerate(scene["segments"][1:], 1):
             body = {"geometry_sha256": fingerprint, "points": pair(segment), "label": segment["label"]}
@@ -170,10 +213,7 @@ def evaluate_api(runtime, job_id, indices, scene, input_size, geometry):
             measured = post(base, {**body, "calibration_id": cal["id"], "validation": {
                 "known_length": reference["reference_lengths_mm"][j], "unit": "mm", "source_note": source}})
             # Audit the actual original GLB positions read by the API, not client-made coordinates.
-            for resolved, point_id in zip(measured["points"], segment["point_indices"], strict=True):
-                x, y = reference["points"][point_id]["grid_xy"]
-                expected = geometry["points"][0, y, x] * [1, -1, -1]
-                np.testing.assert_allclose(resolved["position"], expected, atol=1e-6, rtol=1e-6)
+            audit(measured, segment)
             np.testing.assert_allclose(measured["distance_mm"], raw["distance_units"]*cal["mm_per_unit"], rtol=1e-9)
             assert measured["validation"]["used_for_calibration"] is False
             rows.append({"segment_id": segment["id"], "label": segment["label"],
