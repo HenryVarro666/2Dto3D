@@ -1,0 +1,77 @@
+{
+  "created_at": "2026-11-01T07:58:23.191301+00:00",
+  "experiment_id": "E10-M",
+  "clone_verified_commit": "954bb789671db2ce4fbbf46721d1a2fd16cf52b8",
+  "clone_origin": "https://github.com/HenryVarro666/2Dto3D.git",
+  "repository_visibility": "private, verified with GitHub connector",
+  "host": "same M4 Pro24GB, MPS; not cross-hardware or5080 validation",
+  "cache_reuse": {
+    "compressed_source_archives": true,
+    "source_files": "selected members freshly extracted with7zz; not copied from previous source-data",
+    "model_weights": true,
+    "package_download_caches": true,
+    "old_database": false,
+    "previous_prepared_inputs": false,
+    "previous_model_arrays": false
+  },
+  "frozen_protocol_sha256": "2bc561635a567544fc5a97e5e7022e5bb5984c34358b1355489366309bc5bcf6",
+  "source_selection_sha256": "626b171a4f62957702cf980b5a6fb9e399ae969c40a21fd23976bb4e1680b5d6",
+  "source_points_recomputed": 30,
+  "max_reference_xyz_delta_m": 0.0,
+  "frozen_input_cases_prepared": 12,
+  "model_smoke_cases": [
+    {
+      "scene": "office",
+      "image_condition": "rectified",
+      "resize_mode": "isotropic",
+      "new_job_id": "1256dd767e904210bff7b4eab1740518",
+      "primary_job_id": "929bb59aad974fb6a525c88ac7aed98d",
+      "all_arrays_equal": true,
+      "audit_glb_equal": true,
+      "raw_cloud_equal": true,
+      "input_tensor_equal": true,
+      "max_distance_delta_mm": 0.0,
+      "worker_wall_ms": 18650.835208012722
+    },
+    {
+      "scene": "terrains",
+      "image_condition": "rectified",
+      "resize_mode": "isotropic",
+      "new_job_id": "fff4ea0af0c749faa270dd0bbca0d7e6",
+      "primary_job_id": "5b628234cf7c4d7faa20dff1becacab8",
+      "all_arrays_equal": true,
+      "audit_glb_equal": true,
+      "raw_cloud_equal": true,
+      "input_tensor_equal": true,
+      "max_distance_delta_mm": 0.0,
+      "worker_wall_ms": 13990.569625006174
+    }
+  ],
+  "python": "3.12.13",
+  "raw_logs_dir": "data/measurement-independent/clone-verification-*",
+  "limitations": [
+    "same host and cached checkpoint/archives",
+    "two real smoke calls do not replace full24-call matrix",
+    "source photos/GT/model weights/DB remain ignored"
+  ],
+  "new_runtime_counts": {
+    "multiview_jobs": 2,
+    "measurement_records": 18
+  },
+  "checks": {
+    "backend": "148 passed,2 optional ML skips",
+    "frontend": "78 passed",
+    "production_build": "passed",
+    "ruff": "passed",
+    "svg": "14 verified",
+    "worktree_clean_after_checks": true
+  },
+  "log_sha256": {
+    "tests": "652a8d75519ac4642308c366419d765d46be2452ed50d0ea064f7e46b9c73003",
+    "build": "d9237e85fdd154b99b965c2859f26c25d21f073d44a191da8a1e275bf8c3a8cb",
+    "ruff": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "figures": "0f58f0200e8de5d45eac33a8fc75cbd0e11f4747fc947688a8fe8cd124b45a08",
+    "prepare": "ab56c42dcec7483aae7e8047139b6c3d96048510b8851489c06651f44b4c1a88",
+    "smoke": "2b6a9bfa42a85796da1348f9a3cdd8ca6c4197692a2fd01422fc03c24084d960"
+  }
+}

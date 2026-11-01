@@ -119,3 +119,5 @@ PV3D_DATA_DIR="$PWD/data/measurement-demo" make dev
 E08补充：[新GitHub克隆复现凭证](undistortion-clone-verification.json)记录独立安装、冻结预处理和两次真实模型smoke；复用了公开源数据与权重缓存，未复制原服务数据库。原始产物仍不随Git迁移。
 
 E09补充：[新克隆实际推理凭证](resize-clone-verification.json)验证重新生成的输入和两次真实保比例smoke，明确复用源数据/权重缓存、未复用旧DB。它验证同机软件复现，不是5080实测或现场精度证明。
+
+E10-M补充：[全新私有克隆凭证](independent-clone-verification.json)包括重新解包/生成冻结输入、重算30GT点、新DB两次实际推理与全部数组/云/长度一致；复用压缩源包和权重缓存，同机验证。

@@ -87,7 +87,7 @@ def publish(data_root, runtime, check_only=False):
     else:
         write_json(RESULTS, primary)
         write_json(REPEAT, repeat)
-    print(f"E10-M:12 policies ×4 held-outs verified; repeat exact={primary['repeat_exact']}; sources and all regressions retained")
+    print(f"E10-M:12 scene/policy cases ×4 held-outs verified; repeat exact={primary['repeat_exact']}; sources and all regressions retained")
 
 
 if __name__ == "__main__":

@@ -134,3 +134,5 @@ E09云端已通过：[56ee118/run41283299273](https://github.com/HenryVarro666/2
 [E10-M报告](quality/2026-11-01-independent-real-scenes.md)、[来源](measurement/independent-sources.json)、[冻结协议](measurement/independent-selection.json)。eb2bd34提交后才开始24次实际VGGT518调用；3新场景9图，扫描实际点在所有四方案保持一致。12条件/主轮48检查、逆序复跑全部成功，张量/数组/原始样本云/审计云/长度完全一致。原图MAPE3.100→2.349%，去畸变2.860→2.407%，去畸变跨墙2.338→1.072%；有4条退步，保留默认及旧kicker反例。
 
 开发148后端通过/2可选ML跳过；显式本工作树PYTHONPATH的正式ML环境150后端通过；78前端、生产build、Ruff及14SVG通过。来源重叠/正确相机ID/固定点映射/输入变更拒绝/无旧场景依赖/发布完整性及UI匹配/三语保持/缺图叠加移除先RED后GREEN。浏览器实际看四方案、实景照片、三语切换保持20投影坐标、office和terrains云与GH收据；原生截图留于docs/assets，尚未将后续新克隆/私有同步步骤冒充完成，凭证继续追加。
+
+E10-M GitHub954bb78全新克隆148后端/2skip、78前端、build/Ruff/14SVG通过且工作树干净；重新7zz提取9图/3深度、重建12冻结输入、重算30GT点完全一致。新DB2job/18记录、两次真实rectified/isotropic518 smoke全部数组/云/长度等于主轮，0mm差；[凭证](measurement/independent-clone-verification.json)。同M4/缓存源包和权重，未复制旧DB；不声称跨硬件。954bb78云端CI41286509288全部通过。

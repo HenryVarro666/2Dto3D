@@ -139,3 +139,5 @@ E08补充保存UI词典解析失败与ML测试指向错误checkout的失败日�
 真实查看器冷加载超过waitFor默认1秒，两处受控2.4秒转换先RED→预载入后GREEN。首轮74780be云端仍因完整多视角流程整体5秒超时失败，日志保留；只将该流程预算设15秒，逐步断言与其他时限不变。7172cb9的[GitHub运行41282263970](https://github.com/HenryVarro666/2Dto3D/actions/runs/41282263970)全部成功（131后端＋2可选ML跳过、70前端、Ruff/构建）。本机E07兼容148/66；照片质量修复尚未执行。详见[交接](2026-11-01-ci-viewer-preload.md)。
 
 | UI-METRIC-002 | 长走廊默认全景适配使局部点云显示较小 | 已观察；旋转缩放可用，快捷相机入口未实现 | [E10-M实景截图](../assets/independent-corridor.zh.jpg)，默认视图不能替代误差验证；office云也有孔洞 |
+
+| ENV-METRIC-001 | 跨data符号链接的长相对npm prefix首次报lock缺web | README目录命令通过，根因未定位 | 新克隆实际cwd按npm --prefix apps/web ci成功，锁文件不变；失败日志保留 |

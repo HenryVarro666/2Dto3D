@@ -32,6 +32,10 @@ Files: independent runner/publisher; compact results/repeat; quality report. Int
 Files: independent-scene component/tests, workbench/i18n/styles; pairedREADME and generated figures/screenshots; issues/experiments/verification/guides. Interfaces: Task2 complete immutable results -> four-policy panel with source gallery and real replay, no model calls from UI selections.
 
 - RED/GREEN panel shows all12 lengths and missing-data guard; preserves locale values and restore callbacks; real browser screenshots/replay.
-- Save results/problems/improvements/timing/limits; pairedREADME and credited images. Full tests/build/Ruff/figures; fresh final reviewer and material fixes.
-- Private feature push; fresh clone setup, frozen preparation and bounded actual model smoke with caches explicitly disclosed; merge concurrent main safely and push, verify exact remote SHA and CI. Keep live workbench.
+- Save results/problems/improvements/timing/limits; pairedREADME and credited images. Full tests/build/Ruff/figures. Final review follows Task3 completion as required by executing-plans.
+- Private feature push; fresh clone setup, frozen preparation and bounded actual model smoke with caches explicitly disclosed. Keep live workbench.
 - Validation: make test && make build && .venv/bin/python scripts/readme_figures.py --check
+
+## Final review and release gate
+
+After Task3 implementation/checks, dispatch the required fresh whole-branch reviewer; fix material findings RED/GREEN, preserve all evidence. Only then fetch and integrate any concurrent main changes, repeat affected verification, atomically push feature/main without force and verify exact remote SHA/CI. This orders the already authorized delivery after the required review instead of placing review inside its own completion prerequisite.
