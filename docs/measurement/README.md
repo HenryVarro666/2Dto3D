@@ -32,6 +32,20 @@
 
 “多角度点云 → 缩放方式同点对照”可切固定原图/固定去畸变图，查看全部误差、实际518准备输入及同名A–J投影、条件深度与known-K辅助，并恢复两种云/收据。统一scale的连续有效区高345.333，存储高346，取点不按整数高度重新拉伸。JPEG预览不参与模型；原始PNG、模型数组、有效区原始样本云和派生端点依据分别保存。
 
+## 独立真实场景：E10-M
+
+E10-M新增[独立真实场景](../quality/2026-11-01-independent-real-scenes.md)：office/delivery_area/terrains共9张新图；固定VGGT518、30个实际扫描端点。原图legacy14/保比例MAPE3.100/2.349%，去畸变legacy14/保比例2.860/2.407%；去畸变跨墙2.338→1.072%，仍有4条退步。24次含逆序复跑，数值/云完全一致，不扩充样本。网页“独立真实场景测试”展示四方案和实景画廊/重放；[来源](independent-sources.json)、[协议](independent-selection.json)、[结果](independent-results.json)。三张照片必须属于同一静止场景；这些室内场景不代表PV设备领域验证。
+
+```bash
+# 首次下载需要7zz或7z；例如macOS brew install sevenzip
+.venv/bin/python scripts/independent_benchmark.py --download --prepare
+.venv/bin/python scripts/independent_benchmark.py --run --runtime-root "$PWD"
+.venv/bin/python scripts/independent_benchmark.py --run --run-name 2026-11-01-e10m-repeat --reverse-order --runtime-root "$PWD"
+.venv/bin/python scripts/publish_independent.py --check
+```
+
+已有冻结run时换新run-name，不能覆盖。完整24次发布需要脚本默认命名的主轮/复跑；一次smoke可用`--scenes office --image-conditions rectified --resize-modes isotropic --run-name my-smoke`，不能把smoke当完整矩阵发布。新DB重跑会生成新job ID；Git内历史ID只在复制原runtime时可重放。
+
 ## 操作
 
 1. 完成多图任务，或按 Job ID 打开已有点云。

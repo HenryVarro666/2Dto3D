@@ -127,3 +127,10 @@ GitHub私有feature分支全新克隆完成：重新安装dev/隔离worker，重
 E09整分支独立审查无实质发现；复测24后端/2UI并核对全部冻结/数组/端点/云/收据/MAPE。GitHub新克隆重新生成E08/E09输入、独立环境/DB、两次真实isotropic518与主轮全部数组/云/长度相同；显式复用源数据和权重缓存，同M4主机。[克隆凭证](measurement/resize-clone-verification.json)。合入远端CI-001后56ee118新克隆142后端/2skip、72前端、build/Ruff/12SVG通过；首feature云端旧viewer等待失败及新运行分别保存，不混称已通过。
 
 E09云端已通过：[56ee118/run41283299273](https://github.com/HenryVarro666/2Dto3D/actions/runs/41283299273)，backend/lint/frontend/build均success；原451eb7e的70/72失败日志与新成功日志并存。云端不运行模型，模型/物理精度结论仍依据E09实际对照和其边界。
+
+
+## 2026-11-01 E10-M 独立真实场景
+
+[E10-M报告](quality/2026-11-01-independent-real-scenes.md)、[来源](measurement/independent-sources.json)、[冻结协议](measurement/independent-selection.json)。eb2bd34提交后才开始24次实际VGGT518调用；3新场景9图，扫描实际点在所有四方案保持一致。12条件/主轮48检查、逆序复跑全部成功，张量/数组/原始样本云/审计云/长度完全一致。原图MAPE3.100→2.349%，去畸变2.860→2.407%，去畸变跨墙2.338→1.072%；有4条退步，保留默认及旧kicker反例。
+
+开发148后端通过/2可选ML跳过；显式本工作树PYTHONPATH的正式ML环境150后端通过；78前端、生产build、Ruff及14SVG通过。来源重叠/正确相机ID/固定点映射/输入变更拒绝/无旧场景依赖/发布完整性及UI匹配/三语保持/缺图叠加移除先RED后GREEN。浏览器实际看四方案、实景照片、三语切换保持20投影坐标、office和terrains云与GH收据；原生截图留于docs/assets，尚未将后续新克隆/私有同步步骤冒充完成，凭证继续追加。

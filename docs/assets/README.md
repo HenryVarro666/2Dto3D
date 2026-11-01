@@ -51,6 +51,21 @@ SVG 由标准库生成，无脚本、外部资源或嵌入照片：
 
 `undistortion-cloud.zh.jpg`：8004真实生产网页，去畸变kicker任务`af0aa4da3b15428aa901a81a4c8ccb34`，显示G–H派生索引6/7（通用查看器显示A/B）与实际VGGT点云。照片和点云衍生内容沿用本节ETH3D归属及CC BY-NC-SA4.0；截图未修图，不能以可视化外观证明深度或长度正确。
 
+## E10-M 独立真实场景（2026-11-01）
+
+| 文件 | 用途、真实来源和范围 |
+|---|---|
+| `independent-errors.zh.svg` / `.en.svg` | 根据冻结independent-results.json确定性绘制4方案的12条检查/4条跨墙均值；写明退步，14张SVG一起校验 |
+| `independent.zh.jpg` / `.en.jpg` | 8004真实生产页面四方案、范围提示和逐条误差表，无合成数值 |
+| `independent-gallery.zh.jpg` / `.en.jpg` | terrains真实三视角DSC_0658/0657/0659及走廊退步行、参考范围/许可；图片未做生成式修补 |
+| `independent-inputs.zh.jpg` | terrains两种缩放的实际518张量查看预览和同名扫描点投影，橙AB标定/绿C–J验证；JPEG查看预览不参与模型 |
+| `independent-cloud.zh.jpg` / `.en.jpg` | office/rectified/isotropic主轮929bb59aad974fb6a525c88ac7aed98d，真实VGGT云及G–H派生索引6/7；通用查看器显示A/B，与标定AB不同 |
+| `independent-corridor.zh.jpg` | terrains/rectified/isotropic主轮5b628234cf7c4d7faa20dff1becacab8，长走廊完整云默认适配后较小；保留视图局限，不用外观代替精度 |
+
+照片来源仍为[ETH3D high-resolution training](https://eth3d.ethz.ch/datasets)，office原始DSC_0219/0220/0253，delivery_area原始DSC_0683/0682/0684，terrains原始DSC_0658/0657/0659；作者、[CC BY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)归属沿用上列Schöps等完整作者信息。含照片或扫描/点云衍生内容的截图按该许可提供，原始JPEG/EXIF、激光深度、无损PNG和完整点云仍ignored。原图画廊为解码RGB的JPEG网页查看派生，去畸变由已知镜头参数OpenCV双线性重映射；518查看预览来自真正冻结的输入张量。截图为浏览器原生1280×720捕获，没有修图、移动标记或改写数值。[校验和清单](../measurement/independent-screenshots.json)、[完整实验和局限](../quality/2026-11-01-independent-real-scenes.md)。
+
+办公室云只覆盖可见表面，桌面/显示器等有孔洞和缺点；按照片视图分组不等于真实组件分割。点云默认全景适配对长走廊会压缩局部细节，用户可旋转和缩放，未来可增加按照片相机查看的入口。所有这些截图均不是PV设备或现场毫米精度证明。
+
 
 ## E09 缩放方式同点对照（2026-11-01）
 

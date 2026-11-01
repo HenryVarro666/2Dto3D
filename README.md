@@ -114,6 +114,27 @@ make dev
 
 保比例使用单一scale和连续取点映射，有效内容518×345.333、整数存储高346；没有把短边简单取整后宣称精确保比例。16次主轮/逆序复跑的模型数组、原始样本云、审计云和测量值完全一致，重复不增加独立样本。网页新增“缩放方式同点对照”，支持分层切换、实际518输入叠加、深度诊断及两种点云重放；中英西同步。已知K辅助跨墙仍约9.30%，后墙深度顺序仍错，现场毫米精度未验证。[协议、全部结果、耗时、失败与复现](docs/quality/2026-11-01-aspect-ratio-fixed-points.md) · [原始数值摘要](docs/measurement/resize-results.json)。
 
+### 新场景独立检验：E10-M
+
+![三个真实新场景、四种固定配置的误差与退步](docs/assets/independent-errors.zh.svg)
+
+新增 **办公室、卸货区、材料展示走廊**三场景九张真实多角度照片，使用模型外激光扫描参考。它们未参与本项目E07–E09调试；不能确认VGGT训练是否见过这些公开数据。固定VGGT、518分辨率、30个实际扫描点，每场景只用一条AB标定，其余12条长度在四方案中保持一致。
+
+| 方案 | 12条检查MAPE | 4条跨墙MAPE |
+|---|---:|---:|
+| 原图＋当前14对齐 | 3.100% | 2.684% |
+| 原图＋保比例 | 2.349% | 1.406% |
+| 去畸变＋当前14对齐 | 2.860% | 2.338% |
+| 去畸变＋保比例 | 2.407% | 1.072% |
+
+去畸变保比例8条改善、4条退步：卸货区跨表面GH仍差约145mm；走廊EF仍7.70%，137mm短线IJ退步至6.74%。**保留旧kicker反例与现有默认**，不据3个新场景承诺现场精度。24次真实调用含逆序复跑，全部数组、云与长度一致；复跑不增加独立样本。
+
+![真实网页：公开场景多角度照片、来源与模型输入](docs/assets/independent-gallery.zh.jpg)
+
+![真实网页：新场景VGGT点云与固定端点重放](docs/assets/independent-cloud.zh.jpg)
+
+网页“多角度点云 → 独立真实场景测试”显示全部12条检查、四方案对比、九张实景照片、实际518输入/同点投影、耗时、known-K辅助和点云重放。照片/扫描衍生截图来自[ETH3D / Schöps等](https://eth3d.ethz.ch/datasets)，按[CC BY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)署名；不是PV元件识别或毫米精度证明。新克隆不含这些本机照片/DB；可下载冻结来源并重跑。[完整结果、问题、命令与限制](docs/quality/2026-11-01-independent-real-scenes.md) · [冻结来源](docs/measurement/independent-sources.json) · [结果JSON](docs/measurement/independent-results.json)。
+
 ## 如何实现
 
 ![本地网页、API、证据存储、共享识别队列和隔离几何 worker](docs/assets/architecture.zh.svg)

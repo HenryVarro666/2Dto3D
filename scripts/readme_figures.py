@@ -197,6 +197,52 @@ def resize_comparison(zh):
     return svg(title, "E09 percentage errors for original and rectified strata; equal axes; current versus isotropic resize. All regressions retained.", body, 607)
 
 
+def independent(zh):
+    data = json.loads((ROOT/"docs/measurement/independent-results.json").read_text())
+    source = json.loads((ROOT/"docs/measurement/independent-sources.json").read_text())
+    cross = {p["id"] for s in source["scenes"] for p in s["segments"] if p["kind"] == "cross_wall"}
+    title = "独立真实场景 · 四方案同点比较" if zh else "Independent real scenes · Four fixed-point policies"
+    body = text(32, 45, title, 25, weight=650)
+    body += text(32, 75, "办公室、卸货区、材料走廊 · 9张实景图 · VGGT518 · 仅A–B标定" if zh else
+                 "Office, delivery area, materials corridor · 9 photos · VGGT518 · A–B-only calibration", 14, "#678077")
+    policies = [("original", "legacy14", "#6c7d73"), ("original", "isotropic", "#aa7b38"),
+                ("rectified", "legacy14", "#366277"), ("rectified", "isotropic", "#247e6b")]
+    headings = ["全部检查线 MAPE · n=12", "跨墙检查线 MAPE · n=4"] if zh else [
+                "All held-out MAPE · n=12", "Cross-wall MAPE · n=4"]
+    for panel, heading in enumerate(headings):
+        x = 32+panel*550
+        body += box(x, 98, 526, 308)
+        body += text(x+18, 129, heading, 18, weight=650)
+        for i, (condition, mode, color) in enumerate(policies):
+            checks = [p for r in data["runs"] if (r["image_condition"],r["resize_mode"]) == (condition,mode)
+                      for p in r["checks"] if not panel or p["segment_id"] in cross]
+            mean = sum(p["relative_error_pct"] for p in checks)/len(checks)
+            label = (("原图" if condition == "original" else "去畸变")+" / "+("14对齐" if mode == "legacy14" else "保比例")) if zh else (
+                     ("Original" if condition == "original" else "Rectified")+" / "+("Legacy14" if mode == "legacy14" else "Isotropic"))
+            y = 169+i*53
+            body += text(x+18, y, label, 13)
+            body += f'<rect x="{x+191}" y="{y-15}" width="{mean*77:.3f}" height="24" rx="4" fill="{color}"/>'
+            body += text(x+198+mean*77, y+2, f"{mean:.3f}%", 14, color, 650)
+        body += text(x+18, 390, "横轴共用0–4%；越小越好" if zh else "Shared scale: 0–4%; lower is better", 12, "#678077")
+    body += text(32, 445, "平均改善，仍有退步" if zh else "Lower averages, with retained regressions", 20, weight=650)
+    lines = [
+        "去畸变：8条改善 / 4条退步。卸货区GH约145mm、IJ约114mm绝对误差。",
+        "材料走廊：EF仍7.702%；137mm短线IJ从5.313%退步至6.738%。",
+        "原图保比例2.349%，略低于去畸变保比例2.407%；不能把增加预处理当作必然提升。",
+        "仅3个新场景；4条跨墙线来自其中2个场景。24次含复跑，不增加独立样本。",
+        "旧kicker反例保留，产品默认未改。独立于项目调试，不保证独立于VGGT预训练。"
+    ] if zh else [
+        "Rectified: 8 improved / 4 regressed. Delivery GH/IJ absolute errors: about 145/114 mm.",
+        "Materials corridor: EF remains 7.702%; the 137 mm IJ line worsens from 5.313% to 6.738%.",
+        "Original-isotropic: 2.349%; rectified-isotropic: 2.407%. More preprocessing is not always better.",
+        "Only 3 new scenes; 4 cross-wall lines come from 2 scenes. The 24 calls include repeats.",
+        "Prior kicker counterexamples retained; defaults unchanged. VGGT training exclusion is unknown."
+    ]
+    for i, line in enumerate(lines):
+        body += text(32, 478+i*29, line, 14, "#986a23" if i < 2 else "#59756a")
+    return svg(title, "E10-M: four frozen policies on three real ETH3D scenes; separate held-out and cross-wall aggregates, all regressions retained in the report.", body, 632)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
@@ -204,7 +250,7 @@ def main():
     ASSETS.mkdir(parents=True, exist_ok=True)
     for name, generator in [("workflow", workflow), ("architecture", architecture), ("scale-validation", scale),
                             ("public-metric-errors", metric), ("undistortion-errors", undistortion),
-                            ("resize-errors", resize_comparison)]:
+                            ("resize-errors", resize_comparison), ("independent-errors", independent)]:
         for lang in ["zh", "en"]:
             path = ASSETS / f"{name}.{lang}.svg"
             expected = generator(lang == "zh")
@@ -212,7 +258,7 @@ def main():
                 if not path.exists() or path.read_text() != expected:
                     raise SystemExit(f"Outdated diagram: {path}")
             else: path.write_text(expected, encoding="utf-8")
-    print("12 SVG diagrams verified" if args.check else "12 SVG diagrams rendered")
+    print("14 SVG diagrams verified" if args.check else "14 SVG diagrams rendered")
 
 
 if __name__ == "__main__":

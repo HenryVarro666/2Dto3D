@@ -114,6 +114,27 @@ The same six photos, VGGT, 518-square input and 20 physical points are held fixe
 
 Isotropic sampling uses one scalar and a continuous point mapping: content is 518×345.333, with an integer storage height of 346. It does not silently round the short side and call that exact aspect preservation. All arrays, supported raw clouds, audit clouds and measurements match across 16 primary/reversed-repeat calls; repeats add no independent samples. The trilingual panel adds stratum switching, actual 518-input overlays, depth diagnostics and both cloud replays. Known-K auxiliary cross-wall error remains about 9.30%; back-wall depth order is still wrong. Field millimetre accuracy is unverified. [Protocol, full results, timings, failures and reproduction](docs/quality/2026-11-01-aspect-ratio-fixed-points.md) · [Numeric summary](docs/measurement/resize-results.json).
 
+### Independent new scenes: E10-M
+
+![Four frozen policies on three new real scenes, with regressions retained](docs/assets/independent-errors.en.svg)
+
+Added **office, delivery area and materials corridor**: nine real multi-angle photos with laser references acquired independently of the model. These scenes were unused in this project's E07–E09 tuning; exclusion from VGGT training is unknown. VGGT, 518-square inputs and 30 physical scanner points stay fixed. Only A–B calibrates each scene; all 12 held-out lengths stay identical across four policies.
+
+| Policy | 12-line MAPE | 4 cross-wall lines MAPE |
+|---|---:|---:|
+| Original + legacy14 | 3.100% | 2.684% |
+| Original + isotropic | 2.349% | 1.406% |
+| Rectified + legacy14 | 2.860% | 2.338% |
+| Rectified + isotropic | 2.407% | 1.072% |
+
+Rectified-isotropic improves 8 lines and worsens 4. Delivery GH still has about 145mm absolute error; corridor EF remains 7.70%, and the 137mm IJ line worsens to 6.74%. **Earlier kicker counterexamples and product defaults are retained.** Three new scenes do not establish field accuracy. All arrays, clouds and lengths match over 24 real calls including reverse-order repeats; repeats add no independent samples.
+
+![Actual web UI: real multi-angle photographs, attribution and prepared model inputs](docs/assets/independent-gallery.en.jpg)
+
+![Actual web UI: a new scene's VGGT cloud and fixed-endpoint replay](docs/assets/independent-cloud.en.jpg)
+
+Open “Multi-angle point cloud → Independent real-scene tests” for all 12 held-out lines, four-policy results, nine real photos, actual 518 inputs and fixed-point projections, timing, known-K auxiliary checks and cloud replay. Photo/scan-derived screenshots credit [ETH3D / Schöps et al.](https://eth3d.ethz.ch/datasets) under [CC BY-NC-SA4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). They do not validate PV component recognition or millimetre accuracy. Fresh clones contain no local photos or database; download the frozen sources and rerun. [Full results, issues, commands and limits](docs/quality/2026-11-01-independent-real-scenes.md) · [Frozen sources](docs/measurement/independent-sources.json) · [Result JSON](docs/measurement/independent-results.json).
+
 ## Architecture
 
 ![Local web, API, durable evidence, bounded perception queue and isolated geometry worker](docs/assets/architecture.en.svg)

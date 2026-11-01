@@ -49,6 +49,8 @@ The repository is private by default. No external communication or raw-data publ
 
 Read `docs/measurement/README.md` before changing scale/picking. Immutable receipts bind job, GLB SHA256 and point order. Raw GLB/PLY remain relative. Use original world coordinates, never display offsets. Require independent held-out lengths; analytic tests do not establish field precision. Regenerated/manual derivative jobs require recalibration.
 
+Latest metric handoff is `docs/quality/2026-11-01-independent-real-scenes.md` (E10-M), distinct from concurrent E10 component recognition. Three new ETH3D scenes test the same four frozen RGB/resize policies at VGGT518. Preserve old kicker regressions and current defaults; new-scene independence is project-relative, not proven exclusion from VGGT training. Download DSLR solid7z with7zz/7z and verify frozen per-file hashes; bsdtar produced zero-filled depths. Select camera calibration by each photo's camera ID.
+
 Maintain `README.md` (Chinese) and `README.en.md` together, including claims, commands and links. Read `docs/assets/README.md`: diagrams explain, authentic screenshots document actual UI with provenance. Do not publish ignored raw photos/weights/databases as README assets.
 
 ## Mandatory issue and improvement handoff

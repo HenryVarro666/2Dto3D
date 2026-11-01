@@ -1,5 +1,110 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  退步: ["Regression", "Retroceso"],
+  独立真实场景测试: [
+    "Independent real-scene tests",
+    "Pruebas de escenas reales independientes",
+  ],
+  "3个新场景 · 9张真实照片": [
+    "3 new scenes · 9 real photographs",
+    "3 escenas nuevas · 9 fotografías reales",
+  ],
+  办公室: ["Office", "Oficina"],
+  卸货区: ["Delivery area", "Zona de carga"],
+  材料展示走廊: ["Materials corridor", "Pasillo de materiales"],
+  "未用于本项目前轮调试；不保证未进入VGGT训练。每方案12条检查线，4条跨墙线。": [
+    "Unused in prior project tuning; exclusion from VGGT training is not established. Each policy: 12 held-out lines, 4 across walls.",
+    "No se usaron en ajustes previos del proyecto; no se garantiza su exclusión del entrenamiento de VGGT. Cada método: 12 líneas reservadas, 4 entre paredes.",
+  ],
+  "激光扫描提供独立参考；每场景仅A–B标定。跨墙是两端点直线，非垂直净距；不是PV设备精度验证。":
+    [
+      "Independent laser references; only A–B calibrates each scene. Cross-wall means endpoint distance, not perpendicular clearance; this does not validate PV equipment accuracy.",
+      "Referencia láser independiente; solo A–B calibra cada escena. Entre paredes indica distancia entre puntos, no separación perpendicular; no valida precisión en equipos fotovoltaicos.",
+    ],
+  "原图 RGB": ["Original RGB", "RGB original"],
+  "去畸变 RGB": ["Rectified RGB", "RGB rectificado"],
+  "记录缺失、失败或协议不匹配，暂不计算汇总。": [
+    "Records are missing, failed or do not match the protocol; aggregates are withheld.",
+    "Faltan registros, han fallado o no coinciden con el protocolo; no se calculan agregados.",
+  ],
+  "检查线平均误差（MAPE）": [
+    "Held-out mean error (MAPE)",
+    "Error medio reservado (MAPE)",
+  ],
+  跨墙平均误差: ["Cross-wall mean error", "Error medio entre paredes"],
+  最大单线误差: ["Worst line error", "Mayor error por línea"],
+  全部12条独立检查线: ["All 12 held-out lines", "Las 12 líneas reservadas"],
+  真实场景: ["Real scene", "Escena real"],
+  "检查线 / 参考 mm": [
+    "Held-out line / reference mm",
+    "Línea reservada / referencia mm",
+  ],
+  "校准 mm / 误差": ["Calibrated mm / error", "mm calibrados / error"],
+  跨墙: ["Across walls", "Entre paredes"],
+  跨表面: ["Across surfaces", "Entre superficies"],
+  同一表面: ["Same surface", "Misma superficie"],
+  真实照片与扫描依据: [
+    "Real photographs and scan references",
+    "Fotografías reales y referencias del escáner",
+  ],
+  "原始照片无实体标尺；参考来自另行获取的激光扫描。": [
+    "No physical ruler in the photos; references come from separately acquired laser scans.",
+    "Las fotos no incluyen una regla física; las referencias proceden de escaneos láser obtenidos por separado.",
+  ],
+  耗时与已知相机辅助检查: [
+    "Timing and known-camera auxiliary checks",
+    "Tiempos y controles auxiliares con cámara conocida",
+  ],
+  "缓存权重，M4 Pro；耗时仅含独立worker，不含上传和查看器。已知K另用A–B求比例，不混入主指标。":
+    [
+      "Cached weights, M4 Pro. Times cover the isolated worker, excluding upload and viewer. Known-K uses a separate A–B scale and is excluded from primary metrics.",
+      "Pesos en caché, M4 Pro. Los tiempos cubren el proceso aislado, sin carga ni visor. K conocida usa una escala A–B separada y no entra en las métricas principales.",
+    ],
+  "逆序复跑数组、点云和长度一致；重复不增加独立样本。": [
+    "Reverse-order repeats match arrays, clouds and lengths; repeats add no independent samples.",
+    "La repetición en orden inverso coincide en matrices, nubes y longitudes; no añade muestras independientes.",
+  ],
+  "复跑存在差异或未完成，请查看完整实验报告。": [
+    "Repeats differ or are incomplete; consult the full experiment report.",
+    "Las repeticiones difieren o están incompletas; consulte el informe completo.",
+  ],
+  完整实验报告: ["Full experiment report", "Informe completo del experimento"],
+  左墙纵向参照: [
+    "Left-wall vertical calibration",
+    "Calibración vertical de pared izquierda",
+  ],
+  左右墙跨墙线1: [
+    "Left-to-right wall line 1",
+    "Línea 1 entre paredes izquierda y derecha",
+  ],
+  左墙横向: ["Left-wall horizontal", "Horizontal de pared izquierda"],
+  左右墙跨墙线2: [
+    "Left-to-right wall line 2",
+    "Línea 2 entre paredes izquierda y derecha",
+  ],
+  右墙纵向: ["Right-wall vertical", "Vertical de pared derecha"],
+  后墙纵向参照: [
+    "Back-wall vertical calibration",
+    "Calibración vertical de pared trasera",
+  ],
+  后墙横向: ["Back-wall horizontal", "Horizontal de pared trasera"],
+  近侧柱面纵向: ["Near-column vertical", "Vertical de columna cercana"],
+  后墙至近侧柱面: [
+    "Back wall to near column",
+    "Pared trasera a columna cercana",
+  ],
+  后墙至拖车表面: [
+    "Back wall to trailer surface",
+    "Pared trasera a superficie del remolque",
+  ],
+  走廊左右墙跨墙线1: [
+    "Corridor cross-wall line 1",
+    "Línea 1 entre paredes del pasillo",
+  ],
+  走廊左右墙跨墙线2: [
+    "Corridor cross-wall line 2",
+    "Línea 2 entre paredes del pasillo",
+  ],
   缩放方式同点对照: [
     "Fixed-point resize comparison",
     "Comparación de escala con puntos fijos",

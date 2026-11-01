@@ -18,6 +18,9 @@ import { PublicMetricBenchmark } from "./PublicMetricBenchmark";
 import { UndistortionComparison } from "./UndistortionComparison";
 import { ResizeComparison } from "./ResizeComparison";
 import resizeResults from "../../../../docs/measurement/resize-results.json";
+import { IndependentScenes } from "./IndependentScenes";
+import independentResults from "../../../../docs/measurement/independent-results.json";
+import independentSources from "../../../../docs/measurement/independent-sources.json";
 import { ComponentList } from "./ComponentList";
 
 const SceneViewer = lazy(() =>
@@ -370,6 +373,16 @@ export function MultiviewWorkbench({
       />
       <ResizeComparison
         data={resizeResults}
+        disabled={locked}
+        onRestore={(jobId) => {
+          setRestoreId(jobId);
+          setViewerError(null);
+          void flow.restore(jobId);
+        }}
+      />
+      <IndependentScenes
+        data={independentResults}
+        sources={independentSources}
         disabled={locked}
         onRestore={(jobId) => {
           setRestoreId(jobId);

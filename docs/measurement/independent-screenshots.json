@@ -1,0 +1,47 @@
+{
+  "created_at": "2026-11-01T07:48:28.002567+00:00",
+  "capture": "Native unedited browser screenshot at1280x720, localhost8004 production build",
+  "license_photo_derivatives": "CC BY-NC-SA4.0, ETH3D Schops et al.; see docs/assets/README.md",
+  "files": [
+    {
+      "path": "docs/assets/independent-cloud.en.jpg",
+      "sha256": "f8728fe7c6df0c155a4dc51994ecb064fb2326be34e28bd459ae90614bf8dbd3",
+      "size_bytes": 78063
+    },
+    {
+      "path": "docs/assets/independent-cloud.zh.jpg",
+      "sha256": "f2df0ecfc56b2d01f23e2e920085f303323d93de9d312b29b8f0c82d892d135e",
+      "size_bytes": 70301
+    },
+    {
+      "path": "docs/assets/independent-corridor.zh.jpg",
+      "sha256": "fe1a3680ebaa85793c342c456602b75fe32c383dc523c3b7dfb3dee2139f74ff",
+      "size_bytes": 75302
+    },
+    {
+      "path": "docs/assets/independent-gallery.en.jpg",
+      "sha256": "460a0b3824eeb1857798f7537157f04e74a5e38f42b00cabfbca08bbd1c8073b",
+      "size_bytes": 87278
+    },
+    {
+      "path": "docs/assets/independent-gallery.zh.jpg",
+      "sha256": "a6cb3f79d2aea20797a02936938d4dd90fea1090ee2566f42c7560ca12996c28",
+      "size_bytes": 90146
+    },
+    {
+      "path": "docs/assets/independent-inputs.zh.jpg",
+      "sha256": "695c23981e200e9d6ad2dee09f6371cda894971e14913e394109a0db547b40c8",
+      "size_bytes": 75519
+    },
+    {
+      "path": "docs/assets/independent.en.jpg",
+      "sha256": "4f04c5392af83a1847ae3dd0e95664a5ae92a5028e14b2383c5c9702418ae3e3",
+      "size_bytes": 93543
+    },
+    {
+      "path": "docs/assets/independent.zh.jpg",
+      "sha256": "be704a54c5085f89b4742440c49920a906f61ed0fd35f9a5250e99800859c696",
+      "size_bytes": 82300
+    }
+  ]
+}
