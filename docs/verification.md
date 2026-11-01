@@ -123,3 +123,7 @@ GitHub私有feature分支全新克隆完成：重新安装dev/隔离worker，重
 [E09完整报告](quality/2026-11-01-aspect-ratio-fixed-points.md)、[冻结协议](measurement/resize-selection.json)，SHA174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964，先提交959655a后推理。16真实调用，142开发后端/2可选ML skip、144正式ML后端、72前端、生产build/Ruff通过。9新功能先RED后GREEN，24几何/回归检查通过；新增runner保护验证失败保存/非零退出与张量漂移拒绝。
 
 主轮/逆序复跑8条件的模型数组、输入张量、原始样本云、审计GLB及测量值完全一致；legacy14全条件还与E08一致。144收据/160派生端点，GT和实际位置固定，518输入采用统一scale、分数映射和独立整数存储。去畸变MAPE2.97→2.52%、跨墙12.91→9.63%，后墙退步；原图4.24→5.95%、跨墙21.99%，不改全局默认。网页/README与独立审查、新克隆/远端证据详见报告追加，不将待做项当作完成。
+
+E09整分支独立审查无实质发现；复测24后端/2UI并核对全部冻结/数组/端点/云/收据/MAPE。GitHub新克隆重新生成E08/E09输入、独立环境/DB、两次真实isotropic518与主轮全部数组/云/长度相同；显式复用源数据和权重缓存，同M4主机。[克隆凭证](measurement/resize-clone-verification.json)。合入远端CI-001后56ee118新克隆142后端/2skip、72前端、build/Ruff/12SVG通过；首feature云端旧viewer等待失败及新运行分别保存，不混称已通过。
+
+E09云端已通过：[56ee118/run41283299273](https://github.com/HenryVarro666/2Dto3D/actions/runs/41283299273)，backend/lint/frontend/build均success；原451eb7e的70/72失败日志与新成功日志并存。云端不运行模型，模型/物理精度结论仍依据E09实际对照和其边界。

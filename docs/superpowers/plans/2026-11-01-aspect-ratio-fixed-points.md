@@ -33,23 +33,23 @@
 
 **Files:** reconstruction.py,undistortion.py,infer.py; newresize_benchmark.py and tests; measurement/resize-selection.json.
 **Interfaces:** image_layout(width,height,target_size=518,resize_mode='legacy14') gives integerrect,continuousmappingrect and isotropicscale; prepare_images(paths,target_size,resize_mode) retains its2return values; VggtReconstructor optionalresize_mode forwarded to worker; new runner uses mapping_rect for E08 math.
-- [ ] RED:scalar scales/fractional content/inverse mapping/legacy pixels/invalid mode and footprint. Expected tests fail for missingnewmode; no model execution.
-- [ ] Implement minimal optional isotropic mode with PIL floating-box bicubic; testsGREEN. Verify baseline interfaces and all8sourceinput hashes.
-- [ ] Freeze8case input hashes, mappings, support and common20physicalpoints/refarrays; builder review settled before inference; commit before any new model call.
+- [x] RED:scalar scales/fractional content/inverse mapping/legacy pixels/invalid mode and footprint. Expected tests fail for missingnewmode; no model execution.
+- [x] Implement minimal optional isotropic mode with PIL floating-box bicubic; testsGREEN. Verify baseline interfaces and all8sourceinput hashes.
+- [x] Freeze8case input hashes, mappings, support and common20physicalpoints/refarrays; builder review settled before inference; commit before any new model call.
 
 ### Task 2: Controlled real evaluation and diagnostics
 
 **Files:** resize_benchmark.py, compactresize-results/repeat JSON, ignoredarrays/clouds/anchors/receipts/logs.
 **Interfaces:** run(args,protocol) verifies frozen tensors, pinnedweights, fixedpoint sampling and measurement readback; allfailed cases persist then nonzero; publisher separate from raw summaries.
-- [ ] Use real worker for8conditions; compare legacy arrays and measurement values to E08, fail on divergence. Repeatreverse8conditions.
-- [ ] Verify primary/repeat hashes/arrays/lengths; retainallfailed or worse checks, worker/cachetiming scope.
-- [ ] Diagnose kickerG–H raw length/depthspan/camera; retainC–Ddepthordering, sidewall andotherregressions. Known-Kaux separately labelled. Do not infer a unique cause from one smallsample.
+- [x] Use real worker for8conditions; compare legacy arrays and measurement values to E08, fail on divergence. Repeatreverse8conditions.
+- [x] Verify primary/repeat hashes/arrays/lengths; retainallfailed or worse checks, worker/cachetiming scope.
+- [x] Diagnose kickerG–H raw length/depthspan/camera; retainC–Ddepthordering, sidewall andotherregressions. Known-Kaux separately labelled. Do not infer a unique cause from one smallsample.
 
 ### Task 3: Presentation, durable evidence and private delivery
 
 **Files:** newResizeComparison component/test,workbench/i18n/styles; pairedREADME/figures/screenshots; report/issues/experiments/verification/measurementguide.
 **Interfaces:** frozenmatching-stratum data with onRestore(jobID), no extra modelcalls on locale/selection.
-- [ ] UI RED/GREEN for stratum switching, same-refguard, complete/worse rows and language/jobID preservation. Productionbuild and browser show real data/diagnostics/replay.
-- [ ] Save allissues/failures/improvements, before/aftertable,times/provenance and nextactions. Preserve E08 ashistory. Update12SVG expectedcount if one bilingualchartpair added.
-- [ ] Fullbackend/frontend/build/Ruff/figures/links; fresh independent wholebranchreview; fix materialfindingsRED/GREEN.
+- [x] UI RED/GREEN for stratum switching, same-refguard, complete/worse rows and language/jobID preservation. Productionbuild and browser show real data/diagnostics/replay.
+- [x] Save allissues/failures/improvements, before/aftertable,times/provenance and nextactions. Preserve E08 ashistory. Update12SVG expectedcount if one bilingualchartpair added.
+- [x] Fullbackend/frontend/build/Ruff/figures/links; fresh independent wholebranchreview; fix materialfindingsRED/GREEN.
 - [ ] Privatefeature/main sync; freshGitHubclone setup/test/build/preparation and bounded real modelsmoke fromindependent runtime with explicitlycachedsources/weights; recordexactSHAs and keep productionwebavailable.

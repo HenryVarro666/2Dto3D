@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "experiment_id": "E09",
+  "verified_at": "2026-11-01T07:05:17.305581+00:00",
+  "clone_source": "private GitHub eval/aspect-ratio-fixed-points",
+  "clone_final_code_commit": "56ee1187cb00ca6779d113b66775d772d348d401",
+  "model_smoke_code_commit": "451eb7ee0cd12af6f31260e06ac517a8dd2e571a",
+  "host": "same M4 Pro /24GB /MPS; not another physical machine or RTX5080",
+  "protocol_sha256": "174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964",
+  "cached_sources_reused": true,
+  "cached_checkpoint_reused": true,
+  "e08_rgb_regenerated_in_clone": true,
+  "e09_inputs_regenerated_and_frozen_verified": true,
+  "original_database_reused": false,
+  "new_api_virtualenv": true,
+  "new_multiview_virtualenv": true,
+  "tests": {
+    "fresh_clone_api": {
+      "passed": 142,
+      "skipped": 2
+    },
+    "fresh_clone_frontend": {
+      "passed": 72,
+      "files": 19
+    },
+    "full_ml_api_worktree": {
+      "passed": 144,
+      "skipped": 0
+    },
+    "build": "passed",
+    "ruff": "passed",
+    "svg_check": "12 passed",
+    "multiview_locked_install": "passed"
+  },
+  "locks_sha256": {
+    "uv.lock": "67492095f4642241c63280f0c8e15239e55ef556bc0845d80983826b134301df",
+    "services/multiview/uv.lock": "db21384d263fb534c7ef05ee65af129fdc6e55de70f7c64121d89a9b8df0cf17",
+    "apps/web/package-lock.json": "b30a8605b17989597e88986fa111e263cdf186fafc2cd1e9d1fa0ca55c93bd51"
+  },
+  "smoke_runs": [
+    {
+      "scene": "pipes",
+      "image_condition": "rectified",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "status": "succeeded",
+      "job_id": "42073aec36984a8badf2b640880e7eec",
+      "geometry_sha256": "bd5b61508ca780d2b066ceec2d402ffa2f7bdc6427fd253f8ee3328a3ce1d641",
+      "raw_cloud_sha256": "f9a5fd72dd51fc6ff405db8fae09342471888aca3a1314ab43e621c041d408e4",
+      "input_tensor_sha256": "80bff977ff3fa90a49f7e6dce1e530d77ecfdad37f4e2eb55f355d3a3f83d8b7",
+      "worker_wall_ms": 29585.07579199795,
+      "all_model_arrays_equal_primary": true,
+      "maximum_calibrated_distance_change_mm": 0.0
+    },
+    {
+      "scene": "kicker",
+      "image_condition": "rectified",
+      "resize_mode": "isotropic",
+      "input_size": 518,
+      "status": "succeeded",
+      "job_id": "277ef7b726c64eb1a6eff83d92c9d520",
+      "geometry_sha256": "1c609cf14ee6d1eaa4c81fc4b54714a016f6bf6f80e9e4e6328e2f01b39fc82f",
+      "raw_cloud_sha256": "cf346a31bbeb3e0f85b0e6259c4ab93fd06ed5bbfee195b666d68e40c8a8fb83",
+      "input_tensor_sha256": "778c10b7f587c6c9d47cb363aab7bdca0b6f72ac9e61474059bdeea3bed90e16",
+      "worker_wall_ms": 14831.098624999868,
+      "all_model_arrays_equal_primary": true,
+      "maximum_calibrated_distance_change_mm": 0.0
+    }
+  ],
+  "smoke_source_summary_sha256": "623dea69c3918444cb09e9a7d5a7d2d207074f566809e148d5dcb515d172a7fa",
+  "log_sha256": {
+    "clone-backend-integrated.log": "4dba00184ac920c2fa49d3360a7bdc19bde05154312140a7ff7753d99cc4f7c2",
+    "clone-prepare.log": "0e9856dd546e5248acf8a361a0c73dab4a5da6f11937dd232f23b137c01ce211",
+    "clone-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "clone-ruff-integrated.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "clone-setup.log": "1c3172d6836f41454d22ba28f360f17e6668905682ff7a6891fc070468f856fe",
+    "clone-figures-integrated.log": "37b8212ea91827a69e621e7cdf9ba6f77804f88c181577eae3caf6ac933c15d5",
+    "clone-integrated-update.log": "f6d03fc57a3030639de16d49230f6236279faaba8b40186ce57feccd43fd2e10",
+    "clone-frontend-integrated.log": "a721f091074635ad83c4081aa452868bb3c031078a8b4f21aeea1cbf8042fb82",
+    "clone-figures.log": "37b8212ea91827a69e621e7cdf9ba6f77804f88c181577eae3caf6ac933c15d5",
+    "clone-model-smoke.log": "24d06c128562dfbe72902aa6fc3009986fd72f3eb9e9bcba04702e0726a2e516",
+    "clone-backend.log": "a094a6ff2fc7bbb1b748143aee7d2b6f70f884a7661820191ccabe89c6c5d78d",
+    "clone-frontend.log": "e288194c51265fd24969e66945d4b714979c92bf7f304a46a5c330904c99130e",
+    "clone-build.log": "7679bf136c14bfd41a04f73193dc7697ce9f3ba96e20cf08e9a51e7d57e9452a",
+    "clone-worker-setup.log": "ade8794a66610dbd1d08d974a3b7068bbc6cce6848f0de263245f9db61ccd64f",
+    "clone-build-integrated.log": "614433a3a7521a9e0e7ffe5666cca8dc6a3e9aca75df829064dcc1255e1809b9"
+  },
+  "durable_ignored_evidence": "data/measurement-resize/clone-verification-2026-11-01/",
+  "runtime_copy_scope": "audit archive only; original absolute paths are not promised to migrate automatically",
+  "integration_scope": "after smoke451eb7e, fast-forward56ee118 adds existing upstream CI tests/docs only; no geometry/model algorithm change",
+  "github_ci": {
+    "head_sha": "56ee1187cb00ca6779d113b66775d772d348d401",
+    "conclusion": "success",
+    "run_url": "https://github.com/HenryVarro666/2Dto3D/actions/runs/41283299273",
+    "raw_result_sha256": "5d544184e41d5599902d0ab164a2aa718b39c119e3358f6cb3523801481f2c4c",
+    "raw_log_sha256": "a918a61cede3b0bcac3b292bc135ad77d6ba0bca0675a859c58fdba7aa131472"
+  }
+}

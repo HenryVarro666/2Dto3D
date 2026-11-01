@@ -152,3 +152,21 @@ Pillow、NumPy主环境与独立worker使用各自锁文件，不升级；模型
 - `resize-cloud.zh.jpg`：`23b08a67e832090ff2b47c0941160d9e1789dfa45407412ac52a7dccb68ad0f3`
 
 所有截图为正常1280×720原生JPEG。生产页面72前端/144正式ML后端、build/Ruff通过；开发142后端/2可选ML skip。浏览器连接复用了ENV-001已记录的会话重建方式恢复，没有重启模型/生产服务来修改结果。
+
+
+## 独立审查、新克隆复现与主分支整合
+
+独立整分支审查`cf98129..451eb7e`结论PASS，无实质待修项。审查员实际复测24后端/2缩放UI测试，独立核对8个准备张量/源图/mask/预览、全部主轮/复跑数组及legacy对E08一致性、160端点、32原始/审计云SHA、144收据与MAPE。未由审查员独立运行模型或浏览器，不将其审查范围扩大。
+
+从GitHub私有实验分支**新克隆**451eb7e，重新安装API及隔离VGGT环境，重新从已有公开源数据生成E08原图/去畸变无损RGB，再准备E09各模式，两个冻结协议与所有张量哈希均一致。显式复用已下载ETH3D源数据和checkpoint缓存；没有复用原DB/虚拟环境，也不是首次网络下载或另一台硬件。
+
+新克隆另外两次真实rectified/isotropic/518：pipes29.59s、kicker14.83s；模型全部数组、张量、原始样本GLB、审计GLB与全部校准长度和主轮完全一致，最大变化0mm。它们是交付smoke，不增加8条未参与标定长度的样本数。原始数组/云/收据/DB/日志已复制到ignored `data/measurement-resize/clone-verification-2026-11-01/`，不只留临时路径；runtime副本仅审计，不保证原绝对路径自动迁移。主实验16次，加交付2次，共18次真实调用，统计表只包含主实验。
+
+[机器可读克隆凭证](../measurement/resize-clone-verification.json)保存源码提交、锁/日志SHA及逐case结果。主分支期间新增3个CI修复提交74780be/7172cb9/dc5c990，已在56ee118合入：四个既有前端测试预载入真实viewer、一条长流程预算改15秒及CI文档；没有生产算法变更。唯一issues.md追加冲突保留CI-001与E09两段，未覆盖他人记录。新克隆随后快进56ee118，142后端/2可选ML skip、72前端、build/Ruff/12SVG全通过。
+
+首个feature提交451eb7e在GitHub Actions出现既有viewer等待故障：App.i18n和MultiviewWorkbench两条toBeEnabled等待失败，72项中70通过；本轮两条ResizeComparison测试通过。失败完整日志保留`ci-451eb7e-failed.log`，对应[run41283139285](https://github.com/HenryVarro666/2Dto3D/actions/runs/41283139285)。不通过删断言/假就绪处理；合入已在主分支修复的CI-001补丁后等待新运行，旧失败保留。
+
+
+云端最终验证：[56ee118 / run41283299273](https://github.com/HenryVarro666/2Dto3D/actions/runs/41283299273)现已completed/success，后端、lint、全部前端与build步骤通过。成功完整日志`ci-56ee118-success.log`、机器结果`ci-56ee118-result.json`与首轮失败同时保留；云端不包含ML模型调用，不能用CI成功替代本机18次真实推理或现场精度验证。审查后只有上游CI测试/文档整合，生产几何/缩放/网页代码与451eb7e完全相同。
+
+交接选择：原图/去畸变分别测试而非混合；采用连续单一scale而非整数短边近似；因原图明显退步保留默认；保留远端已有CI修复及其失败史；本机8004仍依赖本工作树，故保留该ignored工作树供用户继续实验，未删除原数据或切换其他会话的checkout。下一轮先冻结本轮四组结果再补独立新场景，不把调过的8条长度重新称为盲测。
