@@ -153,3 +153,17 @@ macOS系统tar可解7z；Linux需`7zz`或`7z`可执行程序。官方源归档�
 审查修复提交`d3e06af`再次由同一独立审查者只读复核：无剩余P1/P2；8项参考测试、来源/参考复核、相关前端2文件6项测试通过，冻结选择及两份结果JSON未改。复核没有重复完整套件/模型/浏览器；完整套件及浏览器由主会话按上文实际执行。
 
 说明：冻结协议中的`inference_started:false`是其创建时（推理前）的历史状态，不是当前未运行的声明。E07绕过SAM/DINO、跨视角组件关联及组件体素化；验证的是VGGT原始点图→正常GLB导出→正常测量API，不能替代完整组件管线的测量取点验证。
+
+
+## 私有同步、干净克隆与持久保存
+
+- GitHub连接器确认`HenryVarro666/2Dto3D`仍为private；核心代码/结果/网页/双语README提交`8f55a62`已原子推到`main`及`eval/public-metric-measurement`，远端SHA一致。后续本节是交付记录，不再改变模型/取点/网页代码。
+- 从GitHub重新clone **8f55a62**，无旧`.venv`/node_modules；`uv sync --frozen --extra dev`、`npm ci`、119后端通过/2可选跳过、68前端通过、生产build、Ruff、8SVG check全部通过。另按`services/multiview/uv.lock`在新clone建立全新模型虚拟环境。
+- 新clone复用已下载的官方原图/扫描参考及固定checkpoint缓存，**未重新下载约1GB源包或5GB权重**；未复制旧数据库，使用隔离的新runtime。用新clone的实际代码/新模型环境运行pipes与kicker各一次336联合推理、GLB导出和API测距，2次均成功，GLB SHA和8条校准后长度与原主轮逐位一致。机器可读证明：[public-metric-clone-verification.json](../measurement/public-metric-clone-verification.json)。
+- 总计**主实验8次模型调用＋新clone2次运行验证**；后两次不计新增独立场景/检查长度，也不替代518的既有复跑。此为同一Mac的干净克隆验证，CUDA/5080和另一台物理机器仍未测。
+- 为避免未来清理worktree丢失原始证据，数据已从隔离worktree移到正式项目的`data/measurement-public/`，完整保留原档/数组/收据/日志/SQLite；旧worktree路径改为ignored目录别名，未复制或改写原图/权重。正式目录为`/Users/caochao/Documents/2Dto3D/data/measurement-public`；本机生产服务8004使用该目录的runtime。原图/深度/网格/数据库不入Git。
+- 生产服务使用完整ML环境、当前功能树API源码与既有模型缓存。切换到此服务环境后再跑完整后端 **121 passed**（无ML环境之前的2个可选跳过也通过）。持久路径的实际API再次确认pipes/518的GLB SHA、1条标定和8条相对/校准记录一致；两工作区Git均无未提交源代码。
+- 图表中/英文SVG均在真实浏览器检查，标签/数值未裁切；图表临时预览已关闭，8004真实工作台和可重放数据保留。上述原生截图SHA不变。
+- 新clone完整日志：本机`data/measurement-public/fresh-clone.log`、`fresh-clone-model.log`；完整环境测试日志`backend-full-ml-env.log`。clone验证数组/收据在`clone-validation-2dto3d-e07-clone-fr5qygnc/runs/fresh-clone-8f55a62/`；它们仍为ignored本地证据。
+
+交接：先读本记录、SCALE-003至007与UI-008/009，再看冻结JSON和原始artifact。不要覆盖E07或用复跑增加独立样本数。下一轮仍优先原图去畸变对照和真正带尺/独立长度的PV设备；保持比例拟合与检查分开，报告新增失败与退步。

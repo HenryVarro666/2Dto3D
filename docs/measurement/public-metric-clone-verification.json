@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "experiment_id": "E07",
+  "clone_commit": "8f55a6207d8d461473b6c8255b2e480f4edadacd",
+  "clone_source": "private GitHub main",
+  "host": "same M4 Pro /24GB /MPS, not another physical machine",
+  "tests": {
+    "api_without_optional_ml": {
+      "passed": 119,
+      "skipped": 2
+    },
+    "frontend": {
+      "passed": 68,
+      "files": 17
+    },
+    "api_full_ml_service_environment": {
+      "passed": 121,
+      "skipped": 0
+    },
+    "build": "passed",
+    "ruff": "passed",
+    "svg_generation_check": "8passed",
+    "multiview_locked_install": "passed"
+  },
+  "cached_sources_reused": true,
+  "cached_checkpoint_reused": true,
+  "new_multiview_virtualenv": true,
+  "locks_sha256": {
+    "uv.lock": "67492095f4642241c63280f0c8e15239e55ef556bc0845d80983826b134301df",
+    "services/multiview/uv.lock": "db21384d263fb534c7ef05ee65af129fdc6e55de70f7c64121d89a9b8df0cf17",
+    "apps/web/package-lock.json": "b30a8605b17989597e88986fa111e263cdf186fafc2cd1e9d1fa0ca55c93bd51"
+  },
+  "smoke_runs": [
+    {
+      "scene": "pipes",
+      "input_size": 336,
+      "status": "succeeded",
+      "geometry_sha256": "452ad9cc3ccda797b2aa2811f9e7a1cab84596ff64f2ce01ebff001b1652ab6d",
+      "matches_original_geometry": true,
+      "maximum_calibrated_distance_change_mm": 0.0,
+      "worker_wall_ms": 18881.965791006223,
+      "job_id": "5cd4ec0cd6414a18b8fe6ea063d39e1a"
+    },
+    {
+      "scene": "kicker",
+      "input_size": 336,
+      "status": "succeeded",
+      "geometry_sha256": "0ce9091ec2e7f44803e1667df5c313df2191f39e7e933b092c24b09e66a1c473",
+      "matches_original_geometry": true,
+      "maximum_calibrated_distance_change_mm": 0.0,
+      "worker_wall_ms": 9689.990582992323,
+      "job_id": "0911d9d2aaba432c8cb75d0629151ec3"
+    }
+  ]
+}

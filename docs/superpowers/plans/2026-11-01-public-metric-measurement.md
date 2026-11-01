@@ -61,4 +61,4 @@
 - [x] Add a failing UI test for held-out results, reference category and language switching; implement the panel and observe GREEN.
 - [x] Save a detailed E07 report with all results, known failures, evidence location, reproduction and next steps; update handoff indexes and both READMEs.
 - [x] Run backend/frontend suites, build, lint, manifest checks and real browser verification; capture an authentic UI screenshot.
-- [ ] Private GitHub push and clean-clone verification remain; fresh review and material RED/GREEN fixes are complete.
+- [x] Private GitHub8f55a62 push and clean-clone verification complete; fresh review/material RED-GREEN fixes,121full-ML API/119no-ML+2skips/68frontend/build/Ruff/8SVG,plus2real clone model runs verified. Final documentation-only receipt follows.

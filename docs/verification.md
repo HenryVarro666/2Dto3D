@@ -98,3 +98,6 @@ E05最终代码`9c98a60`新增解析演示入口限制，完整前端66项通过
 [完整证据](quality/2026-11-01-public-metric-measurement.md)：两场景/六图，336与518各4条检查/场景，复跑一次共8次真实模型调用。主轮MAPE19.36%/4.17%，kicker后墙退步到12.59%；没有实体尺，不代表PV现场毫米精度。四组复跑GLB SHA与测量相同；独立审查另重载8GLB并复算72条API线段，坐标/距离一致。
 
 最终无MLAPI环境119通过、2个可选ML测试跳过；前端17文件/68测试通过；生产build、Ruff、8SVG再生成通过。保留Starlette/httpx弃用与Three.js约650KB chunk提示，未称消除。只读几何审计不展示未执行的组件识别阶段；真实浏览器验证zh/en/es、原图6048宽已加载、canvas、校准/相对标签、旧收据重放和页面无水平溢出。新clone/私有同步状态另在E07追加。
+
+
+E07交付补充：GitHub8f55a62干净clone的锁定安装/119API+2optional skips/68frontend/build/Ruff/8SVG均通过；新模型虚拟环境复用已校验源和checkpoint，额外真实运行两组336，GLB及测距值与主轮完全相同。完整ML生产环境另121后端通过。数据已持久放到正式`data/measurement-public/`，8004使用此runtime；[机器证明](measurement/public-metric-clone-verification.json)及范围见E07。
