@@ -139,3 +139,14 @@ PV3D_DATA_DIR="$PWD/data/measurement-public/runtime" make serve
 - `undistortion.zh.jpg`：`0ffe00b2c9a27e4cbc141f28e80deff3533808306856cff4adc6adef7b68f5f1`
 - `undistortion.en.jpg`：`452513fabd568f6ea6ac85351202363594bc4179005ed1e029ca3bfc2c790a39`
 - `undistortion-points.zh.jpg`：`ee7fa16a1b1080bdf5ee7f883e847d6bec25a3884a6a83004e8a6184174f408a`
+
+
+## 最后独立审查及修复（2026-11-01）
+
+独立整分支审查`8253f36..7a4038a`没有P1/P2，复测11后端/2前端通过；提出一项非阻塞P3：benchmark把case失败写入summary后仍退出0，自动化可能误当成功。登记 **RUN-002**，用两个无模型的故障worker先验证`DID NOT RAISE SystemExit`，修复为所有case与摘要保存完后，有任何失败则非零退出；GREEN确认两条失败都保留。日志`runner-exit-red.log`/`runner-exit-green.log`。不改模型、冻结协议、原始输入或归档8次结果。修复后全开发后端 **131 passed/2 ML skip**、正式ML后端 **133 passed**、Ruff通过。
+
+去畸变kicker重放G–H也已实测：measurement-anchors #6/#7，4657.47mm，独立误差690.37mm/12.91%，与主轮完全一致；可见明确派生端点提示与“参照校准·几何仍为估算”。通用查看器将这条检查线显示为A/B，它不是参照标定的A–B。
+
+![真实去畸变点云及检查端点](../assets/undistortion-cloud.zh.jpg)
+
+截图SHA256：`73d172e44de446500060f925e97f4a2f601af40e7597ed1c153376bf22df0e58`。照片为ETH3D kicker/DSC_6503的去畸变预览和实际VGGT可见表面，不作为后墙形状正确的证据。

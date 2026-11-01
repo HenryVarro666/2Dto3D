@@ -325,6 +325,9 @@ def run(args, protocol):
                 print(row["error"], flush=True)
             write_json(folder/"summary.json", summary)
     print(f"Summary: {folder/'summary.json'}", flush=True)
+    failed = [row for row in summary["runs"] if row["status"] != "succeeded"]
+    if failed:
+        raise SystemExit(f"E08: {len(failed)} case(s) failed; all evidence saved in {folder/'summary.json'}")
 
 
 def main():

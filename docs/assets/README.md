@@ -48,3 +48,5 @@ SVG 由标准库生成，无脚本、外部资源或嵌入照片：
 照片来源仍为[ETH3D官方数据](https://eth3d.ethz.ch/datasets)：pipes `DSC_0635.JPG`及kicker `DSC_6503.JPG`（输入顺序、路径、哈希见E08冻结协议）。归属与CC BY-NC-SA4.0沿用上节列出的ETH3D作者及许可。含照片的对照截图按相同许可保留，处理为已知镜头标定的OpenCV双线性去畸变、JPEG查看预览、SVG端点叠加和原生屏幕捕获，无生成式修补。模型输入独立使用无损PNG，预览JPEG不参与推理。原照片/EXIF/扫描数据仍ignored，不直接入Git。
 
 [E08报告](../quality/2026-11-01-undistortion-fixed-points.md)保存方法、结果、问题与验证，屏幕正常视口1280×720。图表为作者重画，不代表现场PV精度；数学投影残差也不是物理误差上界。
+
+`undistortion-cloud.zh.jpg`：8004真实生产网页，去畸变kicker任务`af0aa4da3b15428aa901a81a4c8ccb34`，显示G–H派生索引6/7（通用查看器显示A/B）与实际VGGT点云。照片和点云衍生内容沿用本节ETH3D归属及CC BY-NC-SA4.0；截图未修图，不能以可视化外观证明深度或长度正确。
