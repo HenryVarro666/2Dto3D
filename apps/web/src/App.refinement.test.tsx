@@ -1,3 +1,5 @@
+// Preload the real viewer before timed UI waits; cold transforms can exceed 1s on CI.
+import "./components/SceneViewer";
 import {
   act,
   fireEvent,

@@ -2,6 +2,10 @@
 
 初次验证：2026-10-30；三语更新验证：2026-10-31，America/Chicago。此记录描述当前原型的运行检查，不是跨设备准确率或性能基准。
 
+## CI-001 GitHub异步测试稳定性（2026-11-01）
+
+7172cb9的[云端检查](https://github.com/HenryVarro666/2Dto3D/actions/runs/41282263970)全部通过：131后端/2可选ML跳过、70前端、Ruff及TypeScript/Vite构建。真实查看器冷加载移出UI计时，完整多视角长流程单独15秒；原有断言及逐步等待不变。[原因、受控RED/GREEN、首轮仍失败与交接](quality/2026-11-01-ci-viewer-preload.md)完整保留；本轮没有模型或照片质量评测。
+
 ## 当前真实照片修复记录
 
 历史、当前及未来问题统一从[质量交接入口](quality/README.md)、[问题台账](quality/issues.md)和[实验索引](quality/experiments.md)接续。下面V1/V2/V3章节保留当时版本与范围，不能当作当前所有能力已验收。
