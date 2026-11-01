@@ -1,0 +1,477 @@
+{
+  "schema_version": 1,
+  "experiment_id": "E07",
+  "created_at": "2026-11-01T05:09:17.087923+00:00",
+  "selection_sha256": "af690b554f66a09f50413577004078162d4933eddaa80487e27d43dadfb4337a",
+  "code_commit": "034ecb8c261d5741b482e7fe93b4fd8ef75b9d87",
+  "dataset": "ETH3D high-res multi-view training",
+  "reference_kind": "laser_scan_rendered_depth",
+  "license": "CC-BY-NC-SA-4.0",
+  "source_url": "https://eth3d.ethz.ch/datasets",
+  "runs": [
+    {
+      "scene": "pipes",
+      "input_size": 518,
+      "view_count": 3,
+      "worker_wall_ms": 12365.110875005485,
+      "registration_export_ms": 209.23695800593123,
+      "status": "succeeded",
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown"
+      },
+      "model_timings": {
+        "geometry_load_ms": 5834.181416008505,
+        "geometry_inference_ms": 4896.534833998885,
+        "geometry_unproject_ms": 534.9564159987494
+      },
+      "job_id": "3983746f104c4526abbd78f91af5a945",
+      "geometry_sha256": "9370912c58cb22ebffdeb6babcda93d15c1deadb91750ea9d44d50261f9d683a",
+      "calibration": {
+        "id": "236be70b8d654bbfb04ca72963dfe1e4",
+        "job_id": "3983746f104c4526abbd78f91af5a945",
+        "geometry_job_id": "3983746f104c4526abbd78f91af5a945",
+        "geometry_sha256": "9370912c58cb22ebffdeb6babcda93d15c1deadb91750ea9d44d50261f9d683a",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "benchmark-view-0",
+            "point_index": 63299,
+            "position": [
+              -0.43641427159309387,
+              0.14840085804462433,
+              -0.8149052262306213
+            ]
+          },
+          {
+            "component_id": "benchmark-view-0",
+            "point_index": 145143,
+            "position": [
+              -0.4327830970287323,
+              -0.291025310754776,
+              -0.8082491755485535
+            ]
+          }
+        ],
+        "distance_units": 0.4394915770127093,
+        "label": "Cabinet vertical A-B",
+        "created_at": "2026-11-01T05:09:29.750882+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1105.031717014742,
+        "unit": "mm",
+        "source_note": "ETH3D pipes; scan-derived depth; GT data excluded from VGGT inputs.",
+        "known_length_mm": 1105.031717014742,
+        "mm_per_unit": 2514.341058651931,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "pipes-1",
+          "label": "Cabinet horizontal C-D",
+          "reference_mm": 528.6418138631055,
+          "relative_distance_u": 0.20317449714714736,
+          "calibrated_mm": 510.8499802480322,
+          "absolute_error_mm": 17.791833615073358,
+          "relative_error_pct": 3.365574411350034,
+          "measurement_record_id": "6cf27247b8c043eaac39cdaef64329cc"
+        },
+        {
+          "segment_id": "pipes-2",
+          "label": "Orange panel vertical E-F",
+          "reference_mm": 1274.7375975801,
+          "relative_distance_u": 0.5001289740488324,
+          "calibrated_mm": 1257.4948140724453,
+          "absolute_error_mm": 17.24278350765485,
+          "relative_error_pct": 1.3526535610456387,
+          "measurement_record_id": "1a2bceb5578c46a1b462a58a4a505017"
+        },
+        {
+          "segment_id": "pipes-3",
+          "label": "Pipe vertical G-H",
+          "reference_mm": 996.1472922846974,
+          "relative_distance_u": 0.4046074507775083,
+          "calibrated_mm": 1017.3211261263792,
+          "absolute_error_mm": 21.173833841681812,
+          "relative_error_pct": 2.12557259410091,
+          "measurement_record_id": "e5709733fa884e6d8d354c9f22b70949"
+        },
+        {
+          "segment_id": "pipes-4",
+          "label": "Cabinet to pipe I-J",
+          "reference_mm": 1347.8164876349686,
+          "relative_distance_u": 0.5374666184017567,
+          "calibrated_mm": 1351.3743863023462,
+          "absolute_error_mm": 3.5578986673776853,
+          "relative_error_pct": 0.26397500698487353,
+          "measurement_record_id": "b17172a491b641d78d6472362d6dcacc"
+        }
+      ],
+      "api_roundtrip_ms": [
+        7.38091699895449,
+        6.14554199273698,
+        6.520041992189363,
+        6.2220410036388785,
+        6.5921670029638335,
+        6.549541998538189,
+        6.783542004995979,
+        6.074208009522408,
+        6.8764580064453185
+      ],
+      "glb_bytes": 8705140
+    },
+    {
+      "scene": "kicker",
+      "input_size": 518,
+      "view_count": 3,
+      "worker_wall_ms": 12408.379375003278,
+      "registration_export_ms": 237.98745800741017,
+      "status": "succeeded",
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 518,
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown"
+      },
+      "model_timings": {
+        "geometry_load_ms": 5757.245957996929,
+        "geometry_inference_ms": 4790.665542008355,
+        "geometry_unproject_ms": 530.4919999907725
+      },
+      "job_id": "6e0bc8748ade4f29b7ec75b167983fa8",
+      "geometry_sha256": "62fa84896f9de3eb1ad846cfe791ed89b7a30a778e52d35e1d3c4aabc3cd8074",
+      "calibration": {
+        "id": "f4796ce30cba492eabe2fcf3696f1685",
+        "job_id": "6e0bc8748ade4f29b7ec75b167983fa8",
+        "geometry_job_id": "6e0bc8748ade4f29b7ec75b167983fa8",
+        "geometry_sha256": "62fa84896f9de3eb1ad846cfe791ed89b7a30a778e52d35e1d3c4aabc3cd8074",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "benchmark-view-0",
+            "point_index": 101631,
+            "position": [
+              -0.44379210472106934,
+              -0.05957592651247978,
+              -0.833367645740509
+            ]
+          },
+          {
+            "component_id": "benchmark-view-0",
+            "point_index": 99673,
+            "position": [
+              -0.12810952961444855,
+              -0.05171865597367287,
+              -0.8946675062179565
+            ]
+          }
+        ],
+        "distance_units": 0.3216751433058231,
+        "label": "Cabinet horizontal A-B",
+        "created_at": "2026-11-01T05:09:42.644075+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 907.579630404336,
+        "unit": "mm",
+        "source_note": "ETH3D kicker; scan-derived depth; GT data excluded from VGGT inputs.",
+        "known_length_mm": 907.579630404336,
+        "mm_per_unit": 2821.4167283092856,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "kicker-1",
+          "label": "Back wall C-D",
+          "reference_mm": 1719.8135418869979,
+          "relative_distance_u": 0.6863091168977232,
+          "calibrated_mm": 1936.3640232064092,
+          "absolute_error_mm": 216.55048131941135,
+          "relative_error_pct": 12.591509256393566,
+          "measurement_record_id": "57030d50ace842b7869bf7ffeb3a12cb"
+        },
+        {
+          "segment_id": "kicker-2",
+          "label": "Side wall E-F",
+          "reference_mm": 772.8615953514021,
+          "relative_distance_u": 0.2695647931753203,
+          "calibrated_mm": 760.5546168280814,
+          "absolute_error_mm": 12.306978523320709,
+          "relative_error_pct": 1.5923910047212286,
+          "measurement_record_id": "2b8c0f02162e4f9c9747c6295c3f146d"
+        },
+        {
+          "segment_id": "kicker-3",
+          "label": "Back wall to side wall G-H",
+          "reference_mm": 5347.843414099709,
+          "relative_distance_u": 1.6683534929698,
+          "calibrated_mm": 4707.120453798222,
+          "absolute_error_mm": 640.7229603014866,
+          "relative_error_pct": 11.980959625934563,
+          "measurement_record_id": "a30dccf8d75c4dcf9be7a8c653c90eb8"
+        },
+        {
+          "segment_id": "kicker-4",
+          "label": "Cabinet lower span I-J",
+          "reference_mm": 985.1184325062123,
+          "relative_distance_u": 0.34889687394457236,
+          "calibrated_mm": 984.3834766020326,
+          "absolute_error_mm": 0.734955904179742,
+          "relative_error_pct": 0.07460584229552594,
+          "measurement_record_id": "17f7043c5a0347c3aa2400e7e15854f4"
+        }
+      ],
+      "api_roundtrip_ms": [
+        9.824707987718284,
+        9.100499999476597,
+        7.193500001449138,
+        6.5483749931445345,
+        7.50950000656303,
+        9.281500009819865,
+        6.733165995683521,
+        6.114042000262998,
+        6.942125008208677
+      ],
+      "glb_bytes": 8705144
+    },
+    {
+      "scene": "pipes",
+      "input_size": 336,
+      "view_count": 3,
+      "worker_wall_ms": 8564.036249998026,
+      "registration_export_ms": 89.21274999738671,
+      "status": "succeeded",
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 336,
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown"
+      },
+      "model_timings": {
+        "geometry_load_ms": 5749.984124995535,
+        "geometry_inference_ms": 1643.6687500099652,
+        "geometry_unproject_ms": 208.081291988492
+      },
+      "job_id": "88fb15b2acc0479f85c88df5bdc58b81",
+      "geometry_sha256": "452ad9cc3ccda797b2aa2811f9e7a1cab84596ff64f2ce01ebff001b1652ab6d",
+      "calibration": {
+        "id": "581c96f04f1b45b9b5a402d3edefb4bb",
+        "job_id": "88fb15b2acc0479f85c88df5bdc58b81",
+        "geometry_job_id": "88fb15b2acc0479f85c88df5bdc58b81",
+        "geometry_sha256": "452ad9cc3ccda797b2aa2811f9e7a1cab84596ff64f2ce01ebff001b1652ab6d",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "benchmark-view-0",
+            "point_index": 26275,
+            "position": [
+              -0.5284873247146606,
+              0.12449032813310623,
+              -0.7764052152633667
+            ]
+          },
+          {
+            "component_id": "benchmark-view-0",
+            "point_index": 60211,
+            "position": [
+              -0.5222140550613403,
+              -0.230838805437088,
+              -0.7660995721817017
+            ]
+          }
+        ],
+        "distance_units": 0.35553389902400995,
+        "label": "Cabinet vertical A-B",
+        "created_at": "2026-11-01T05:09:51.552128+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 1103.4193241125852,
+        "unit": "mm",
+        "source_note": "ETH3D pipes; scan-derived depth; GT data excluded from VGGT inputs.",
+        "known_length_mm": 1103.4193241125852,
+        "mm_per_unit": 3103.5558835363513,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "pipes-1",
+          "label": "Cabinet horizontal C-D",
+          "reference_mm": 526.2145507430521,
+          "relative_distance_u": 0.2459086248887986,
+          "calibrated_mm": 763.1911595859646,
+          "absolute_error_mm": 236.97660884291247,
+          "relative_error_pct": 45.03421817361089,
+          "measurement_record_id": "9b5a816e99044aa190e49acff3ca5c2f"
+        },
+        {
+          "segment_id": "pipes-2",
+          "label": "Orange panel vertical E-F",
+          "reference_mm": 1273.138045721043,
+          "relative_distance_u": 0.43812734304057743,
+          "calibrated_mm": 1359.7526932317335,
+          "absolute_error_mm": 86.61464751069047,
+          "relative_error_pct": 6.803240842719156,
+          "measurement_record_id": "fa15ffadebb74552b281e920f652b007"
+        },
+        {
+          "segment_id": "pipes-3",
+          "label": "Pipe vertical G-H",
+          "reference_mm": 984.5067994761163,
+          "relative_distance_u": 0.3360609352375108,
+          "calibrated_mm": 1042.9838927831054,
+          "absolute_error_mm": 58.477093306989104,
+          "relative_error_pct": 5.939734833533543,
+          "measurement_record_id": "6d1a40cabcb74ec4963d36269693f563"
+        },
+        {
+          "segment_id": "pipes-4",
+          "label": "Cabinet to pipe I-J",
+          "reference_mm": 1339.744346216203,
+          "relative_distance_u": 0.5860009829767059,
+          "calibrated_mm": 1818.6867984754408,
+          "absolute_error_mm": 478.9424522592378,
+          "relative_error_pct": 35.748794433199116,
+          "measurement_record_id": "75d6280748564ceb93e52f613b861a1d"
+        }
+      ],
+      "api_roundtrip_ms": [
+        4.240750000462867,
+        3.8187919999472797,
+        4.321125001297332,
+        3.637917005107738,
+        4.9472090031486005,
+        4.156916998908855,
+        4.116249998332933,
+        3.6637089942814782,
+        4.005042006610893
+      ],
+      "glb_bytes": 3615404
+    },
+    {
+      "scene": "kicker",
+      "input_size": 336,
+      "view_count": 3,
+      "worker_wall_ms": 6538.833874990814,
+      "registration_export_ms": 102.9657080071047,
+      "status": "succeeded",
+      "model": {
+        "model_id": "facebook/VGGT-1B",
+        "revision": "860abec7937da0a4c03c41d3c269c366e82abdf9",
+        "code_revision": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+        "device": "mps",
+        "input_size": 336,
+        "license": "CC-BY-NC-4.0",
+        "geometry": "joint_depth_and_camera_unprojection",
+        "metric_scale_status": "unknown"
+      },
+      "model_timings": {
+        "geometry_load_ms": 3759.8895830014953,
+        "geometry_inference_ms": 1797.2682920080842,
+        "geometry_unproject_ms": 208.27745799033437
+      },
+      "job_id": "ddd0a834b7974e219d8ba627446d42d2",
+      "geometry_sha256": "0ce9091ec2e7f44803e1667df5c313df2191f39e7e933b092c24b09e66a1c473",
+      "calibration": {
+        "id": "e266f12b2d3a415789b5f360ccdf1508",
+        "job_id": "ddd0a834b7974e219d8ba627446d42d2",
+        "geometry_job_id": "ddd0a834b7974e219d8ba627446d42d2",
+        "geometry_sha256": "0ce9091ec2e7f44803e1667df5c313df2191f39e7e933b092c24b09e66a1c473",
+        "coordinate_frame": "GLB world, Y-up, un-exploded",
+        "points": [
+          {
+            "component_id": "benchmark-view-0",
+            "point_index": 42067,
+            "position": [
+              -0.49808937311172485,
+              -0.041462481021881104,
+              -0.7342033982276917
+            ]
+          },
+          {
+            "component_id": "benchmark-view-0",
+            "point_index": 41469,
+            "position": [
+              -0.12776494026184082,
+              -0.039432790130376816,
+              -0.8014819622039795
+            ]
+          }
+        ],
+        "distance_units": 0.37639169807716905,
+        "label": "Cabinet horizontal A-B",
+        "created_at": "2026-11-01T05:09:58.384067+00:00",
+        "scale_status": "reference_calibrated",
+        "known_length": 908.5555282709773,
+        "unit": "mm",
+        "source_note": "ETH3D kicker; scan-derived depth; GT data excluded from VGGT inputs.",
+        "known_length_mm": 908.5555282709773,
+        "mm_per_unit": 2413.8564503744774,
+        "reference_kind": "user_supplied"
+      },
+      "checks": [
+        {
+          "segment_id": "kicker-1",
+          "label": "Back wall C-D",
+          "reference_mm": 1731.4510427047853,
+          "relative_distance_u": 0.643017598778302,
+          "calibrated_mm": 1552.152178515312,
+          "absolute_error_mm": 179.2988641894733,
+          "relative_error_pct": 10.355410564157893,
+          "measurement_record_id": "8bac7979a1304c90a9ea05971c132768"
+        },
+        {
+          "segment_id": "kicker-2",
+          "label": "Side wall E-F",
+          "reference_mm": 782.9056763900433,
+          "relative_distance_u": 0.2501613649053703,
+          "calibrated_mm": 603.8536243113115,
+          "absolute_error_mm": 179.05205207873178,
+          "relative_error_pct": 22.870194645201185,
+          "measurement_record_id": "cacbc4f35a514bc3807cc757fee11057"
+        },
+        {
+          "segment_id": "kicker-3",
+          "label": "Back wall to side wall G-H",
+          "reference_mm": 5352.166929914866,
+          "relative_distance_u": 1.6251488828095615,
+          "calibrated_mm": 3922.8761135887357,
+          "absolute_error_mm": 1429.2908163261304,
+          "relative_error_pct": 26.704899810530858,
+          "measurement_record_id": "797b04afde3342c2a85e368dd13c83d8"
+        },
+        {
+          "segment_id": "kicker-4",
+          "label": "Cabinet lower span I-J",
+          "reference_mm": 992.1962702727349,
+          "relative_distance_u": 0.40523271629456126,
+          "calibrated_mm": 978.1736061303973,
+          "absolute_error_mm": 14.02266414233759,
+          "relative_error_pct": 1.4132953894780353,
+          "measurement_record_id": "b46d17c9bc404d2588fe7c8e7241939f"
+        }
+      ],
+      "api_roundtrip_ms": [
+        4.419165998115204,
+        4.127417007111944,
+        4.035874997498468,
+        3.560750003089197,
+        4.772416999912821,
+        4.434458998730406,
+        4.4165829895064235,
+        3.913667009328492,
+        5.546957996557467
+      ],
+      "glb_bytes": 3615404
+    }
+  ]
+}

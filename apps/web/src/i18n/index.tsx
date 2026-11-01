@@ -9,6 +9,10 @@ const storageKey = "pv3d.locale";
 type Params = Record<string, string | number>;
 
 const serverMessages: Record<string, MessageKey> = {
+  PUBLIC_SCAN_REFERENCE_NOT_FIELD_CERTIFICATION:
+    "公开扫描参考验证，不代表现场尺寸精度。",
+  WHOLE_SCENE_AUDIT_NOT_PV_COMPONENT_RECOGNITION:
+    "此结果按照片视图分组，用于几何审计，不代表组件识别。",
   AUTHORED_ANALYTIC_DEMO_NOT_FIELD_ACCURACY:
     "解析测量演示未运行模型；组件细化和重建请使用真实多图结果。",
   MEASUREMENT_REFERENCE_REUSED:

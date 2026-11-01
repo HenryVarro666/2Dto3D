@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-
 from pv3d import metric_benchmark as metric
 
 

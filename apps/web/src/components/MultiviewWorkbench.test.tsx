@@ -176,32 +176,39 @@ it("reopening the same saved result releases the workspace lock", async () => {
   await waitFor(() => expect(getMeasurements).toHaveBeenCalledTimes(2));
 });
 
-it("keeps authored measurement demos viewable without offering unsupported reconstruction edits", async () => {
-  const id = "b".repeat(32);
-  const user = userEvent.setup();
-  const api = fakeApi({
-    getMultiJob: async () => ({
-      ...multiCompleted,
-      id,
-      result: {
-        ...multiResult,
-        job_id: id,
-        model: { ...multiResult.model, not_model_inference: true },
-      },
-    }),
-  });
-  render(<MultiviewWorkbench apiClient={api} onBusyChange={vi.fn()} />);
-  await user.type(screen.getByLabelText("多图任务 ID"), id);
-  await user.click(screen.getByRole("button", { name: "打开已有结果" }));
-  await waitFor(() =>
-    expect(screen.getByRole("button", { name: "打开已有结果" })).toBeEnabled(),
-  );
-  expect(screen.getByRole("button", { name: "应用校正到点云" })).toBeDisabled();
-  expect(screen.getByRole("button", { name: "添加组件框" })).toBeDisabled();
-  expect(
-    screen.getByRole("region", { name: "标定与测距" }),
-  ).toBeInTheDocument();
-  expect(
-    screen.getByRole("link", { name: "导出测量记录" }),
-  ).toBeInTheDocument();
-});
+it.each([{ not_model_inference: true }, { read_only_geometry: true }])(
+  "keeps measurement audit geometry viewable without offering unsupported reconstruction edits: %j",
+  async (flags) => {
+    const id = "b".repeat(32);
+    const user = userEvent.setup();
+    const api = fakeApi({
+      getMultiJob: async () => ({
+        ...multiCompleted,
+        id,
+        result: {
+          ...multiResult,
+          job_id: id,
+          model: { ...multiResult.model, ...flags },
+        },
+      }),
+    });
+    render(<MultiviewWorkbench apiClient={api} onBusyChange={vi.fn()} />);
+    await user.type(screen.getByLabelText("多图任务 ID"), id);
+    await user.click(screen.getByRole("button", { name: "打开已有结果" }));
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "打开已有结果" }),
+      ).toBeEnabled(),
+    );
+    expect(
+      screen.getByRole("button", { name: "应用校正到点云" }),
+    ).toBeDisabled();
+    expect(screen.getByRole("button", { name: "添加组件框" })).toBeDisabled();
+    expect(
+      screen.getByRole("region", { name: "标定与测距" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "导出测量记录" }),
+    ).toBeInTheDocument();
+  },
+);

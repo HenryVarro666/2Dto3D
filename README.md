@@ -75,6 +75,21 @@ make dev
 
 原始 **GLB / PLY 始终保持相对尺度**，标定不会暗中重缩放它们。“导出测量记录”提供单独 JSON：参照、两点原坐标、比例、长度来源和验证误差均保留。记录存于本地 SQLite，重启后可按 Job ID 恢复。换机器运行代码不等于自动同步照片与数据库，参见[跨机器延续实验](docs/measurement/README.md#跨机器延续实验)。
 
+### 公开实景验证：E07
+
+![逐条独立长度误差：保留改善与退步](docs/assets/public-metric-errors.zh.svg)
+
+采用 [ETH3D 官方数据](https://eth3d.ethz.ch/datasets)的 **2 个真实场景、6 张多角度照片**，从独立激光扫描参考深度取得长度；**照片中没有实体标定尺**。每场景一条长度定比例，另四条只检查误差，未交给模型或参与尺度拟合。
+
+| VGGT 输入 | 未参与标定的长度数 | 平均绝对百分比误差 | 最大误差 |
+|---|---:|---:|---:|
+| 336 px | 8 | 19.36% | 45.03% |
+| 518 px | 8 | 4.17% | 12.59% |
+
+518 改善多数检查线，但 kicker 后墙 **10.36%→12.59%** 退步，跨前后墙仍差 **640.7 mm**。两种分辨率取最近输出像素，端点最多移动22.8 mm，因此是受控小样本诊断，不是严格相同端点的泛化结论。两个场景各重复一次，四组点云SHA和测量值完全一致；这不是新增测试样本。**尚不能承诺现场逆变器或毫米级尺寸精度**，默认仍为336。
+
+网页“多角度点云 → 公开尺寸验证”可直接看冻结结果；准备本机数据后可打开点云、参照和逐条测量记录。原始数据约6GB不随Git克隆，脚本从官方源下载并校验哈希；结果摘要在仓库中。[完整结果、问题、耗时与复现](docs/quality/2026-11-01-public-metric-measurement.md) · [冻结取点协议](docs/measurement/public-metric-selection.json) · [原始数值汇总](docs/measurement/public-metric-results.json)。ETH3D 数据为 CC BY-NC-SA 4.0；本实验按照片视图分组审计几何，没有把它当作PV组件识别评测。
+
 ## 如何实现
 
 ![本地网页、API、证据存储、共享识别队列和隔离几何 worker](docs/assets/architecture.zh.svg)
@@ -103,7 +118,7 @@ make build
 
 最新 E04 同四组修复已有部分改善，同时保留新增细柱漏检和语义误分类；[本机前后图入口](data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/index.html)为 ignored 产物，不随克隆。
 
-真实照片评估与解析测量测试分别记录，不能互相代替：[实验索引 E01–E05](docs/quality/experiments.md)、[问题台账](docs/quality/issues.md)、[验证记录](docs/verification.md)。目前真实照片仍可能出现误分类、组件关联错误、细线丢点、空洞和薄片；详细状态以台账为准，任务 `succeeded` 不等于领域准确率。
+真实照片评估与解析测量测试分别记录，不能互相代替：[实验索引](docs/quality/experiments.md)、[问题台账](docs/quality/issues.md)、[验证记录](docs/verification.md)。目前真实照片仍可能出现误分类、组件关联错误、细线丢点、空洞和薄片；详细状态以台账为准，任务 `succeeded` 不等于领域准确率。
 
 **仍待验证：** 独立实测的现场尺寸误差、复杂遮挡结构、完整背面、曲面长度、制造 CAD 与完整工程 BOM。自动分数未校准；解释性分解位置不是拆装步骤。后续每次问题、失败试验、改进和测试都需按[质量交接规则](docs/quality/README.md)追加保存。
 

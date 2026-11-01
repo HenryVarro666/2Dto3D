@@ -14,6 +14,7 @@ import type { MessageKey } from "../i18n/messages";
 import { PhotoPanel } from "./PhotoPanel";
 import { AnnotationPanel } from "./AnnotationPanel";
 import { MeasurementPanel } from "./MeasurementPanel";
+import { PublicMetricBenchmark } from "./PublicMetricBenchmark";
 import { ComponentList } from "./ComponentList";
 
 const SceneViewer = lazy(() =>
@@ -151,10 +152,12 @@ export function MultiviewWorkbench({
   const hiddenObservations = new Set(
     observations.filter((o) => hidden.has(o.component_id)).map((o) => o.id),
   );
-  const analyticDemo = state.result?.model.not_model_inference === true;
+  const readOnlyGeometry =
+    state.result?.model.not_model_inference === true ||
+    state.result?.model.read_only_geometry === true;
   const editable =
     Boolean(asset && state.result) &&
-    !analyticDemo &&
+    !readOnlyGeometry &&
     !active &&
     !annotation.draft;
   const selected = observations.find(
@@ -346,6 +349,14 @@ export function MultiviewWorkbench({
           </button>
         </div>
       </div>
+      <PublicMetricBenchmark
+        disabled={locked}
+        onRestore={(jobId) => {
+          setRestoreId(jobId);
+          setViewerError(null);
+          void flow.restore(jobId);
+        }}
+      />
       <input
         className="visually-hidden"
         ref={input}

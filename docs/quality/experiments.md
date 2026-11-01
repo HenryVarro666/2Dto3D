@@ -11,8 +11,10 @@
 | E04 | 0522a85→237f796，同E03输入＋原13图保护 | 最终42模型任务＋4受控回放；部分改善，有新错误 | [本机前后图](../../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/index.html)、[报告](../../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/report.md)、[计划](../superpowers/plans/2026-10-31-v3-real-regression-fixes.md)。4组主机均合并；固定旧mask线点保留改善；新推理Later线点略降、HC05丢细柱和新增语义误检。9c202d1的22任务另存，原747基线冻结 |
 | E05 | 58e3e28 / e66a6d9 / 9c98a60；解析fixture + 4份E03旧GLB | 工具与解析/兼容性已验证，现场尺寸待测 | [本次记录](2026-10-31-scale-measurement.md)、[测量指南](../measurement/README.md)；200mm参照，独立高度10%误差反例；真实旧GLB仅相对单位；已完成整合、新克隆与生产浏览器验证，最终66前端/113正式后端；原始数据不入Git |
 
+| E07 | 034ecb8；ETH3D pipes/kicker共6图；固定扫描参考 | 8次真实VGGT调用；网页交付检查中 | [完整记录](2026-11-01-public-metric-measurement.md)、[主轮结果](../measurement/public-metric-results.json)、[复跑](../measurement/public-metric-repeat.json)。336/518各8条检查，MAPE19.36%/4.17%；518后墙退步，保留全部结果。原图无实体尺；不代表现场精度 |
+
 ## 下一位接手者
 
 读本轮计划、E04报告和issues最后事件；检查Git提交及工作区，不重复已完成的RED/GREEN或42次最终运行。优先PV-012/PV-013：隔离旧/新增词表与非目标物体上下文，先冻结E04再建新run；PV-011需要明确主机选择。没有after的实验保持待运行，不能用规划cases冒充执行。每轮明确新增错误和未改善项，不能只更新成功数字。
 
-尺度与测距接手先读E05；补充真正独立的实物长度后再报告现场误差。E04的识别保护项继续独立维护，不能以标定功能替代模型质量修复。
+尺度与测距接手先读E05/E07；公开扫描参考已运行，现场仍需真正独立的实物长度。E07不验证桌球台或PV设备，且分辨率对照端点略有移动。识别保护项继续独立维护，不能以标定功能替代模型质量修复。

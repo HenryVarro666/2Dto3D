@@ -14,6 +14,7 @@ from uuid import uuid4
 
 import numpy as np
 from fastapi.testclient import TestClient
+from httpx import HTTPError
 from PIL import Image, ImageDraw
 from pv3d.app import create_app
 from pv3d.metric_benchmark import read_depth, reference_point
@@ -228,8 +229,8 @@ def run(root, selection, runtime_root, sizes, run_name, device):
                 worker = VggtReconstructor(runtime_python=runtime_root/"services/multiview/.venv/bin/python",
                     worker_script=ROOT/"services/multiview/infer.py", cache_dir=runtime_root/"models/huggingface",
                     device=device, input_size=input_size)
-                metadata = worker.reconstruct(paths, destination, lambda stage: print(
-                    f"{scene['id']} {input_size}: {stage}", flush=True))
+                metadata = worker.reconstruct(paths, destination,
+                    lambda stage, label=f"{scene['id']} {input_size}": print(f"{label}: {stage}", flush=True))
                 row["worker_wall_ms"] = (time.perf_counter()-started)*1000
                 geometry = load_geometry(destination/"geometry.npz", len(paths))
                 export_start = time.perf_counter()
@@ -242,7 +243,7 @@ def run(root, selection, runtime_root, sizes, run_name, device):
                            **measurement, glb_bytes=(folder/"cloud.glb").stat().st_size)
                 print(f"{scene['id']} {input_size}: errors % " + str([
                     round(check["relative_error_pct"], 2) for check in row["checks"]]), flush=True)
-            except Exception as error:
+            except (OSError, ValueError, RuntimeError, AssertionError, HTTPError) as error:
                 row.update(status="failed", error=f"{type(error).__name__}: {error}",
                            failed_wall_ms=(time.perf_counter()-started)*1000)
                 print(row["error"], flush=True)

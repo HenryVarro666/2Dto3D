@@ -1,5 +1,78 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  公开尺寸验证: ["Public metric validation", "Validación métrica pública"],
+  "2 个场景 · 6 张照片 · 8 条独立长度": [
+    "2 scenes · 6 photos · 8 independent lengths",
+    "2 escenas · 6 fotos · 8 longitudes independientes",
+  ],
+  "激光扫描参考；照片中没有实体标定尺。每个场景只用 A–B 标定，C–J 只用于独立检查。":
+    [
+      "Laser-scan reference; there is no physical ruler in the photos. Each scene uses only A–B for calibration; C–J are independent checks.",
+      "Referencia de escáner láser; las fotos no incluyen una regla física. Cada escena usa solo A–B para calibrar; C–J son comprobaciones independientes.",
+    ],
+  平均绝对百分比误差: [
+    "Mean absolute percentage error",
+    "Error porcentual absoluto medio",
+  ],
+  "提高分辨率改善了多数检查线，但 kicker 后墙误差从 10.36% 升至 12.59%。单条标定线不能消除整体形变。":
+    [
+      "Higher resolution improved most checks, but the kicker back-wall error rose from 10.36% to 12.59%. One reference length cannot remove global deformation.",
+      "Una mayor resolución mejoró la mayoría de las comprobaciones, pero el error de la pared posterior de kicker aumentó del 10.36% al 12.59%. Una longitud de referencia no elimina la deformación global.",
+    ],
+  "这是两个公开场景的小样本诊断，不代表逆变器现场精度。两种分辨率取最近输出像素，端点略有移动；桌球台因缺少扫描参考而未测量。":
+    [
+      "This small diagnostic on two public scenes does not establish field inverter accuracy. Endpoints move slightly when snapped to the nearest output pixel at each resolution; the foosball table was not measured because scan reference was missing.",
+      "Este diagnóstico de dos escenas públicas no establece la precisión de inversores en campo. Los extremos varían ligeramente al usar el píxel de salida más cercano en cada resolución; no se midió el futbolín por falta de referencia del escáner.",
+    ],
+  "标定 A–B": ["Calibration A–B", "Calibración A–B"],
+  模型流程: ["Model pipeline", "Proceso del modelo"],
+  查看点云与测量记录: [
+    "View point cloud and measurements",
+    "Ver nube de puntos y mediciones",
+  ],
+  独立检查线: ["Independent check", "Comprobación independiente"],
+  扫描参考: ["Scan reference", "Referencia del escáner"],
+  校准后: ["Calibrated", "Calibrada"],
+  绝对误差: ["Absolute error", "Error absoluto"],
+  相对误差: ["Relative error", "Error relativo"],
+  运行失败: ["Run failed", "Ejecución fallida"],
+  "模型流程耗时包含每次进程加载、推理和几何写出，不含下载、上传和浏览器；不是端到端耗时。":
+    [
+      "Model pipeline time includes per-process loading, inference and geometry writing; it excludes downloads, uploads and the browser, so it is not end-to-end latency.",
+      "El tiempo del modelo incluye carga del proceso, inferencia y escritura de geometría; excluye descargas, subidas y navegador. No es latencia de extremo a extremo.",
+    ],
+  "新克隆可直接查看汇总；点云重放需先运行 E07 数据准备与评测脚本。视图分组只是几何审计，不代表自动组件分割。":
+    [
+      "A fresh clone can show this summary. Point-cloud replay requires the E07 data preparation and evaluation script. View groups support geometry auditing, not automatic component segmentation.",
+      "Un clon nuevo muestra este resumen. Para reproducir la nube se requiere el script E07 de datos y evaluación. Los grupos de vistas sirven para auditar geometría, no para segmentar componentes automáticamente.",
+    ],
+  原始数据与来源: ["Original data and source", "Datos originales y fuente"],
+  完整结果与复现步骤: [
+    "Full results and reproduction",
+    "Resultados completos y reproducción",
+  ],
+  "柜体横向 C–D": ["Cabinet horizontal C–D", "Ancho del armario C–D"],
+  "橙色面板纵向 E–F": [
+    "Orange panel vertical E–F",
+    "Altura del panel naranja E–F",
+  ],
+  "管道纵向 G–H": ["Pipe vertical G–H", "Altura de tubería G–H"],
+  "柜体至管道 I–J": ["Cabinet to pipe I–J", "Armario a tubería I–J"],
+  "后墙 C–D": ["Back wall C–D", "Pared posterior C–D"],
+  "侧墙 E–F": ["Side wall E–F", "Pared lateral E–F"],
+  "后墙至侧墙 G–H": [
+    "Back wall to side wall G–H",
+    "Pared posterior a lateral G–H",
+  ],
+  "柜体下段 I–J": ["Cabinet lower span I–J", "Tramo inferior del armario I–J"],
+  "公开扫描参考验证，不代表现场尺寸精度。": [
+    "Public scan reference validation does not establish field dimensional accuracy.",
+    "La validación con escáner público no establece la precisión dimensional en campo.",
+  ],
+  "此结果按照片视图分组，用于几何审计，不代表组件识别。": [
+    "This geometry audit groups points by photo view; it does not demonstrate component recognition.",
+    "Esta auditoría agrupa puntos por vista fotográfica; no demuestra reconocimiento de componentes.",
+  ],
   "解析测量演示未运行模型；组件细化和重建请使用真实多图结果。": [
     "This analytic measurement demo runs no models. Use a real multi-view result for refinement and reconstruction.",
     "Esta demostración analítica no ejecuta modelos. Use un resultado multivista real para refinar y reconstruir.",

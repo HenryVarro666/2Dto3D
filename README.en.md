@@ -75,6 +75,21 @@ The demo calibrates a **200 mm** width. Its held-out analytic height is **300 mm
 
 Raw **GLB / PLY always retain relative scale**; calibration does not silently rescale them. **Export measurement receipt** downloads separate JSON containing reference evidence, original endpoints, scale, length sources and validation errors. SQLite persists receipts across restarts; restore by Job ID. Cloning code does not automatically copy photos or the database. See [continuing on another machine](docs/measurement/README.md#跨机器延续实验).
 
+### Public-photo validation: E07
+
+![All held-out length errors, including the regression](docs/assets/public-metric-errors.en.svg)
+
+The [official ETH3D data](https://eth3d.ethz.ch/datasets) provides **two real scenes and six multi-angle photos**, with independent laser-derived reference depths; **there is no physical ruler in the photos**. Each scene uses one length to set scale and four other lengths for checks. No reference depth or check length enters VGGT or the scale fit.
+
+| VGGT input | Held-out lengths | Mean absolute percentage error | Maximum error |
+|---|---:|---:|---:|
+| 336 px | 8 | 19.36% | 45.03% |
+| 518 px | 8 | 4.17% | 12.59% |
+
+518 improves most checks, but the kicker back-wall error **regresses from 10.36% to 12.59%**, and its cross-wall distance remains **640.7 mm** off. Endpoints snap to the nearest output pixel at each resolution and move by up to 22.8 mm; this small controlled diagnostic does not establish generalization at strictly identical endpoints. A second run reproduced all four GLB hashes and measurement values; it adds no independent test samples. **Field inverter accuracy and millimeter precision remain unverified.** The default remains 336.
+
+Open “Multi-view point cloud → Public metric validation” for the frozen results. Preparing local data enables point-cloud and receipt replay. About 6GB of raw data remains outside Git; the script downloads official sources and verifies hashes, while result summaries are checked in. [Full results, failures, timing and reproduction](docs/quality/2026-11-01-public-metric-measurement.md) · [Frozen point protocol](docs/measurement/public-metric-selection.json) · [Numerical results](docs/measurement/public-metric-results.json). ETH3D data is CC BY-NC-SA 4.0. This experiment audits geometry grouped by photo view; it is not a PV component-recognition evaluation.
+
 ## Architecture
 
 ![Local web, API, durable evidence, bounded perception queue and isolated geometry worker](docs/assets/architecture.en.svg)
@@ -103,7 +118,7 @@ make build
 
 The latest paired E04 run shows partial improvement while retaining new thin-pole misses and semantic errors. Its [local before/after gallery](data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/index.html) is ignored and is not included in a clone.
 
-Real-photo evaluations and analytic measurement tests are separate evidence: [experiments E01–E05](docs/quality/experiments.md), [issue ledger](docs/quality/issues.md), and [verification log](docs/verification.md). Real photos can still produce misclassifications, incorrect associations, thin-wire loss, holes and sheet-like geometry. The ledger is authoritative; a `succeeded` job does not establish domain accuracy.
+Real-photo evaluations and analytic measurement tests are separate evidence: [experiments](docs/quality/experiments.md), [issue ledger](docs/quality/issues.md), and [verification log](docs/verification.md). Real photos can still produce misclassifications, incorrect associations, thin-wire loss, holes and sheet-like geometry. The ledger is authoritative; a `succeeded` job does not establish domain accuracy.
 
 **Unverified:** field dimension errors against independent physical measurements, complex occlusions, complete backsides, curved lengths, manufacturing CAD and complete engineering BOMs. Detection scores are uncalibrated; exploded positions do not describe a disassembly procedure. Future problems, failed hypotheses, improvements and tests must be appended under the [evidence and handoff rules](docs/quality/README.md).
 
