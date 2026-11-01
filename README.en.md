@@ -77,6 +77,10 @@ Raw **GLB / PLY always retain relative scale**; calibration does not silently re
 
 ### Public-photo validation: E07
 
+![Actual web replay: public multi-angle photographs, point cloud and check endpoints](docs/assets/public-cloud.en.jpg)
+
+Actual pipes / 518 replay: an ETH3D photograph on the left, the inferred VGGT cloud and check endpoint display markers A/B on the right. Picks use original, un-exploded coordinates. See [asset provenance](docs/assets/README.md) for source and CC BY-NC-SA 4.0 attribution of photo-derived images.
+
 ![All held-out length errors, including the regression](docs/assets/public-metric-errors.en.svg)
 
 The [official ETH3D data](https://eth3d.ethz.ch/datasets) provides **two real scenes and six multi-angle photos**, with independent laser-derived reference depths; **there is no physical ruler in the photos**. Each scene uses one length to set scale and four other lengths for checks. No reference depth or check length enters VGGT or the scale fit.

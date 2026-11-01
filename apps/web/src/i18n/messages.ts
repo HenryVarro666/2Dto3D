@@ -1,5 +1,9 @@
 // Chinese source text, followed by English and Spanish. Keep placeholders identical.
 export const messages = {
+  "只读几何审计：可查看、测距和导出记录；本次重放不执行组件识别或重建。": [
+    "Read-only geometry audit: view, measure and export records. This replay does not run component recognition or reconstruction.",
+    "Auditoría de geometría de solo lectura: consulte, mida y exporte registros. Esta reproducción no ejecuta reconocimiento de componentes ni reconstrucción.",
+  ],
   公开尺寸验证: ["Public metric validation", "Validación métrica pública"],
   "2 个场景 · 6 张照片 · 8 条独立长度": [
     "2 scenes · 6 photos · 8 independent lengths",

@@ -55,6 +55,8 @@ def reference_point(depth, pixel_xy, params, radius=10, max_shift=3.0, max_sprea
 
     The 21x21 neighbourhood needs >=20 measured pixels and <=30 mm depth spread
     (5th--95th percentile). This is a selection guard, not an uncertainty claim.
+    The selected Z must also be within30 mm of the local supported-depth median,
+    so a single foreground spike cannot hide outside the 5--95% percentiles.
     No depth is inpainted/interpolated. Pixel movement and support are retained.
     """
     pixel = np.asarray(pixel_xy, float)
@@ -79,7 +81,11 @@ def reference_point(depth, pixel_xy, params, radius=10, max_shift=3.0, max_sprea
         raise ValueError("NO_NEARBY_REFERENCE_DEPTH")
     px, py = candidates[best]
     z = float(depth[py, px])
+    selected_deviation = abs(z - float(np.median(patch[valid])))
+    if selected_deviation > max_spread:
+        raise ValueError("REFERENCE_DEPTH_OUTLIER")
     return {"requested_pixel_xy": pixel.tolist(), "sample_pixel_xy": [int(px), int(py)],
             "sample_shift_px": float(shifts[best]), "depth_z_m": z,
             "support_count": len(xx), "depth_spread_m": spread,
+            "selected_depth_deviation_m": selected_deviation,
             "xyz_m": (camera_ray([px+.5, py+.5], params) * z).tolist()}

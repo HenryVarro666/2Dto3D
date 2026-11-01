@@ -36,10 +36,10 @@
 
 **Interfaces:** Reference helper consumes original pixel coordinates, matched depth raster and camera parameters; returns metric XYZ and sampling diagnostics. Runner consumes selection and cached public archives; writes raw local geometry and API receipts plus a compact public summary.
 
-- [ ] Test distortion inversion, letterbox pixel mapping, invalid depth and depth discontinuity rejection; observe RED.
-- [ ] Implement only the required reader/ray/sampling helpers and verify GREEN.
-- [ ] Download/hash source archives, inspect contact sheets, select two triplets and at least six endpoints per scene based on photograph/reference availability, and freeze selection before inference.
-- [ ] Record source URL, dataset license, failed Agisoft download and why it cannot yet be used as length truth.
+- [x] Test distortion inversion, letterbox pixel mapping, invalid depth and depth discontinuity rejection; observe RED.
+- [x] Implement only the required reader/ray/sampling helpers and verify GREEN.
+- [x] Download/hash source archives, inspect contact sheets, select two triplets and at least six endpoints per scene based on photograph/reference availability, and freeze selection before inference.
+- [x] Record source URL, dataset license, failed Agisoft download and why it cannot yet be used as length truth.
 
 ### Task 2: Real inference and API measurement
 
@@ -47,10 +47,10 @@
 
 **Interfaces:** VGGT `reconstruct` produces relative point map; normal `export_pointcloud` writes the audit GLB. Existing measurement routes fit one scale and validate held-out lengths without changing it.
 
-- [ ] Run selected triplets at 336 and 518 with fixed weights; preserve failures and logs. Avoid overlapping the separate E06 GPU run.
-- [ ] Measure before calibration as relative units, then one reference-calibrated measurement for each held-out segment; persist immutable receipts, hashes, timing and errors.
-- [ ] Check exported vertex coordinates against point-map endpoints and verify API length math agrees to float32 tolerance; do not align a shape to GT.
-- [ ] Generate summary from receipts, list every check and exclusion, and publish the resolution comparison without selecting only the better run.
+- [x] Run selected triplets at 336 and 518 with fixed weights; preserve failures and logs. Avoid overlapping the separate E06 GPU run.
+- [x] Measure before calibration as relative units, then one reference-calibrated measurement for each held-out segment; persist immutable receipts, hashes, timing and errors.
+- [x] Check exported vertex coordinates against point-map endpoints and verify API length math agrees to float32 tolerance; do not align a shape to GT.
+- [x] Generate summary from receipts, list every check and exclusion, and publish the resolution comparison without selecting only the better run.
 
 ### Task 3: Web, documentation and delivery
 
@@ -58,7 +58,7 @@
 
 **Interfaces:** A read-only trilingual panel consumes the compact checked-in result summary and links to original sources; existing job restore and measurement replay show local geometry when prepared.
 
-- [ ] Add a failing UI test for held-out results, reference category and language switching; implement the panel and observe GREEN.
-- [ ] Save a detailed E07 report with all results, known failures, evidence location, reproduction and next steps; update handoff indexes and both READMEs.
-- [ ] Run backend/frontend suites, build, lint, manifest checks and real browser verification; capture an authentic UI screenshot.
-- [ ] Fresh independent review; fix material findings with RED/GREEN. Sync latest main without overwriting E06 history; push to the existing private GitHub repository and verify a clean clone.
+- [x] Add a failing UI test for held-out results, reference category and language switching; implement the panel and observe GREEN.
+- [x] Save a detailed E07 report with all results, known failures, evidence location, reproduction and next steps; update handoff indexes and both READMEs.
+- [x] Run backend/frontend suites, build, lint, manifest checks and real browser verification; capture an authentic UI screenshot.
+- [ ] Private GitHub push and clean-clone verification remain; fresh review and material RED/GREEN fixes are complete.

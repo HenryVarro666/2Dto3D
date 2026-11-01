@@ -11,7 +11,7 @@
 | E04 | 0522a85→237f796，同E03输入＋原13图保护 | 最终42模型任务＋4受控回放；部分改善，有新错误 | [本机前后图](../../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/index.html)、[报告](../../data/collections/sungrow/evaluation/runs/2026-10-31_v3_multiview_fix_4groups/report.md)、[计划](../superpowers/plans/2026-10-31-v3-real-regression-fixes.md)。4组主机均合并；固定旧mask线点保留改善；新推理Later线点略降、HC05丢细柱和新增语义误检。9c202d1的22任务另存，原747基线冻结 |
 | E05 | 58e3e28 / e66a6d9 / 9c98a60；解析fixture + 4份E03旧GLB | 工具与解析/兼容性已验证，现场尺寸待测 | [本次记录](2026-10-31-scale-measurement.md)、[测量指南](../measurement/README.md)；200mm参照，独立高度10%误差反例；真实旧GLB仅相对单位；已完成整合、新克隆与生产浏览器验证，最终66前端/113正式后端；原始数据不入Git |
 
-| E07 | 034ecb8；ETH3D pipes/kicker共6图；固定扫描参考 | 8次真实VGGT调用；网页交付检查中 | [完整记录](2026-11-01-public-metric-measurement.md)、[主轮结果](../measurement/public-metric-results.json)、[复跑](../measurement/public-metric-repeat.json)。336/518各8条检查，MAPE19.36%/4.17%；518后墙退步，保留全部结果。原图无实体尺；不代表现场精度 |
+| E07 | 034ecb8；ETH3D pipes/kicker共6图；固定扫描参考 | 8次真实VGGT调用；网页与审查已验证 | [完整记录](2026-11-01-public-metric-measurement.md)、[主轮结果](../measurement/public-metric-results.json)、[复跑](../measurement/public-metric-repeat.json)。336/518各8条检查，MAPE19.36%/4.17%；518后墙退步，保留全部结果。原图无实体尺；不代表现场精度 |
 
 ## 下一位接手者
 

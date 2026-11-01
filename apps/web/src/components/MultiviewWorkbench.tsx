@@ -454,67 +454,84 @@ export function MultiviewWorkbench({
           ))}
         </div>
       )}
-      <section
-        className="task-progress multi-progress"
-        aria-label={t("多图任务进度")}
-      >
-        <div className="task-progress-heading">
-          <strong aria-live="polite">
-            {currentLabel}
-            {active && state.phase === "uploading"
-              ? ` · ${state.uploadIndex}/${state.files.length}`
-              : active && state.job?.view_index
-                ? ` · ${state.job.view_index}/${state.job.total_views}`
-                : ""}
-          </strong>
-          <span>
-            {(flow.elapsedMs / 1000).toFixed(1)} s · {t("按处理阶段更新")}
-          </span>
+      {readOnlyGeometry ? (
+        <div className="capture-guide" role="status">
+          <Layers3 size={20} />
+          <p>
+            {t(
+              "只读几何审计：可查看、测距和导出记录；本次重放不执行组件识别或重建。",
+            )}
+          </p>
+          {active && (
+            <button className="text-button" onClick={flow.cancel}>
+              {t("停止等待")}
+            </button>
+          )}
+          {state.error && <p role="alert">{localize(state.error)}</p>}
         </div>
-        <div
-          className="task-progress-track"
-          role="progressbar"
-          aria-label={t("多图阶段进度")}
-          aria-valuemin={0}
-          aria-valuemax={actualStages.length}
-          aria-valuenow={progress}
-          aria-valuetext={currentLabel}
-          aria-busy={active}
-          style={{
-            gridTemplateColumns: `repeat(${actualStages.length}, minmax(0, 1fr))`,
-          }}
+      ) : (
+        <section
+          className="task-progress multi-progress"
+          aria-label={t("多图任务进度")}
         >
-          {actualStages.map((s, i) => (
-            <span
-              key={s}
-              className={
-                i < progress
-                  ? "complete"
-                  : i === progress && active
-                    ? "current"
-                    : "pending"
-              }
-            />
-          ))}
-        </div>
-        <div className="multi-stage-labels">
-          {actualStages.map((s) => (
-            <span key={s}>{t(s)}</span>
-          ))}
-        </div>
-        {state.mode === "manual" && (
-          <p>{t("复用已生成的几何，仅更新组件归属。")}</p>
-        )}
-        {active && (
-          <button className="text-button" onClick={flow.cancel}>
-            {t("停止等待")}
-          </button>
-        )}
-        {state.phase === "cancelled" && (
-          <p>{t("已停止等待；服务端任务可能仍在完成。")}</p>
-        )}
-        {state.error && <p role="alert">{localize(state.error)}</p>}
-      </section>
+          <div className="task-progress-heading">
+            <strong aria-live="polite">
+              {currentLabel}
+              {active && state.phase === "uploading"
+                ? ` · ${state.uploadIndex}/${state.files.length}`
+                : active && state.job?.view_index
+                  ? ` · ${state.job.view_index}/${state.job.total_views}`
+                  : ""}
+            </strong>
+            <span>
+              {(flow.elapsedMs / 1000).toFixed(1)} s · {t("按处理阶段更新")}
+            </span>
+          </div>
+          <div
+            className="task-progress-track"
+            role="progressbar"
+            aria-label={t("多图阶段进度")}
+            aria-valuemin={0}
+            aria-valuemax={actualStages.length}
+            aria-valuenow={progress}
+            aria-valuetext={currentLabel}
+            aria-busy={active}
+            style={{
+              gridTemplateColumns: `repeat(${actualStages.length}, minmax(0, 1fr))`,
+            }}
+          >
+            {actualStages.map((s, i) => (
+              <span
+                key={s}
+                className={
+                  i < progress
+                    ? "complete"
+                    : i === progress && active
+                      ? "current"
+                      : "pending"
+                }
+              />
+            ))}
+          </div>
+          <div className="multi-stage-labels">
+            {actualStages.map((s) => (
+              <span key={s}>{t(s)}</span>
+            ))}
+          </div>
+          {state.mode === "manual" && (
+            <p>{t("复用已生成的几何，仅更新组件归属。")}</p>
+          )}
+          {active && (
+            <button className="text-button" onClick={flow.cancel}>
+              {t("停止等待")}
+            </button>
+          )}
+          {state.phase === "cancelled" && (
+            <p>{t("已停止等待；服务端任务可能仍在完成。")}</p>
+          )}
+          {state.error && <p role="alert">{localize(state.error)}</p>}
+        </section>
+      )}
       <div className="workbench-grid">
         <PhotoPanel
           idPrefix="multi-"

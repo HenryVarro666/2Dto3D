@@ -205,6 +205,9 @@ it.each([{ not_model_inference: true }, { read_only_geometry: true }])(
     ).toBeDisabled();
     expect(screen.getByRole("button", { name: "添加组件框" })).toBeDisabled();
     expect(
+      screen.queryByRole("region", { name: "多图任务进度" }),
+    ).not.toBeInTheDocument();
+    expect(
       screen.getByRole("region", { name: "标定与测距" }),
     ).toBeInTheDocument();
     expect(

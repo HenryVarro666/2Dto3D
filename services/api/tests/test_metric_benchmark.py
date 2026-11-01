@@ -58,3 +58,11 @@ def test_raw_depth_is_binary_float_dump_not_jpeg(tmp_path):
     assert metric.read_depth(path, 2, 2)[1, 0] == 3
     with pytest.raises(ValueError, match="DEPTH_BYTE_COUNT"):
         metric.read_depth(path, 3, 2)
+
+
+def test_reference_sampling_rejects_isolated_depth_outlier_hidden_by_percentiles():
+    depth = np.full((25, 25), 2, np.float32)
+    depth[12, 12] = 3
+    params = [100, 100, 12.5, 12.5, 0, 0, 0, 0, 0, 0, 0, 0]
+    with pytest.raises(ValueError, match="REFERENCE_DEPTH_OUTLIER"):
+        metric.reference_point(depth, [12, 12], params)
