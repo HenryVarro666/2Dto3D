@@ -29,7 +29,7 @@
 - Failure evidence always persists and CLI exits nonzero. No unrelated queued jobs interrupted; no browser-supplied XYZ.
 - Aggregates compare only matching RGB/resize strata, same protocol/model/GT and exactly4held-outs per scene; missing/mismatched cases withhold aggregate. Locale switch preserves values/job IDs.
 
-### Task1: Preparation, mappings and frozen protocol
+### Task 1: Preparation, mappings and frozen protocol
 
 **Files:** reconstruction.py,undistortion.py,infer.py; newresize_benchmark.py and tests; measurement/resize-selection.json.
 **Interfaces:** image_layout(width,height,target_size=518,resize_mode='legacy14') gives integerrect,continuousmappingrect and isotropicscale; prepare_images(paths,target_size,resize_mode) retains its2return values; VggtReconstructor optionalresize_mode forwarded to worker; new runner uses mapping_rect for E08 math.
@@ -37,7 +37,7 @@
 - [ ] Implement minimal optional isotropic mode with PIL floating-box bicubic; testsGREEN. Verify baseline interfaces and all8sourceinput hashes.
 - [ ] Freeze8case input hashes, mappings, support and common20physicalpoints/refarrays; builder review settled before inference; commit before any new model call.
 
-### Task2: Controlled real evaluation and diagnostics
+### Task 2: Controlled real evaluation and diagnostics
 
 **Files:** resize_benchmark.py, compactresize-results/repeat JSON, ignoredarrays/clouds/anchors/receipts/logs.
 **Interfaces:** run(args,protocol) verifies frozen tensors, pinnedweights, fixedpoint sampling and measurement readback; allfailed cases persist then nonzero; publisher separate from raw summaries.
@@ -45,7 +45,7 @@
 - [ ] Verify primary/repeat hashes/arrays/lengths; retainallfailed or worse checks, worker/cachetiming scope.
 - [ ] Diagnose kickerG–H raw length/depthspan/camera; retainC–Ddepthordering, sidewall andotherregressions. Known-Kaux separately labelled. Do not infer a unique cause from one smallsample.
 
-### Task3: Presentation, durable evidence and private delivery
+### Task 3: Presentation, durable evidence and private delivery
 
 **Files:** newResizeComparison component/test,workbench/i18n/styles; pairedREADME/figures/screenshots; report/issues/experiments/verification/measurementguide.
 **Interfaces:** frozenmatching-stratum data with onRestore(jobID), no extra modelcalls on locale/selection.

@@ -72,7 +72,7 @@ def rectify_rgb(rgb, params, k, chunk_rows=128):
     return output, valid
 
 
-def model_support_mask(photo_valid, rect, input_size):
+def model_support_mask(photo_valid, rect, input_size, *, mapping_rect=None):
     """Conservative PIL-bicubic resize footprint, not nearest-mask interpolation.
 
     The bicubic downsampling radius is2 source pixels times the reduction factor.
@@ -80,15 +80,19 @@ def model_support_mask(photo_valid, rect, input_size):
     """
     left, top, right, bottom = map(int, rect)
     height, width = photo_valid.shape
-    radius = int(np.ceil(2*max(width/(right-left), height/(bottom-top))))+2
+    ml, mt, mr, mb = np.asarray(rect if mapping_rect is None else mapping_rect, dtype=float)
+    if not (0 <= left <= ml < mr <= right <= input_size and 0 <= top <= mt < mb <= bottom <= input_size):
+        raise ValueError("INVALID_CONTINUOUS_IMAGE_MAPPING")
+    radius = int(np.ceil(2*max(width/(mr-ml), height/(mb-mt))))+2
     kernel = np.ones((2*radius+1, 2*radius+1), np.uint8)
     safe = cv2.erode(np.asarray(photo_valid, np.uint8), kernel,
                      borderType=cv2.BORDER_CONSTANT, borderValue=0).astype(bool)
     yy, xx = np.indices((bottom-top, right-left))
-    px = np.rint((xx+.5)*width/(right-left)-.5).astype(int)
-    py = np.rint((yy+.5)*height/(bottom-top)-.5).astype(int)
+    px = np.rint((xx+left+.5-ml)*width/(mr-ml)-.5).astype(int)
+    py = np.rint((yy+top+.5-mt)*height/(mb-mt)-.5).astype(int)
+    inside = (px >= 0) & (px < width) & (py >= 0) & (py < height)
     mask = np.zeros((input_size, input_size), bool)
-    mask[top:bottom, left:right] = safe[py, px]
+    mask[top:bottom, left:right] = inside & safe[np.clip(py, 0, height-1), np.clip(px, 0, width-1)]
     return mask
 
 

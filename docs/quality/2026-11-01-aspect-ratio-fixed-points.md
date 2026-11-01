@@ -11,3 +11,10 @@
 所有原始数组、模型输入、点云、日志和数据库保存在ignored `data/measurement-resize/`与既有重放runtime；旧E08协议/结果不改写。后续按实际运行追加改善、退步、失败与验证证据。
 
 独立builder检查已完成，无重要未决问题；用纯Pillow解析fixture确认逆仿射位置相等、浮点box无裁剪/API拒绝，未运行模型。存储边界逐边floor/ceil，短轴白色源padding覆盖bicubic足迹。依据：[Pillow官方resize浮点box文档](https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.resize)；实际使用项目锁定Pillow12.3.0，不升级依赖。
+
+
+## 推理前冻结
+
+协议[resize-selection.json](../measurement/resize-selection.json)，SHA256 `174a1e82af46253da4432b29ca22b142bda8382e2d79a5a0e5a4ed3bb217a964`。8个条件已冻结输入RGB文件、实际准备张量、支持区mask、连续/整数映射和20个原实际点；数学逆映射最大残差5.08e-13原图像素，不是物理精度。所有legacy14张量与mask哈希与E08完全相同，取点网格坐标也相同。
+
+几何功能先9项RED（缺新模式/接口）后22项几何/既有回归GREEN；另2项runner测试确认失败病例全部保留且非零退出、张量改变在推理前拒绝。当前全开发后端142 passed/2可选ML skip，Ruff通过。日志在ignored `data/measurement-resize/`；初始lint捕获脚本执行位、导入顺序和循环回调未绑定，已纠正，不影响尚未运行的模型。冻结前未运行本轮模型。

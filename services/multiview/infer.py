@@ -60,7 +60,8 @@ def infer(manifest, output):
     gc.collect()
     model = model.to(device).eval()
     loaded = time.perf_counter()
-    images, rects = prepare_images(manifest["images"], manifest["input_size"])
+    resize_mode = manifest.get("resize_mode", "legacy14")
+    images, rects = prepare_images(manifest["images"], manifest["input_size"], resize_mode=resize_mode)
     input_tensor_sha256 = hashlib.sha256(images.tobytes()).hexdigest()
     inputs = torch.from_numpy(images).to(device)
     report("estimating_geometry")
@@ -100,6 +101,7 @@ def infer(manifest, output):
             "code_revision": VGGT_CODE_REVISION,
             "device": device,
             "input_size": manifest["input_size"],
+            "resize_mode": resize_mode,
             "license": "CC-BY-NC-4.0",
             "geometry": "joint_depth_and_camera_unprojection",
             "metric_scale_status": "unknown",

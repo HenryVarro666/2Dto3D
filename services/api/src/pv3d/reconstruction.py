@@ -15,22 +15,61 @@ VGGT_REVISION = "860abec7937da0a4c03c41d3c269c366e82abdf9"
 VGGT_CODE_REVISION = "a288dd0f14786c93483e45524328726ab7b1b4ce"
 
 
-def prepare_images(image_paths, target_size=336):
+def image_layout(width, height, target_size=518, resize_mode="legacy14"):
+    """Separate stored raster bounds from continuous physical-photo mapping."""
+    if target_size not in {224, 336, 518} or min(width, height) <= 0:
+        raise ValueError("Unsupported photo dimensions or target size")
+    if resize_mode not in {"legacy14", "isotropic"}:
+        raise ValueError("Unsupported resize mode")
+    size = np.array([width, height], dtype=float)
+    scale = target_size/max(width, height)
+    if resize_mode == "legacy14":
+        extent = np.array([max(14, min(target_size, round(edge*scale/14)*14)) for edge in size])
+        offset = (target_size-extent)//2
+        rect = [*offset, *(offset+extent)]
+        mapped = np.array(rect, dtype=float)
+        padding, box = [0, 0], [0, 0, width, height]
+    else:
+        extent = size*scale
+        extent[np.argmax(size)] = target_size
+        offset = (target_size-extent)/2
+        mapped = np.r_[offset, offset+extent]
+        left = np.floor(mapped[:2]+1e-10).astype(int)
+        right = np.ceil(mapped[2:]-1e-10).astype(int)
+        rect = [*left, *right]
+        allocated, delta = right-left, offset-left
+        extra = np.maximum(delta, allocated-extent-delta)/scale
+        padding = [int(np.ceil(e+2/scale))+2 if e > 1e-10 else 0 for e in extra]
+        source_left = np.array(padding)-delta/scale
+        box = [*source_left, *(source_left+allocated/scale)]
+    return {"resize_mode": resize_mode, "source_size": [width, height], "target_size": target_size,
+            "rect": list(map(int, rect)), "mapping_rect": mapped.tolist(),
+            "scale_xy": ((mapped[2:]-mapped[:2])/size).tolist(),
+            "source_padding": padding, "source_box": list(map(float, box))}
+
+
+def prepare_images(image_paths, target_size=336, resize_mode="legacy14"):
     if not image_paths or target_size not in {224, 336, 518}:
         raise ValueError("Use photos and a supported 14-pixel-aligned input size")
     images, rects = [], []
     for path in image_paths:
         with Image.open(path) as source:
             image = source.convert("RGB")
-        width, height = image.size
-        scale = target_size / max(width, height)
-        resized = [max(14, min(target_size, round(edge * scale / 14) * 14)) for edge in (width, height)]
-        image = image.resize(tuple(resized), Image.Resampling.BICUBIC)
-        left, top = (target_size - resized[0]) // 2, (target_size - resized[1]) // 2
+        layout = image_layout(*image.size, target_size, resize_mode)
+        left, top, right, bottom = layout["rect"]
+        resized = (right-left, bottom-top)
+        if resize_mode == "legacy14":
+            image = image.resize(resized, Image.Resampling.BICUBIC)
+        else:
+            padx, pady = layout["source_padding"]
+            padded = Image.new("RGB", (image.width+2*padx, image.height+2*pady), "white")
+            padded.paste(image, (padx, pady))
+            image = padded.resize(resized, Image.Resampling.BICUBIC,
+                                  box=tuple(layout["source_box"]), reducing_gap=None)
         square = Image.new("RGB", (target_size, target_size), "white")
         square.paste(image, (left, top))
         images.append(np.asarray(square, dtype=np.float32).transpose(2, 0, 1) / 255)
-        rects.append([left, top, left + resized[0], top + resized[1]])
+        rects.append([left, top, right, bottom])
     return np.stack(images), np.asarray(rects, dtype=np.int32)
 
 
@@ -68,7 +107,8 @@ def load_geometry(path, view_count):
 
 
 class VggtReconstructor:
-    def __init__(self, runtime_python=None, worker_script=None, cache_dir=None, device=None, input_size=None):
+    def __init__(self, runtime_python=None, worker_script=None, cache_dir=None, device=None, input_size=None,
+                 resize_mode="legacy14"):
         self.python = Path(
             runtime_python
             or os.environ.get("PV3D_MULTIVIEW_PYTHON", ROOT / "services/multiview/.venv/bin/python")
@@ -77,6 +117,9 @@ class VggtReconstructor:
         self.cache_dir = Path(cache_dir or os.environ.get("PV3D_MODEL_DIR", ROOT / "models/huggingface"))
         self.device = device or os.environ.get("PV3D_MULTIVIEW_DEVICE", os.environ.get("PV3D_DEVICE", "auto"))
         self.input_size = int(input_size or os.environ.get("PV3D_VGGT_SIZE", "336"))
+        self.resize_mode = resize_mode
+        if resize_mode not in {"legacy14", "isotropic"}:
+            raise ValueError("Unsupported resize mode")
         if self.device not in {"auto", "cpu", "mps", "cuda"} or self.input_size not in {224, 336, 518}:
             raise ValueError("Unsupported multi-view inference settings")
 
@@ -100,6 +143,7 @@ class VggtReconstructor:
                 {
                     "images": [str(p) for p in image_paths],
                     "input_size": self.input_size,
+                    "resize_mode": self.resize_mode,
                     "device": self.device,
                     "cache_dir": str(self.cache_dir),
                 }
