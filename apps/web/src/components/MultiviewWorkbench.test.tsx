@@ -1,3 +1,5 @@
+// Preload the real viewer before timed UI waits; cold transforms can exceed 1s on CI.
+import "./SceneViewer";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it, vi } from "vitest";
