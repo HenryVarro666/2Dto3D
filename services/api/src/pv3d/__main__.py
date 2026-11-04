@@ -38,10 +38,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.check:
         print(f"settings ok: host={settings.host} port={settings.port} data_dir={settings.data_dir}")
         return 0
-    if settings.exposes_network:
+    if settings.exposes_network and not settings.requires_token:
         log.warning(
-            "Binding to %s exposes an unauthenticated local service; put it behind an authenticating "
-            "reverse proxy or keep PV3D_HOST on a loopback address.",
+            "Binding to %s exposes an unauthenticated service; set PV3D_API_TOKEN or put it behind an "
+            "authenticating reverse proxy, or keep PV3D_HOST on a loopback address.",
             settings.host,
         )
     try:

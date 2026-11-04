@@ -79,12 +79,16 @@ jobs:
           tags: pv3d:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Smoke test health endpoint
+      - name: Smoke test health endpoint and token authentication
         run: |
-          docker run -d --name pv3d -p 8000:8000 pv3d:ci
+          docker run -d --name pv3d -p 8000:8000 -e PV3D_API_TOKEN=ci-smoke-token-0123456789 pv3d:ci
           for attempt in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:8000/api/health >/dev/null; then echo "healthy"; exit 0; fi
+            if curl -fsS http://127.0.0.1:8000/api/health >/dev/null; then break; fi
             sleep 2
           done
-          docker logs pv3d
-          exit 1
+          curl -fsS http://127.0.0.1:8000/api/health | grep -q '"authentication": *"token"' || { docker logs pv3d; exit 1; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/api/jobs/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+          [ "$code" = "401" ] || { echo "expected 401 without token, got $code"; docker logs pv3d; exit 1; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' -H 'Authorization: Bearer ci-smoke-token-0123456789' http://127.0.0.1:8000/api/jobs/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)
+          [ "$code" = "404" ] || { echo "expected 404 with token, got $code"; docker logs pv3d; exit 1; }
+          echo "healthy and authenticated"

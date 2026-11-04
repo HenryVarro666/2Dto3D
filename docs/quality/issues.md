@@ -166,5 +166,7 @@ E08补充保存UI词典解析失败与ML测试指向错误checkout的失败日�
 | UI-011 | 任务 ID 占位符与新服务端消息未翻译 | 已修复 | 词典补齐中英西 |
 | DOC-002 | 缺部署/运维/备份说明 | 已补齐 | [运维说明](../operations.md) |
 | OBS-001 | `original.bin` 保留 EXIF/GPS 且无清理 | 已记录，未改动 | 保留输入哈希证据链；备份策略单独处理 |
+| SEC-004 | 服务无认证，非回环部署只能依赖外部反向代理 | 已修复，RED/GREEN | `PV3D_API_TOKEN` Bearer/Cookie 认证、`/api/session`、网页登录框三语；8 项后端＋3 项前端测试，容器 CI 验证 401/404 |
+| OPS-010 | 容器只覆盖无模型镜像，VGGT 环境需镜像外运行 | 已实现，镜像未本机构建 | `WITH_MODELS=1` 变体＋手动工作流；本机验证 multiview 锁在 Linux 可装（torch 2.8.0+cu128） |
 
 冻结脚本与 worker 零改动；算法模块只加类型注解。详细复现、审查代理结论与验证输出见[本轮记录](2026-11-04-production-hardening.md)。

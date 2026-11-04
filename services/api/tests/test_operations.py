@@ -11,7 +11,7 @@ import pytest
 from fastapi.testclient import TestClient
 from pv3d import __version__
 from pv3d.app import JobRunner, create_app
-from pv3d.config import Settings
+from pv3d.config import Settings, SettingsError
 from pv3d.observability import JsonFormatter, configure_logging
 from pv3d.schemas import JobRequest
 from pv3d.store import SCHEMA_VERSION, SchemaError, Store
@@ -271,3 +271,85 @@ def test_wrong_method_on_a_real_route_is_405_not_404(tmp_path):
         assert client.delete("/api/jobs/" + "a" * 32).status_code == 405
         assert client.get("/api/does-not-exist").status_code == 404
         assert client.post("/api/does-not-exist").status_code == 404
+
+
+TOKEN = "s3cret-token-with-16+chars"
+
+
+def token_app(tmp_path, **overrides):
+    settings = Settings.from_env({"PV3D_API_TOKEN": TOKEN, **overrides})
+    return create_app(tmp_path, DetectorDouble(), settings=settings)
+
+
+def test_token_settings_are_validated():
+    assert Settings.from_env({}).api_token is None and not Settings.from_env({}).requires_token
+    assert Settings.from_env({"PV3D_API_TOKEN": "  "}).api_token is None
+    with pytest.raises(SettingsError, match="PV3D_API_TOKEN"):
+        Settings.from_env({"PV3D_API_TOKEN": "short"})
+    with pytest.raises(SettingsError, match="PV3D_API_TOKEN"):
+        Settings.from_env({"PV3D_API_TOKEN": "has a space in the token"})
+    with pytest.raises(SettingsError, match="PV3D_SESSION_MAX_AGE_S"):
+        Settings.from_env({"PV3D_API_TOKEN": TOKEN, "PV3D_SESSION_MAX_AGE_S": "5"})
+    assert Settings.from_env({"PV3D_API_TOKEN": TOKEN}).requires_token
+
+
+def test_without_a_token_the_api_stays_open_and_reports_no_authentication(tmp_path):
+    with TestClient(factory(tmp_path)) as client:
+        assert client.get("/api/health").json()["authentication"] == "none"
+        assert client.get("/api/session").status_code == 404
+        assert upload(client)["id"]
+
+
+def test_token_guards_every_api_route_except_health_and_session(tmp_path):
+    with TestClient(token_app(tmp_path)) as client:
+        health = client.get("/api/health")
+        assert health.status_code == 200 and health.json()["authentication"] == "token"
+        denied = client.post("/api/assets", files={"file": ("photo.png", picture(), "image/png")})
+        assert denied.status_code == 401
+        assert denied.headers["www-authenticate"].startswith("Bearer")
+        assert "token" in denied.json()["detail"].lower()
+        assert client.get("/api/jobs/" + "a" * 32).status_code == 401
+        assert client.get("/api/session").json() == {"required": True, "authenticated": False}
+        bearer = {"Authorization": f"Bearer {TOKEN}"}
+        asset = client.post("/api/assets", files={"file": ("photo.png", picture(), "image/png")}, headers=bearer)
+        assert asset.status_code == 201
+        assert client.get(f"/api/assets/{asset.json()['id']}/image", headers=bearer).status_code == 200
+        assert client.get("/api/jobs/" + "a" * 32, headers={"Authorization": f"Bearer {TOKEN}x"}).status_code == 401
+        assert client.get("/api/jobs/" + "a" * 32, headers={"Authorization": f"Basic {TOKEN}"}).status_code == 401
+
+
+def test_session_cookie_signs_in_the_browser_without_exposing_the_token(tmp_path):
+    with TestClient(token_app(tmp_path)) as client:
+        assert client.post("/api/session", json={"token": "wrong-token-value-123"}).status_code == 401
+        assert client.post("/api/session", json={"token": TOKEN, "extra": 1}).status_code == 422
+        created = client.post("/api/session", json={"token": TOKEN})
+        assert created.status_code == 200 and created.json()["authenticated"] is True
+        cookie = created.headers["set-cookie"].lower()
+        assert "pv3d_session=" in cookie and "httponly" in cookie and "samesite=strict" in cookie
+        assert TOKEN.lower() not in cookie
+        # The client jar now carries the cookie: downloads and JSON routes work without a header.
+        assert client.get("/api/session").json()["authenticated"] is True
+        asset = upload(client)
+        assert client.get(asset["image_url"]).status_code == 200
+        assert client.delete("/api/session").json()["authenticated"] is False
+        assert client.get("/api/jobs/" + "a" * 32).status_code == 401
+
+
+def test_forged_or_malformed_cookies_are_rejected(tmp_path):
+    with TestClient(token_app(tmp_path)) as client:
+        for cookie in ("pv3d_session=forged", f"pv3d_session={TOKEN}", "garbage;;=;", "pv3d_session="):
+            response = client.get("/api/jobs/" + "a" * 32, headers={"Cookie": cookie})
+            assert response.status_code == 401, cookie
+
+
+def test_unauthenticated_uploads_are_refused_before_the_body_is_parsed(tmp_path):
+    with TestClient(token_app(tmp_path)) as client:
+        huge = b"\x00" * (2 * 1024 * 1024)
+        assert client.post("/api/assets", files={"file": ("big.png", huge, "image/png")}).status_code == 401
+        assert "x-request-id" in client.get("/api/jobs/" + "a" * 32).headers
+
+
+def test_static_web_app_stays_reachable_but_api_calls_need_the_token(tmp_path):
+    with TestClient(token_app(tmp_path)) as client:
+        assert client.get("/api/nothing").status_code == 401
+        assert client.get("/api/health").status_code == 200

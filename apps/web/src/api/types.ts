@@ -73,8 +73,10 @@ export type Job = {
   error: string | null;
   result: Result | null;
 };
+export type SessionState = { required: boolean; authenticated: boolean };
 export type Health = {
   status: "ok";
+  authentication?: "token" | "none";
   multiview?: {
     state: string;
     model_id?: string;
@@ -111,6 +113,9 @@ export type Refinement = RefinementInput & {
   warnings: string[];
 };
 export interface WorkbenchApi {
+  getSession(signal?: AbortSignal): Promise<SessionState>;
+  createSession(token: string, signal?: AbortSignal): Promise<SessionState>;
+  deleteSession(signal?: AbortSignal): Promise<SessionState>;
   getMeasurements(
     id: string,
     signal?: AbortSignal,

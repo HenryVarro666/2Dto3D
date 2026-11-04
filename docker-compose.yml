@@ -1,0 +1,49 @@
+# Local deployment of the workbench behind token authentication.
+#
+#   PV3D_API_TOKEN=change-me-to-a-long-random-value docker compose up --build
+#
+# The default service is the model-free image (measurement, replay, authored demos).
+# Uncomment the `full` service to build the image with the perception stack and the
+# isolated VGGT worker; it needs an NVIDIA runtime for CUDA or PV3D_DEVICE=cpu.
+services:
+  api:
+    build: .
+    image: pv3d:latest
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      PV3D_API_TOKEN: ${PV3D_API_TOKEN:?set PV3D_API_TOKEN (at least 16 printable characters)}
+      PV3D_LOG_FORMAT: json
+      PV3D_LOG_LEVEL: INFO
+    volumes:
+      - pv3d-runtime:/app/data/runtime
+      - pv3d-models:/app/models/huggingface
+    restart: unless-stopped
+
+  # full:
+  #   build:
+  #     context: .
+  #     args:
+  #       WITH_MODELS: "1"
+  #   image: pv3d:full
+  #   ports:
+  #     - "127.0.0.1:8000:8000"
+  #   environment:
+  #     PV3D_API_TOKEN: ${PV3D_API_TOKEN:?set PV3D_API_TOKEN}
+  #     PV3D_DEVICE: cuda            # or cpu
+  #     PV3D_MULTIVIEW_DEVICE: cuda  # or cpu
+  #     PV3D_LOG_FORMAT: json
+  #   volumes:
+  #     - pv3d-runtime:/app/data/runtime
+  #     - pv3d-models:/app/models/huggingface
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: all
+  #             capabilities: [gpu]
+
+volumes:
+  pv3d-runtime:
+  pv3d-models:

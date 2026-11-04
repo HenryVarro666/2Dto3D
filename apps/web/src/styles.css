@@ -3434,3 +3434,29 @@ input[type="range"] {
 .resize-condition input {
   accent-color: var(--teal);
 }
+
+/* Optional access-token sign-in (shown only when the server requires a token). */
+.access-token {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+.access-token input {
+  width: 11rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font: inherit;
+}
+.access-token.signed-in {
+  opacity: 0.85;
+}
+.access-token-error {
+  color: #ffb4a8;
+}

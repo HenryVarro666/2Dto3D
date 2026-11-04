@@ -172,7 +172,7 @@ make build
 | 我要做什么 | 入口 |
 |---|---|
 | 新机器安装、排错 | [运行说明](docs/running.md) · [硬件](docs/hardware.md) |
-| 长期运行、容器与健康检查 | [部署与运维](docs/operations.md) · [环境变量示例](.env.example) |
+| 长期运行、容器、令牌认证与健康检查 | [部署与运维](docs/operations.md) · [环境变量示例](.env.example) · [compose 示例](docker-compose.yml) |
 | 拍多视角照片、修正组件 | [V3 操作指南](docs/v3/capture-guide.md) · [模型与几何](docs/v3/models.md) |
 | 标定、独立验证、迁移记录 | [测量指南](docs/measurement/README.md) · [本次验证](docs/quality/2026-10-31-scale-measurement.md) |
 | 了解计划、契约与后续范围 | [项目计划](docs/plan.md) · [API](docs/api-contract.md) · [路线图](docs/roadmap.md) |

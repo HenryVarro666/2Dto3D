@@ -74,6 +74,9 @@ const serverMessages: Record<string, MessageKey> = {
     "处理队列已满，请等当前任务完成后重试。",
   "The service is shutting down. Retry after it restarts.":
     "服务正在关闭，请在重启后重试。",
+  "The access token is not valid.": "访问令牌无效，请检查后重试。",
+  "Authentication required. Send the access token or sign in.":
+    "需要访问令牌才能使用本地服务。",
   "The inference worker is busy with a long task. Retry the refinement later.":
     "推理服务正忙于较长任务，请稍后再试边界细化。",
   "The refinement mask is unavailable.": "边界细化文件不可用，请重新细化。",

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — token authentication and full-model container (HARDEN-002)
+
+- Optional `PV3D_API_TOKEN`: bearer header for API clients, HttpOnly SameSite=Strict session cookie for the web app (`POST/DELETE /api/session`), 401 before any body parsing, open health probe reporting the authentication mode; the UI shows a sign-in field in Chinese, English and Spanish whenever a request is rejected.
+- `Dockerfile --build-arg WITH_MODELS=1` builds the perception stack and the isolated VGGT environment inside the image (manual workflow); `docker-compose.yml` example with token and named volumes; CI smoke test now checks authentication inside the container.
+
 ## Unreleased — production hardening (HARDEN-001)
 
 - Add validated environment settings (`pv3d.config.Settings`), a `python -m pv3d` entry point with `--check`, text/JSON logging, per-request IDs and access logs, security headers and opt-in CORS.

@@ -58,3 +58,9 @@ PV3D_DATA_DIR=/tmp/x .venv/bin/python -m pv3d --check                  # setting
 ```
 
 首次推送后 GitHub 运行 [41783231730](https://github.com/HenryVarro666/2Dto3D/actions/runs/41783231730)：前端作业通过；后端作业在 mypy 步失败（`uv.lock` 未随 dev extra 更新，`.venv/bin/mypy` 不存在）；容器作业在网页构建失败（前端从 `docs/measurement/*.json` 导入冻结记录，而 `.dockerignore` 排除了 `docs`）。两处均为本轮引入的交付缺陷，修复：`uv lock` 仅新增 mypy 及其依赖（干净 `uv sync --frozen --extra dev` 后 mypy 通过）；Dockerfile 的 web 阶段复制 `docs/measurement`，`.dockerignore` 例外该目录，并在本机按镜像目录布局模拟 `npm ci && npm run build` 通过。后续运行结果以 Actions 页面为准。
+
+## 追加：HARDEN-002 令牌认证与完整镜像（同日）
+
+- **SEC-004**：新增可选 `PV3D_API_TOKEN`。纯 ASGI 中间件在路由与请求体解析之前拒绝未认证的 `/api` 调用（401＋`WWW-Authenticate`），`/api/health` 与 `/api/session` 开放；`POST /api/session` 用常量时间比较校验令牌并下发 HttpOnly/SameSite=Strict 的 HMAC Cookie（不含令牌），`DELETE` 退出。网页 `client.ts` 把 401 转成 `AuthRequiredError` 并广播，`AccessTokenPanel` 在顶栏显示登录框（中英西），下载链接随 Cookie 通过。后端新增 8 个测试（设置校验、路由覆盖、Cookie、伪造 Cookie、未认证大上传不解析、无令牌时开放），前端新增 3 个。本机：后端 205 通过、前端 88 通过、mypy/ruff/prettier/tsc 通过。
+- **OPS-010**：`Dockerfile` 改为 `WITH_MODELS` 构建参数：`1` 时安装 git、`--extra ml` 与 `services/multiview` 的锁定环境；默认镜像不变。`docker-compose.yml` 与 `.env.example` 加入令牌；CI 容器作业改为用令牌启动并验证 401/404；`container-full.yml` 手动工作流构建完整镜像并导入 `vggt/torch/numpy`。本机用 `uv sync --project services/multiview --frozen` 在 Linux x86_64 验证锁可安装（torch 2.8.0+cu128、numpy 1.26.4），未执行 `docker build`。
+- 未改动：令牌为共享密钥、不区分用户、不提供 TLS；公网部署仍需 TLS 终止代理（运维文档已写明）。

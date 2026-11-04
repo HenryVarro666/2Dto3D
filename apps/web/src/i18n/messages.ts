@@ -1169,6 +1169,25 @@ export const messages = {
     "El archivo de la máscara no está disponible. Vuelva a refinar.",
   ],
   "32位任务ID": ["32-character job ID", "ID de tarea de 32 caracteres"],
+  此服务需要访问令牌: [
+    "This service requires an access token",
+    "Este servicio requiere un token de acceso",
+  ],
+  "输入 PV3D_API_TOKEN": ["Enter PV3D_API_TOKEN", "Introduzca PV3D_API_TOKEN"],
+  登录: ["Sign in", "Iniciar sesión"],
+  退出登录: ["Sign out", "Cerrar sesión"],
+  已通过访问令牌登录: [
+    "Signed in with the access token",
+    "Sesión iniciada con el token de acceso",
+  ],
+  "访问令牌无效，请检查后重试。": [
+    "The access token is not valid. Check it and try again.",
+    "El token de acceso no es válido. Compruébelo e inténtelo de nuevo.",
+  ],
+  "需要访问令牌才能使用本地服务。": [
+    "An access token is required to use the local service.",
+    "Se necesita un token de acceso para usar el servicio local.",
+  ],
   "处理失败，请检查本地服务日志，重试或手动框选组件。": [
     "Processing failed. Check the local server logs, retry or outline components manually.",
     "El procesamiento falló. Revise los registros del servicio local, reinténtelo o delimite los componentes manualmente.",

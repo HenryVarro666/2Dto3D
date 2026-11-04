@@ -79,6 +79,8 @@ npm --prefix apps/web run dev
 | `PV3D_MAX_PENDING_JOBS` | `8` | 排队＋运行中任务上限，满时返回 409。 |
 | `PV3D_MULTIVIEW_TIMEOUT_S` | `1800` | 单次 VGGT worker 硬超时（秒）。 |
 | `PV3D_REFINE_TIMEOUT_S` | `300` | 交互细化等待推理 worker 的上限（秒），超时返回 503。 |
+| `PV3D_API_TOKEN` | 空 | 设置后 API 需要 Bearer 令牌或登录 Cookie；网页出现登录框。 |
+| `PV3D_SESSION_MAX_AGE_S` | `43200` | 登录 Cookie 有效期（秒）。 |
 
 生产部署、健康检查、日志、目录锁与容器见[部署与运维说明](operations.md)。
 

@@ -124,6 +124,9 @@ export const multiCompleted: MultiJob = {
 
 export function fakeApi(overrides: Partial<WorkbenchApi> = {}): WorkbenchApi {
   return {
+    getSession: async () => ({ required: false, authenticated: true }),
+    createSession: async () => ({ required: true, authenticated: true }),
+    deleteSession: async () => ({ required: true, authenticated: false }),
     getMeasurements: async (id) => ({
       schema_version: 1,
       job_id: id,

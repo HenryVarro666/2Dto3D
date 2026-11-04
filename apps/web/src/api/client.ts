@@ -11,7 +11,9 @@ import type {
   MeasurementSession,
   Calibration,
   Measurement,
+  SessionState,
 } from "./types";
+import { AuthRequiredError, reportUnauthorized } from "../core/auth";
 
 export function createApi(): WorkbenchApi {
   async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -21,6 +23,10 @@ export function createApi(): WorkbenchApi {
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") throw error;
       throw new Error("无法连接本地服务，请检查 API 是否已启动，再重试。");
+    }
+    if (response.status === 401 && !path.startsWith("/session")) {
+      reportUnauthorized();
+      throw new AuthRequiredError();
     }
     if (!response.ok) {
       const data = (await response.json().catch(() => null)) as {
@@ -41,6 +47,16 @@ export function createApi(): WorkbenchApi {
     return response.json() as Promise<T>;
   }
   return {
+    getSession: (signal) => request<SessionState>("/session", { signal }),
+    createSession: (token, signal) =>
+      request<SessionState>("/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+        signal,
+      }),
+    deleteSession: (signal) =>
+      request<SessionState>("/session", { method: "DELETE", signal }),
     getMeasurements: (id, signal) =>
       request<MeasurementSession>(
         `/multiview/jobs/${encodeURIComponent(id)}/measurements`,

@@ -24,6 +24,7 @@ import type {
 import { useWorkbench } from "./core/workflow";
 import { ComponentList } from "./components/ComponentList";
 import { ModelHealth } from "./components/ModelHealth";
+import { AccessTokenPanel } from "./components/AccessTokenPanel";
 import { PhotoPanel } from "./components/PhotoPanel";
 import { ProcessingStatus } from "./components/ProcessingStatus";
 import { LanguageSwitcher } from "./components/LanguageSwitcher";
@@ -208,6 +209,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
           <small>{t("设备结构实验室")}</small>
         </a>
         <div className="topbar-meta">
+          <AccessTokenPanel api={apiClient} />
           <span className="local-badge">
             <span />
             {t("本地工作空间")}

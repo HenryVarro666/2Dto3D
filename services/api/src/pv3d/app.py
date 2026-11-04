@@ -25,6 +25,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 from starlette.concurrency import run_in_threadpool
 
 from . import __version__
+from .auth import TokenAuthMiddleware, register_session_routes
 from .config import DEFAULT_MAX_PENDING_JOBS, Settings
 from .geometry import build_components, export_scene
 from .manual import apply_manual_components
@@ -363,6 +364,9 @@ def create_app(
                 runner.close()
 
     application = FastAPI(title="PV Component Schematic Workbench", version=__version__, lifespan=lifespan)
+    if settings.api_token:
+        # Innermost: runs after request context and body limits, before any route or body parsing.
+        application.add_middleware(TokenAuthMiddleware, token=settings.api_token)
     application.add_middleware(RequestContextMiddleware)
     application.add_middleware(
         BodyLimitMiddleware, limits={"/api/assets": MAX_UPLOAD_BYTES + MULTIPART_OVERHEAD_BYTES}
@@ -453,6 +457,7 @@ def create_app(
         return {
             "status": "ok",
             "version": __version__,
+            "authentication": "token" if settings.api_token else "none",
             "model": model_status,
             "multiview": reconstructor.status(),
             "queue": application.state.runner.queue_status(),
@@ -539,6 +544,9 @@ def create_app(
         if result["scene_url"] is None or not path.is_file():
             raise HTTPException(409, "There is no component scene. Add or correct components manually.")
         return FileResponse(path, media_type="model/gltf-binary", filename=f"{identifier}-scene.glb")
+
+    if settings.api_token:
+        register_session_routes(application, settings.api_token, settings.session_max_age_s)
 
     # Prevent unknown API URLs from falling through into the optional web app.
     from .captures import register_capture_routes

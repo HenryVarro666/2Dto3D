@@ -19,6 +19,8 @@ DEVICES = ("auto", "cpu", "mps", "cuda")
 DEFAULT_MAX_PENDING_JOBS = 8  # Includes the running job; reject rather than grow an unbounded queue.
 DEFAULT_MULTIVIEW_TIMEOUT_S = 1800
 DEFAULT_REFINE_TIMEOUT_S = 300
+DEFAULT_SESSION_MAX_AGE_S = 12 * 3600
+MIN_TOKEN_LENGTH = 16
 
 
 class SettingsError(ValueError):
@@ -55,6 +57,18 @@ def _origins(environ: Mapping[str, str]) -> tuple[str, ...]:
     return origins
 
 
+def _token(environ: Mapping[str, str]) -> str | None:
+    raw = environ.get("PV3D_API_TOKEN", "")
+    token = raw.strip()
+    if not token:
+        return None
+    if len(token) < MIN_TOKEN_LENGTH:
+        raise SettingsError(f"PV3D_API_TOKEN must have at least {MIN_TOKEN_LENGTH} characters")
+    if any(ord(c) < 33 or ord(c) > 126 for c in token):
+        raise SettingsError("PV3D_API_TOKEN must contain only printable ASCII without spaces")
+    return token
+
+
 def is_loopback(host: str) -> bool:
     if host in {"localhost", ""}:
         return True
@@ -77,6 +91,8 @@ class Settings:
     max_pending_jobs: int = DEFAULT_MAX_PENDING_JOBS
     multiview_timeout_s: int = DEFAULT_MULTIVIEW_TIMEOUT_S
     refine_timeout_s: int = DEFAULT_REFINE_TIMEOUT_S
+    api_token: str | None = None
+    session_max_age_s: int = DEFAULT_SESSION_MAX_AGE_S
 
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> Settings:
@@ -98,7 +114,15 @@ class Settings:
             refine_timeout_s=_int(
                 environ, "PV3D_REFINE_TIMEOUT_S", DEFAULT_REFINE_TIMEOUT_S, minimum=1, maximum=86_400
             ),
+            api_token=_token(environ),
+            session_max_age_s=_int(
+                environ, "PV3D_SESSION_MAX_AGE_S", DEFAULT_SESSION_MAX_AGE_S, minimum=60, maximum=30 * 86_400
+            ),
         )
+
+    @property
+    def requires_token(self) -> bool:
+        return self.api_token is not None
 
     @property
     def exposes_network(self) -> bool:

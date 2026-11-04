@@ -24,9 +24,20 @@ npm --prefix apps/web ci && npm --prefix apps/web run build
 | `PV3D_MAX_PENDING_JOBS` | `8` | 排队＋运行中的推理任务上限（1–64）；满时 API 返回 409。 |
 | `PV3D_MULTIVIEW_TIMEOUT_S` | `1800` | 单次 VGGT worker 的硬超时；超时任务标记失败并说明原因。 |
 | `PV3D_REFINE_TIMEOUT_S` | `300` | 交互细化等待单 worker 的上限；超时返回 503，排队的细化会被取消并释放名额。 |
+| `PV3D_API_TOKEN` | 空 | 设置后所有 `/api` 调用（除 `/api/health` 与 `/api/session`）必须携带 `Authorization: Bearer <token>` 或登录 Cookie；至少 16 个可打印 ASCII 字符。 |
+| `PV3D_SESSION_MAX_AGE_S` | `43200` | 浏览器登录 Cookie 的有效期（秒，60–2592000）。 |
 | `PV3D_DEVICE` 等 | 见[运行说明](running.md#配置) | 模型设备、SAM 大小、线程数等原有变量不变。 |
 
 无效值会在启动时报错并指出变量名（退出码 2）。`.env.example` 列出全部变量。
+
+## 访问令牌认证
+
+服务默认只监听回环地址且无认证。要在局域网或容器中暴露，设置 `PV3D_API_TOKEN`：
+
+- API 客户端用 `Authorization: Bearer <token>`；未认证请求得到 401 与 `WWW-Authenticate: Bearer`，且在解析任何请求体之前被拒绝。
+- 网页在收到 401 或探测到需要令牌时显示登录框，`POST /api/session {"token": ...}` 校验后下发 `pv3d_session` Cookie（HttpOnly、SameSite=Strict，HTTPS 下 Secure），Cookie 内容是令牌的 HMAC 而不是令牌本身，GLB/JSON 下载链接随 Cookie 自动通过。`DELETE /api/session` 退出。
+- `/api/health` 保持开放供探活，返回 `"authentication": "token"`；非回环绑定且未设置令牌时启动会打印警告。
+- 令牌是共享密钥，不区分用户，也不替代 TLS；公网部署仍应放在 TLS 终止的反向代理之后。
 
 ## 一个数据目录只能有一个服务
 
@@ -57,7 +68,11 @@ npm --prefix apps/web ci && npm --prefix apps/web run build
 
 ## 容器
 
-`Dockerfile` 构建“无模型”的 API＋网页镜像（默认非 root 用户、健康检查、JSON 日志）；`--build-arg UV_EXTRAS=ml` 加入识别依赖。VGGT 的隔离环境不在镜像内，多图重建需要额外挂载 `services/multiview/.venv` 与模型缓存，或在镜像外运行。本轮未在本机执行 `docker build`（环境无 Docker 守护进程），CI 的 `container` 作业在 GitHub 上构建并探活。
+`Dockerfile` 默认构建“无模型”的 API＋网页镜像（非 root 用户、健康检查、JSON 日志），CI 的 `container` 作业每次推送都会构建它并验证探活与令牌认证（无令牌 401、带令牌 404）。
+
+`--build-arg WITH_MODELS=1` 构建完整镜像：安装识别依赖（Grounding DINO + SAM 2）并在镜像内创建隔离的 VGGT 环境 `services/multiview/.venv`，多图重建无需镜像外进程。它会拉取数 GB 的 PyPI CUDA 轮子；需要 NVIDIA 运行时（`--gpus all`）或设置 `PV3D_DEVICE=cpu`/`PV3D_MULTIVIEW_DEVICE=cpu`。模型权重不打入镜像，挂载 `/app/models/huggingface` 后在容器内执行一次 `python -m pv3d.perception` 与 `services/multiview/infer.py --prepare`。该变体由手动触发的工作流 `container-full.yml` 构建并检查两个环境可导入；本机已验证 `services/multiview/uv.lock` 在 Linux x86_64 可按锁安装（torch 2.8.0+cu128、numpy 1.26.4、vggt 可导入），但未在本机执行 `docker build`。
+
+`docker-compose.yml` 给出带令牌的本地部署示例：`PV3D_API_TOKEN=... docker compose up --build`，运行目录与模型缓存使用命名卷；注释中的 `full` 服务对应完整镜像与 GPU 预留。
 
 ## 检查命令
 
