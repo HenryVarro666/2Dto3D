@@ -29,6 +29,7 @@ import { ProcessingStatus } from "./components/ProcessingStatus";
 import { LanguageSwitcher } from "./components/LanguageSwitcher";
 import { I18nProvider, useI18n } from "./i18n";
 import { useAnnotation } from "./core/annotation";
+import { newId } from "./core/ids";
 import { AnnotationPanel } from "./components/AnnotationPanel";
 import { DetectionScope } from "./components/DetectionScope";
 import { MultiviewWorkbench } from "./components/MultiviewWorkbench";
@@ -134,7 +135,7 @@ function Workbench({ apiClient = api }: { apiClient?: WorkbenchApi }) {
   function addBox(bbox: BBox) {
     if (active || !state.asset) return;
     const component: EditableComponent = redrawSeed.current ?? {
-      id: `manual-${crypto.randomUUID()}`,
+      id: `manual-${newId()}`,
       bbox,
       category: "unknown",
       label: t("新组件 {count}", { count: components.length + 1 }),

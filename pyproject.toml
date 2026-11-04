@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8,<10", "httpx>=0.28,<1", "ruff>=0.13,<1"]
+dev = ["pytest>=8,<10", "httpx>=0.28,<1", "ruff>=0.13,<1", "mypy>=1.14,<3"]
 ml = [
   "torch>=2.8,<2.9", "torchvision>=0.23,<0.24",
   "transformers>=4.57,<4.58", "huggingface-hub>=0.34,<1",
@@ -31,3 +31,25 @@ addopts = "-q"
 [tool.ruff]
 line-length = 110
 target-version = "py312"
+extend-exclude = ["apps", "models", "data", "artifacts"]
+
+[tool.ruff.lint]
+# Explicit set so results do not drift with ruff's defaults: pycodestyle/pyflakes
+# plus import order, bugbear and modern-syntax checks.
+select = ["E4", "E7", "E9", "F", "I", "B", "UP"]
+ignore = ["B905"]  # zip(strict=) would change behavior inside frozen numeric paths.
+
+[tool.ruff.lint.per-file-ignores]
+# Benchmark scripts are hash-bound by frozen measurement records; style edits would break their audit trail.
+"scripts/*" = ["E701", "E702", "E731"]
+"services/api/tests/*" = ["E702"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["services/api/src/pv3d"]
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_unused_ignores = false
+warn_redundant_casts = true
+no_implicit_optional = true
+show_error_codes = true

@@ -7,29 +7,84 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  UV_SYSTEM_CERTS: "1"
+
 jobs:
-  check:
+  backend:
+    name: Backend (tests, lint, types)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.11.x"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version-file: ".python-version"
+      - name: Install Python test dependencies (no model weights)
+        run: uv sync --frozen --extra dev
+      - name: Lint
+        run: .venv/bin/ruff check services/api scripts services/multiview/infer.py
+      - name: Type check
+        run: .venv/bin/mypy
+      - name: Backend tests
+        run: .venv/bin/python -m pytest -p no:cacheprovider
+      - name: Settings and entry point smoke check
+        run: PV3D_DATA_DIR="$RUNNER_TEMP/runtime" .venv/bin/python -m pv3d --check
+
+  frontend:
+    name: Frontend (format, types, tests, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
-      - name: Install Python test dependencies (no model weights)
+      - name: Install
+        run: npm --prefix apps/web ci
+      - name: Format check
+        run: npm --prefix apps/web run lint
+      - name: Type check
+        run: npm --prefix apps/web run typecheck
+      - name: Tests
+        run: npm --prefix apps/web test
+      - name: Production build
+        run: npm --prefix apps/web run build
+
+  container:
+    name: Container image builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build (model-free image)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: pv3d:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Smoke test health endpoint
         run: |
-          python -m pip install uv
-          uv sync --frozen --extra dev
-      - name: Backend tests
-        run: .venv/bin/python -m pytest
-      - name: Python lint
-        run: .venv/bin/ruff check services/api services/multiview/infer.py
-      - name: Frontend checks
-        run: |
-          npm --prefix apps/web ci
-          npm --prefix apps/web test
-          npm --prefix apps/web run build
+          docker run -d --name pv3d -p 8000:8000 pv3d:ci
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/api/health >/dev/null; then echo "healthy"; exit 0; fi
+            sleep 2
+          done
+          docker logs pv3d
+          exit 1

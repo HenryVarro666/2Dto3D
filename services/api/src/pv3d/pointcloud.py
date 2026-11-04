@@ -133,7 +133,7 @@ def _associate(observations, samples, scene_scale, automatic, geometry, masks, v
                 views[ra] |= views[rb]
                 diagnostics.append({"first": observations[a]["id"], "second": observations[b]["id"],
                                     "method": method, "support": score})
-    groups = {}
+    groups: dict = {}
     for i, observation in enumerate(observations):
         key = root(i) if automatic else observation.get("component_id") or observation["id"]
         groups.setdefault(key, []).append(i)
@@ -205,13 +205,13 @@ def _voxel_merge(vertices, colors, indices, scale, *, fine_indices=()):
     component_indices[inverse] = indices
     if len(merged) > MAX_POINTS:
         # At least one point per component; proportionally sample each group deterministically.
-        selected = []
+        selected: list = []
         for index in np.unique(component_indices):
             group = np.flatnonzero(component_indices == index)
             budget = max(1, int((MAX_POINTS - len(np.unique(component_indices))) * len(group) / len(merged)))
             selected.extend(group[np.linspace(0, len(group) - 1, min(budget, len(group)), dtype=int)])
-        selected = np.asarray(selected)
-        merged, rgb, component_indices = merged[selected], rgb[selected], component_indices[selected]
+        chosen = np.asarray(selected)
+        merged, rgb, component_indices = merged[chosen], rgb[chosen], component_indices[chosen]
     return merged.astype(np.float32), np.rint(rgb).astype(np.uint8), component_indices
 
 
@@ -250,7 +250,7 @@ def build_pointcloud(geometry, assets, observations, store, automatic=True):
         masks.append(mask)
         points = geometry["points"][i][mask]
         samples.append(points[::max(1, len(points) // 1500)][:1500])
-    associations = []
+    associations: list[dict] = []
     groups = _associate(observations, samples, scale, automatic, geometry, raw_masks, view_indices, associations)
     assignment = np.zeros(valid.shape, np.uint32)
     group_for = {i: g + 1 for g, group in enumerate(groups) for i in group}

@@ -1,14 +1,16 @@
-.PHONY: setup dev test build serve models setup-multiview models-multiview
+.PHONY: setup dev test build serve models setup-multiview models-multiview lint typecheck format check clean
+
+PY := .venv/bin/python
 
 setup:
 	uv sync --frozen --extra dev --extra ml
 	npm --prefix apps/web ci
 
 dev:
-	.venv/bin/python scripts/dev.py
+	$(PY) scripts/dev.py
 
 models:
-	.venv/bin/python -m pv3d.perception
+	$(PY) -m pv3d.perception
 
 setup-multiview:
 	uv sync --project services/multiview --frozen
@@ -17,11 +19,27 @@ models-multiview:
 	services/multiview/.venv/bin/python services/multiview/infer.py --prepare
 
 test:
-	.venv/bin/python -m pytest
+	$(PY) -m pytest
 	npm --prefix apps/web test
+
+lint:
+	$(PY) -m ruff check services/api scripts services/multiview/infer.py
+	npm --prefix apps/web run lint
+
+typecheck:
+	$(PY) -m mypy
+	npm --prefix apps/web run typecheck
+
+format:
+	npm --prefix apps/web run format
+
+check: lint typecheck test build
 
 build:
 	npm --prefix apps/web run build
 
 serve:
-	.venv/bin/python -m uvicorn pv3d.app:create_app --factory --host 127.0.0.1 --port 8000
+	$(PY) -m pv3d
+
+clean:
+	rm -rf apps/web/dist .pytest_cache .mypy_cache .ruff_cache

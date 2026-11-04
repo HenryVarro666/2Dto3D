@@ -10,6 +10,8 @@ import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[4]
+DEFAULT_TIMEOUT_S = 1800
+PROGRESS_STAGES = frozenset({"loading_geometry_model", "estimating_geometry", "unprojecting"})
 VGGT_ID = "facebook/VGGT-1B"
 VGGT_REVISION = "860abec7937da0a4c03c41d3c269c366e82abdf9"
 VGGT_CODE_REVISION = "a288dd0f14786c93483e45524328726ab7b1b4ce"
@@ -108,7 +110,12 @@ def load_geometry(path, view_count):
 
 class VggtReconstructor:
     def __init__(self, runtime_python=None, worker_script=None, cache_dir=None, device=None, input_size=None,
-                 resize_mode="legacy14"):
+                 resize_mode="legacy14", timeout_s=None):
+        self.timeout_s = float(
+            timeout_s if timeout_s is not None else os.environ.get("PV3D_MULTIVIEW_TIMEOUT_S", DEFAULT_TIMEOUT_S)
+        )
+        if not self.timeout_s > 0:
+            raise ValueError("Multi-view worker timeout must be positive")
         self.python = Path(
             runtime_python
             or os.environ.get("PV3D_MULTIVIEW_PYTHON", ROOT / "services/multiview/.venv/bin/python")
@@ -158,37 +165,41 @@ class VggtReconstructor:
                 stderr=log,
                 text=True,
             )
+            stdout = process.stdout
+            assert stdout is not None  # stdout=PIPE above
             timed_out = threading.Event()
 
             def terminate():
                 timed_out.set()
                 process.kill()
 
-            deadline = threading.Timer(1800, terminate)
+            deadline = threading.Timer(self.timeout_s, terminate)
             deadline.daemon = True
             deadline.start()
             try:
-                for line in iter(lambda: process.stdout.readline(8192), ""):
+                for line in iter(lambda: stdout.readline(8192), ""):
                     log.write(line)
                     log.flush()
                     try:
                         message = json.loads(line)
                     except ValueError:
                         continue
-                    if message.get("stage") in {
-                        "loading_geometry_model",
-                        "estimating_geometry",
-                        "unprojecting",
-                    }:
+                    # Worker output is a progress channel, not trusted structure.
+                    if isinstance(message, dict) and message.get("stage") in PROGRESS_STAGES:
                         on_progress(message["stage"])
                 code = process.wait()
             finally:
                 deadline.cancel()
-                process.stdout.close()
+                stdout.close()
                 if process.poll() is None:
                     process.kill()
                     process.wait()
-        if code != 0 or timed_out.is_set():
+        if timed_out.is_set():
+            raise RuntimeError(
+                f"Multi-view model worker exceeded {self.timeout_s:.0f} s and was stopped. "
+                "Use fewer or smaller photos, or raise PV3D_MULTIVIEW_TIMEOUT_S."
+            )
+        if code != 0:
             raise RuntimeError("Multi-view model worker failed. Check the local worker log.")
         load_geometry(output_dir / "geometry.npz", len(image_paths))
         return json.loads((output_dir / "geometry.json").read_text(encoding="utf-8"))

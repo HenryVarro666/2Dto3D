@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — production hardening (HARDEN-001)
+
+- Add validated environment settings (`pv3d.config.Settings`), a `python -m pv3d` entry point with `--check`, text/JSON logging, per-request IDs and access logs, security headers and opt-in CORS.
+- Make shutdown deterministic: running work finishes, queued jobs are recorded as interrupted, new submissions get 503. Lock the data directory so two servers cannot interrupt each other's jobs.
+- Bound long waits: configurable VGGT worker timeout with a distinct error, refinement wait timeout behind the single worker, configurable queue capacity exposed on `/api/health`.
+- Reject oversized uploads before multipart parsing, move upload CPU work off the event loop, accept multi-picture JPEGs, return 404 for missing masks and 405 for wrong methods.
+- Record the SQLite schema version and refuse newer ledgers; add indexes and per-connection pragmas.
+- Frontend: secure-context-independent IDs for manual boxes, missing translations, stable test parallelism; prettier/tsc checks in CI.
+- Add Dockerfile, `.env.example`, pre-commit hooks, mypy and a three-job CI; document deployment in `docs/operations.md`. Frozen benchmark scripts and the VGGT worker are unchanged.
+
 ## Unreleased — aspect-preserving resize evaluation (E09)
 
 - Add an experimental isotropic preprocessing mode with continuous point mapping, fractional Pillow source boxes and separate integer storage bounds. Legacy14 remains the default and reproduces E08 arrays/clouds/measurements exactly.

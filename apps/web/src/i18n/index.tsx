@@ -72,6 +72,11 @@ const serverMessages: Record<string, MessageKey> = {
   "The upload exceeds 20 MB.": "图片超过 20MB 上限",
   "The local processing queue is full. Retry after a task finishes.":
     "处理队列已满，请等当前任务完成后重试。",
+  "The service is shutting down. Retry after it restarts.":
+    "服务正在关闭，请在重启后重试。",
+  "The inference worker is busy with a long task. Retry the refinement later.":
+    "推理服务正忙于较长任务，请稍后再试边界细化。",
+  "The refinement mask is unavailable.": "边界细化文件不可用，请重新细化。",
   "Processing failed. Check local server logs, retry, or use manual components.":
     "处理失败，请检查本地服务日志，重试或手动框选组件。",
   "Asset not found.": "找不到照片。",

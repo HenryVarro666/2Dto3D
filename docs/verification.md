@@ -2,6 +2,10 @@
 
 初次验证：2026-10-30；三语更新验证：2026-10-31，America/Chicago。此记录描述当前原型的运行检查，不是跨设备准确率或性能基准。
 
+## HARDEN-001 生产化加固检查（2026-11-04）
+
+本机（Linux 容器、无 GPU、无模型权重）：后端 198 通过/2 可选 ML 跳过，mypy 与 ruff 零问题；前端 prettier/tsc 通过、85 用例连续三轮通过、生产构建通过；`python -m pv3d --check` 通过。容器镜像未在本机构建，待 CI `container` 作业。所有修复的失败→通过测试、独立审查代理的复现脚本结论与未改动项见[记录](quality/2026-11-04-production-hardening.md)；不涉及识别、几何或测量精度。
+
 ## CI-001 GitHub异步测试稳定性（2026-11-01）
 
 7172cb9的[云端检查](https://github.com/HenryVarro666/2Dto3D/actions/runs/41282263970)全部通过：131后端/2可选ML跳过、70前端、Ruff及TypeScript/Vite构建。真实查看器冷加载移出UI计时，完整多视角长流程单独15秒；原有断言及逐步等待不变。[原因、受控RED/GREEN、首轮仍失败与交接](quality/2026-11-01-ci-viewer-preload.md)完整保留；本轮没有模型或照片质量评测。

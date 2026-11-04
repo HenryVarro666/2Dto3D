@@ -143,3 +143,28 @@ E08补充保存UI词典解析失败与ML测试指向错误checkout的失败日�
 | METRIC-VERIFY-001 | 结果发布与网页缺少逐case绑定、publisher未复核误差算式 | 已修复，RED/GREEN与真实归档检查通过 | [独立审查](2026-11-01-independent-real-scenes-review.md)：8后端/4前端篡改案例；现有结果正确且未变 |
 | METRIC-VERIFY-002 | 参考XYZ/长度自洽，不能独自绑定实际激光样本 | 已修复，7类失败回归通过 | 从已验SHA深度重新按camera/像素采样，逐字段对Z/XYZ/支持统计；实际30点完全一致 |
 | DOC-METRIC-001 | 本轮曾重复使用DATA-001，旧E09叙述归属被新节打断 | 已修复，谱系审计通过 | 设备身份DATA-001原义保留；解包问题改DATA-METRIC-001，本轮所有引用更新；旧16调用/144收据留在E09 |
+
+
+## HARDEN-001 生产化加固与代码审查（2026-11-04）
+
+| ID | 问题 | 状态 | 证据与边界 |
+|---|---|---|---|
+| OPS-001 | 配置散落在环境读取处且无校验 | 已修复，RED/GREEN | [记录](2026-11-04-production-hardening.md)；`Settings.from_env` 14 用例 |
+| OPS-002 | 无生产入口、结构化日志与请求关联 | 已修复 | `python -m pv3d`、`X-Request-ID`、JSON 访问日志测试 |
+| OPS-003 | 关闭时排队任务永久停留 `queued` | 已修复，RED/GREEN | 排队任务标记 `interrupted`，关闭期间提交 503 |
+| OPS-004 | 同一数据目录双服务互相中断任务 | 已修复，RED/GREEN | `server.lock` flock；第二进程退出码 3 |
+| OPS-005 | VGGT worker 超时不可配、非对象进度行崩溃 | 已修复，RED/GREEN | `PV3D_MULTIVIEW_TIMEOUT_S`，超时错误单列 |
+| OPS-006 | 交互细化无上限等待单 worker | 已修复，RED/GREEN | `PV3D_REFINE_TIMEOUT_S`，超时 503 并释放名额 |
+| OPS-007 | 健康检查缺版本与队列余量 | 已修复 | `/api/health.queue`，`PV3D_MAX_PENDING_JOBS` |
+| OPS-008 | SQLite 无 schema 版本、PRAGMA 不全、缺索引 | 已修复，RED/GREEN | `user_version` 拒绝更新版本目录 |
+| OPS-009 | 无容器/运维文档，CI 缺类型与格式检查 | 已实现；镜像未本机构建 | Dockerfile、CI 三作业、`docs/operations.md` |
+| SEC-001 | 上传限制在整个 multipart 落盘后生效 | 已修复，RED/GREEN | `Content-Length` 预检 413/411 |
+| SEC-002 | 缺安全响应头与可配置 CORS | 已修复 | 中间件；`PV3D_CORS_ORIGINS` |
+| SEC-003 | 上传在事件循环上做 CPU 工作 | 已修复 | `run_in_threadpool`；失败清理目录 |
+| TEST-002 | 前端套件并行时超时不稳定（3/82） | 已修复并三轮复跑 | `maxWorkers 2`、`asyncUtilTimeout 3s`，断言不变 |
+| UI-010 | `crypto.randomUUID` 在非安全上下文不可用 | 已修复，RED/GREEN | `core/ids.ts` 回退 |
+| UI-011 | 任务 ID 占位符与新服务端消息未翻译 | 已修复 | 词典补齐中英西 |
+| DOC-002 | 缺部署/运维/备份说明 | 已补齐 | [运维说明](../operations.md) |
+| OBS-001 | `original.bin` 保留 EXIF/GPS 且无清理 | 已记录，未改动 | 保留输入哈希证据链；备份策略单独处理 |
+
+冻结脚本与 worker 零改动；算法模块只加类型注解。详细复现、审查代理结论与验证输出见[本轮记录](2026-11-04-production-hardening.md)。

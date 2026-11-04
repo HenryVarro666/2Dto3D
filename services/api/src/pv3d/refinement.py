@@ -54,9 +54,9 @@ def save_refinement(data_dir, asset, request, prediction):
         id=identifier,
         asset_id=asset["id"],
         bbox=request.bbox,
-        geometry_bbox=[round(float(value), 6) for value in bounds],
+        geometry_bbox=[round(float(value), 6) for value in bounds],  # type: ignore[arg-type]
         points=request.points,
-        mask_polygons=rings,
+        mask_polygons=rings,  # type: ignore[arg-type]
         mask_url=f"/api/refinements/{identifier}/mask.png",
         model=prediction.get("model", {}),
         timings=prediction.get("timings", {}),

@@ -33,3 +33,8 @@ API 与 VGGT 各有独立 uv.lock；不要为几何模型降级 API 的 NumPy。
 ## 问题与改进必须持续留档
 
 所有会话先读[质量与交接入口](docs/quality/README.md)。发现问题、试验失败、代码修复、模型比较或新增误检，都要更新稳定[问题台账](docs/quality/issues.md)和[实验索引](docs/quality/experiments.md)，关联固定输入、前后版本、回归测试和产物证据。完成前记录仍未解决和未验证范围；不覆盖旧报告，不只在聊天中留结论。原始照片和大产物仍保留在ignored目录，Git保存实现、测试和可追溯文字。详细记录模板在质量入口中。
+
+
+## 生产化检查（2026-11-04 起）
+
+提交前运行 `make check`（lint、mypy/tsc、测试、构建），或执行 `pre-commit install` 让本地提交自动跑 lint 与类型检查。新增环境变量必须进入 `pv3d/config.py`、`.env.example` 与 `docs/operations.md`。被 `docs/measurement/*.json` 哈希绑定的基准脚本与 `services/multiview/infer.py` 不能做风格性修改。

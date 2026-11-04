@@ -298,23 +298,54 @@ it("localizes a task interrupted by a service restart", async () => {
 it("displays connector and cable-tray categories in all three languages without changing IDs", async () => {
   const user = userEvent.setup();
   const components = [
-    { ...result.components[0], id: "plug-1", category: "connector" as const, label: "接线插接件" },
-    { ...result.components[0], id: "tray-1", category: "cable_tray" as const, label: "电缆线槽" },
+    {
+      ...result.components[0],
+      id: "plug-1",
+      category: "connector" as const,
+      label: "接线插接件",
+    },
+    {
+      ...result.components[0],
+      id: "tray-1",
+      category: "cable_tray" as const,
+      label: "电缆线槽",
+    },
   ];
-  render(<App apiClient={fakeApi({
-    createJob: async () => ({ ...completed, result: { ...result, components } }),
-  })} />);
+  render(
+    <App
+      apiClient={fakeApi({
+        createJob: async () => ({
+          ...completed,
+          result: { ...result, components },
+        }),
+      })}
+    />,
+  );
   await user.upload(screen.getByLabelText("选择设备照片"), photo);
-  expect(await screen.findByRole("button", { name: "选择 接线插接件" })).toBeInTheDocument();
+  expect(
+    await screen.findByRole("button", { name: "选择 接线插接件" }),
+  ).toBeInTheDocument();
   const selector = screen.getByRole("combobox", { name: languageLabel });
   await user.selectOptions(selector, "en");
-  expect(screen.getByRole("button", { name: "Select Electrical connector" })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Select Cable tray" })).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Select Electrical connector" }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Select Cable tray" }),
+  ).toBeInTheDocument();
   await user.selectOptions(selector, "es");
-  expect(screen.getByRole("button", { name: "Seleccionar Conector eléctrico" })).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Seleccionar Canaleta de cables" })).toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Editar Conector eléctrico" }));
+  expect(
+    screen.getByRole("button", { name: "Seleccionar Conector eléctrico" }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Seleccionar Canaleta de cables" }),
+  ).toBeInTheDocument();
+  await user.click(
+    screen.getByRole("button", { name: "Editar Conector eléctrico" }),
+  );
   expect(screen.getByText("plug-1")).toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Editar Canaleta de cables" }));
+  await user.click(
+    screen.getByRole("button", { name: "Editar Canaleta de cables" }),
+  );
   expect(screen.getByText("tray-1")).toBeInTheDocument();
 });

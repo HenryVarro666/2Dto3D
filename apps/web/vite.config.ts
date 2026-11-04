@@ -13,5 +13,12 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     clearMocks: true,
+    // Interaction-heavy tests exceed the 5 s default when files run in parallel on
+    // small CI runners; the per-step waitFor timeouts inside the tests stay strict.
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
+    // One worker per file starves interaction-heavy tests on 2-4 core runners;
+    // bound the parallelism instead of loosening assertions.
+    maxWorkers: 2,
   },
 });

@@ -73,15 +73,27 @@ npm --prefix apps/web run dev
 | `PV3D_MULTIVIEW_PYTHON` | `services/multiview/.venv/bin/python` | 隔离 VGGT 环境的 Python 可执行文件。 |
 | `PV3D_API_URL` | `http://127.0.0.1:8000` | 仅 Vite 开发代理目标，可用于独立测试端口；生产同源服务不需要。 |
 | `PV3D_TORCH_THREADS` | `4` | PyTorch CPU 线程数。 |
+| `PV3D_HOST` / `PV3D_PORT` | `127.0.0.1` / `8000` | `python -m pv3d` 的绑定地址与端口；非回环地址会打印警告。 |
+| `PV3D_LOG_LEVEL` / `PV3D_LOG_FORMAT` | `INFO` / `text` | 日志级别与格式（`text`/`json`），含每请求访问日志与 `X-Request-ID`。 |
+| `PV3D_CORS_ORIGINS` | 空 | 允许跨域的浏览器来源列表；为空仅同源。 |
+| `PV3D_MAX_PENDING_JOBS` | `8` | 排队＋运行中任务上限，满时返回 409。 |
+| `PV3D_MULTIVIEW_TIMEOUT_S` | `1800` | 单次 VGGT worker 硬超时（秒）。 |
+| `PV3D_REFINE_TIMEOUT_S` | `300` | 交互细化等待推理 worker 的上限（秒），超时返回 503。 |
+
+生产部署、健康检查、日志、目录锁与容器见[部署与运维说明](operations.md)。
 
 本轮 M4 Pro 为 24GB 内存；已执行 MPS 真实模型调用。5080 尚未接入测试，不能据此宣称其延迟或环境可用。GPU 机器的系统／驱动和服务部署方式见 [硬件方案](hardware.md)。
 
 ## 测试与复现
 
 ```bash
+make lint
+make typecheck
 make test
 make build
 ```
+
+`make check` 依次执行以上四项，与 CI 相同。
 
 常规 Python 测试用可控检测结果替代慢模型边界，实际校验上传、SQLite、队列、错误和 GLB；前端测试校验轮询、过期响应、编辑和组件状态。它们不证明真实识别精度。真实模型的本地调用可以单独执行：
 

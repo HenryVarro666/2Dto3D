@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { newId } from "./ids";
 import type {
   Asset,
   BBox,
@@ -121,7 +122,7 @@ export function useAnnotation(api: WorkbenchApi) {
       box,
       points: [],
       component: component ?? {
-        id: `manual-${crypto.randomUUID()}`,
+        id: `manual-${newId()}`,
         category: "unknown",
         label: "",
         bbox: box,

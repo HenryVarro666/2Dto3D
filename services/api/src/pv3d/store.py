@@ -1,11 +1,75 @@
 """Small durable SQLite ledger. Each operation owns its connection across threads."""
 
 import json
+import os
 import sqlite3
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TextIO
 from uuid import uuid4
+
+SCHEMA_VERSION = 1
+
+
+class SchemaError(RuntimeError):
+    """The on-disk ledger was written by a newer build than this one."""
+
+
+class LockedDataDirectoryError(RuntimeError):
+    """Another live server already owns this data directory."""
+
+
+class DataDirectoryLock:
+    """Exclusive advisory lock so two servers never mark each other's jobs interrupted.
+
+    Uses ``fcntl.flock`` where available (Linux, macOS). The lock is released by the
+    kernel if the process dies, so a crash never leaves a stale lock behind.
+    """
+
+    def __init__(self, data_dir: Path):
+        self.path = Path(data_dir) / "server.lock"
+        self._handle: TextIO | None = None
+
+    def acquire(self) -> None:
+        try:
+            import fcntl
+        except ImportError:  # pragma: no cover - Windows has no advisory file locks here.
+            return
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        handle = self.path.open("a+")
+        try:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as error:
+            handle.seek(0)
+            owner = handle.read().strip() or "another process"
+            handle.close()
+            raise LockedDataDirectoryError(
+                f"{self.path.parent} is already served by {owner}. Stop it or use a different PV3D_DATA_DIR."
+            ) from error
+        handle.seek(0)
+        handle.truncate()
+        handle.write(f"pid {os.getpid()}\n")
+        handle.flush()
+        self._handle = handle
+
+    def release(self) -> None:
+        if self._handle is None:
+            return
+        try:
+            import fcntl
+
+            fcntl.flock(self._handle.fileno(), fcntl.LOCK_UN)
+        finally:
+            self._handle.close()
+            self._handle = None
+
+    def __enter__(self):
+        self.acquire()
+        return self
+
+    def __exit__(self, *_exc):
+        self.release()
 
 
 class Store:
@@ -19,6 +83,11 @@ class Store:
         self.database = data_dir / "state.sqlite3"
         with self._connect() as connection:
             connection.execute("PRAGMA journal_mode=WAL")
+            stored = connection.execute("PRAGMA user_version").fetchone()[0]
+            if stored > SCHEMA_VERSION:
+                raise SchemaError(
+                    f"{self.database} uses ledger schema {stored}; this build supports up to {SCHEMA_VERSION}."
+                )
             connection.executescript("""
                 CREATE TABLE IF NOT EXISTS assets (
                     id TEXT PRIMARY KEY, width INTEGER NOT NULL, height INTEGER NOT NULL,
@@ -44,13 +113,26 @@ class Store:
                     id TEXT PRIMARY KEY, capture_id TEXT NOT NULL REFERENCES captures(id),
                     payload_json TEXT NOT NULL
                 );
+                CREATE INDEX IF NOT EXISTS jobs_asset ON jobs(asset_id);
+                CREATE INDEX IF NOT EXISTS refinements_asset ON refinements(asset_id);
+                CREATE INDEX IF NOT EXISTS multiview_jobs_capture ON multiview_jobs(capture_id);
             """)
+            if stored < SCHEMA_VERSION:
+                connection.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
+
+    @property
+    def schema_version(self) -> int:
+        with self._connect() as connection:
+            return int(connection.execute("PRAGMA user_version").fetchone()[0])
 
     @contextmanager
     def _connect(self):
         connection = sqlite3.connect(self.database, timeout=30)
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys=ON")
+        # WAL + NORMAL keeps every committed transaction consistent after a crash; a
+        # power loss may only drop the last few transactions, which the restart marks interrupted.
+        connection.execute("PRAGMA synchronous=NORMAL")
         try:
             with connection:
                 yield connection

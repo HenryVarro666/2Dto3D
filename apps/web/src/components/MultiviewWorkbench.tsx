@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { newId } from "../core/ids";
 import { Download, Layers3, RotateCcw, Upload, X } from "lucide-react";
 import type {
   BBox,
@@ -219,9 +220,9 @@ export function MultiviewWorkbench({
   function addBox(box: BBox) {
     if (!editable || !asset) return;
     const item = seed.current ?? {
-      id: `obs-${crypto.randomUUID()}`,
+      id: `obs-${newId()}`,
       asset_id: asset.id,
-      component_id: `part-${crypto.randomUUID()}`,
+      component_id: `part-${newId()}`,
       category: "unknown",
       label: t("新组件 {count}", { count: parts.length + 1 }),
       bbox: box,
@@ -422,7 +423,7 @@ export function MultiviewWorkbench({
             value={restoreId}
             onChange={(e) => setRestoreId(e.target.value)}
             disabled={locked}
-            placeholder="32-character job ID"
+            placeholder={t("32位任务ID")}
           />
         </label>
         <button
@@ -816,7 +817,7 @@ export function MultiviewWorkbench({
               <button
                 className="text-button"
                 disabled={!editable}
-                onClick={() => associate(`part-${crypto.randomUUID()}`)}
+                onClick={() => associate(`part-${newId()}`)}
               >
                 {t("独立为新组件")}
               </button>

@@ -1156,6 +1156,19 @@ export const messages = {
     "The processing queue is full. Retry after a task finishes.",
     "La cola está llena. Inténtelo de nuevo cuando termine una tarea.",
   ],
+  "服务正在关闭，请在重启后重试。": [
+    "The service is shutting down. Retry after it restarts.",
+    "El servicio se está cerrando. Inténtelo de nuevo cuando se reinicie.",
+  ],
+  "推理服务正忙于较长任务，请稍后再试边界细化。": [
+    "The inference worker is busy with a long task. Retry the refinement later.",
+    "El servicio de inferencia está ocupado con una tarea larga. Reintente el refinado más tarde.",
+  ],
+  "边界细化文件不可用，请重新细化。": [
+    "The refinement mask file is unavailable. Refine again.",
+    "El archivo de la máscara no está disponible. Vuelva a refinar.",
+  ],
+  "32位任务ID": ["32-character job ID", "ID de tarea de 32 caracteres"],
   "处理失败，请检查本地服务日志，重试或手动框选组件。": [
     "Processing failed. Check the local server logs, retry or outline components manually.",
     "El procesamiento falló. Revise los registros del servicio local, reinténtelo o delimite los componentes manualmente.",

@@ -1,6 +1,7 @@
 """Geometry image mapping and isolated-process failures; no model downloads."""
 
 import sys
+import time
 
 import numpy as np
 import pytest
@@ -68,3 +69,31 @@ def test_missing_runtime_has_actionable_error_and_invalid_startup_settings_are_r
         reconstruction.VggtReconstructor(input_size=100)
     with pytest.raises(ValueError):
         reconstruction.VggtReconstructor(device="remote")
+
+
+def test_worker_timeout_is_enforced_and_reported(tmp_path):
+    worker = tmp_path / "slow_worker.py"
+    worker.write_text('import time\nprint(\'{"stage":"estimating_geometry"}\',flush=True)\ntime.sleep(30)\n')
+    model = reconstruction.VggtReconstructor(
+        runtime_python=sys.executable, worker_script=worker, timeout_s=0.5
+    )
+    started = time.monotonic()
+    with pytest.raises(RuntimeError, match="exceeded"):
+        model.reconstruct([tmp_path / "a.jpg", tmp_path / "b.jpg"], tmp_path / "job", lambda _stage: None)
+    assert time.monotonic() - started < 10
+    with pytest.raises(ValueError):
+        reconstruction.VggtReconstructor(timeout_s=0)
+
+
+def test_non_object_progress_lines_are_ignored_without_crashing(tmp_path):
+    worker = tmp_path / "chatty_worker.py"
+    worker.write_text(
+        "print('[1, 2]', flush=True)\nprint('\"text\"', flush=True)\nprint('null', flush=True)\n"
+        'print(\'{"stage": "unknown_stage"}\', flush=True)\nprint(\'{"stage": "unprojecting"}\', flush=True)\n'
+        "raise SystemExit(3)\n"
+    )
+    model = reconstruction.VggtReconstructor(runtime_python=sys.executable, worker_script=worker)
+    seen = []
+    with pytest.raises(RuntimeError, match="worker failed"):
+        model.reconstruct([tmp_path / "a.jpg", tmp_path / "b.jpg"], tmp_path / "job", seen.append)
+    assert seen == ["loading_geometry_model", "unprojecting"]

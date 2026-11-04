@@ -4,7 +4,7 @@ import io
 import math
 import re
 from datetime import UTC, datetime
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 from uuid import uuid4
 
 import numpy as np
@@ -80,7 +80,7 @@ def geometry(store, identifier, expected_sha=None):
 
 def resolve_segment(raw, result, points):
     """process=False preserves GLB POSITION order, including duplicate vertices."""
-    scene = trimesh.load(io.BytesIO(raw), file_type="glb", force="scene", process=False)
+    scene: Any = trimesh.load(io.BytesIO(raw), file_type="glb", force="scene", process=False)
     allowed = {c["id"] for c in result["components"]} | {"__context__"}
     resolved = []
     for ref in points:
@@ -167,6 +167,7 @@ def register_measurement_routes(app):
                   "distance_mm": distance * calibration["mm_per_unit"] if calibration else None,
                   "validation": None}
         if request.validation:
+            assert calibration is not None  # validator requires calibration_id
             if same_segment(resolved, calibration["points"]):
                 raise HTTPException(422, "MEASUREMENT_REFERENCE_REUSED")
             known_mm = request.validation.known_length * UNITS[request.validation.unit]

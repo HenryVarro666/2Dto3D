@@ -57,8 +57,8 @@ def register_capture_routes(app, data_dir, require_asset, require_refinement):
                 raise HTTPException(400, "The base job must belong to the same capture.")
             result = require_result(request.base_job_id)
             previous = {o["id"]: o for o in result.get("observations", [])}
-            semantics = {}
-            for observation in request.observations:
+            semantics: dict[str, tuple] = {}
+            for observation in request.observations or []:
                 old = previous.get(observation.id)
                 if old and old["asset_id"] != observation.asset_id:
                     raise HTTPException(400, "An observation ID cannot move to a different photo.")

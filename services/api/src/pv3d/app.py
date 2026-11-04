@@ -4,12 +4,13 @@ import hashlib
 import io
 import json
 import logging
-import os
 import re
+import shutil
 import threading
 import time
 import warnings
 from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FutureTimeoutError
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated
@@ -17,23 +18,34 @@ from uuid import uuid4
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageOps, UnidentifiedImageError
+from starlette.concurrency import run_in_threadpool
 
+from . import __version__
+from .config import DEFAULT_MAX_PENDING_JOBS, Settings
 from .geometry import build_components, export_scene
 from .manual import apply_manual_components
 from .multiview_schemas import MultiResult
+from .observability import BodyLimitMiddleware, RequestContextMiddleware
 from .refinement import EmptyRegionError, save_refinement
 from .schemas import Asset, Job, JobRequest, Refinement, RefinementRequest, Result
-from .store import Store
+from .store import DataDirectoryLock, Store
 
 log = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[4]
 MAX_UPLOAD_BYTES = 20 * 1024 * 1024
+MULTIPART_OVERHEAD_BYTES = 64 * 1024  # Boundary and field headers around the 20 MB file part.
 MAX_IMAGE_PIXELS = 25_000_000
 MAX_IMAGE_EDGE = 2048
-MAX_PENDING_JOBS = 8  # Includes the one running job; reject rather than grow an unbounded queue.
+MAX_PENDING_JOBS = DEFAULT_MAX_PENDING_JOBS
+QUEUE_FULL = "The local processing queue is full. Retry after a task finishes."
+SHUTTING_DOWN = "The service is shutting down. Retry after it restarts."
+WORKER_BUSY = "The inference worker is busy with a long task. Retry the refinement later."
+# Pillow reports multi-picture JPEGs (phone depth/3D captures) as MPO; the primary frame decodes as JPEG.
+UPLOAD_FORMATS = frozenset({"JPEG", "MPO", "PNG", "WEBP"})
 RESOURCE_ID = re.compile(r"^[a-f0-9]{32}$")
 
 
@@ -42,7 +54,7 @@ def _normalized_image(content: bytes) -> Image.Image:
         with warnings.catch_warnings():
             warnings.simplefilter("error", Image.DecompressionBombWarning)
             with Image.open(io.BytesIO(content)) as probe:
-                if probe.format not in {"JPEG", "PNG", "WEBP"}:
+                if probe.format not in UPLOAD_FORMATS:
                     raise HTTPException(400, "Use an actual JPEG, PNG, or WebP image.")
                 if probe.width * probe.height > MAX_IMAGE_PIXELS:
                     raise HTTPException(413, "The decoded image exceeds 25 million pixels.")
@@ -59,22 +71,65 @@ def _normalized_image(content: bytes) -> Image.Image:
 
 
 class JobRunner:
-    def __init__(self, store: Store, detector, reconstructor=None):
+    """One inference thread, a bounded admission queue and durable job records."""
+
+    def __init__(
+        self,
+        store: Store,
+        detector,
+        reconstructor=None,
+        max_pending: int = MAX_PENDING_JOBS,
+        refine_timeout_s: float = 300.0,
+    ):
+        if max_pending < 1:
+            raise ValueError("max_pending must be at least 1")
+        if not refine_timeout_s > 0:
+            raise ValueError("refine_timeout_s must be positive")
         self.store = store
         self.detector = detector
         self.reconstructor = reconstructor
+        self.max_pending = max_pending
+        self.refine_timeout_s = refine_timeout_s
         self.executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="pv3d-worker")
-        self.capacity = threading.BoundedSemaphore(MAX_PENDING_JOBS)
+        self.capacity = threading.BoundedSemaphore(max_pending)
+        self._slots_lock = threading.Lock()
+        self._in_flight = 0
+        self._closed = False
+
+    def _acquire_slot(self):
+        if self._closed:
+            raise HTTPException(503, SHUTTING_DOWN)
+        if not self.capacity.acquire(blocking=False):
+            raise HTTPException(409, QUEUE_FULL)
+        with self._slots_lock:
+            self._in_flight += 1
+
+    def _release_slot(self):
+        with self._slots_lock:
+            self._in_flight -= 1
+        self.capacity.release()
+
+    def _schedule(self, function, *args):
+        """Hand work to the single worker; a closed executor is a 503, not a 500."""
+        try:
+            return self.executor.submit(function, *args)
+        except RuntimeError as error:
+            raise HTTPException(503, SHUTTING_DOWN) from error
+
+    def queue_status(self) -> dict:
+        with self._slots_lock:
+            in_flight = self._in_flight
+        return {"max_pending": self.max_pending, "in_flight": in_flight,
+                "available": max(0, self.max_pending - in_flight)}
 
     def submit(self, request: JobRequest):
-        if not self.capacity.acquire(blocking=False):
-            raise HTTPException(409, "The local processing queue is full. Retry after a task finishes.")
+        self._acquire_slot()
         try:
             job = self.store.create_job(request.asset_id)
-            self.executor.submit(self._run, job, request)
+            self._schedule(self._run, job, request)
             return job
         except Exception:
-            self.capacity.release()
+            self._release_slot()
             raise
 
     def _manual_recognition(self, request):
@@ -101,14 +156,13 @@ class JobRunner:
         }
 
     def submit_multiview(self, request, total_views):
-        if not self.capacity.acquire(blocking=False):
-            raise HTTPException(409, "The local processing queue is full. Retry after a task finishes.")
+        self._acquire_slot()
         try:
             job = self.store.create_multiview_job(request.capture_id, total_views)
-            self.executor.submit(self._run_multiview, job, request)
+            self._schedule(self._run_multiview, job, request)
             return job
         except Exception:
-            self.capacity.release()
+            self._release_slot()
             raise
 
     def _run_multiview(self, job, request):
@@ -158,17 +212,24 @@ class JobRunner:
                 error="Multi-view processing failed. Check local model setup, retry, or return to single-photo mode.",
             )
         finally:
-            self.capacity.release()
+            self._release_slot()
 
     def refine(self, request):
-        if not self.capacity.acquire(blocking=False):
-            raise HTTPException(409, "The local processing queue is full. Retry after a task finishes.")
+        """Interactive refinement waits behind the single worker, but never indefinitely."""
+        self._acquire_slot()
         try:
-            future = self.executor.submit(self._refine, request)
+            future = self._schedule(self._refine, request)
         except Exception:
-            self.capacity.release()
+            self._release_slot()
             raise
-        return future.result()
+        try:
+            return future.result(timeout=self.refine_timeout_s)
+        except FutureTimeoutError:
+            if future.cancel():
+                # Never started: the worker is still busy with an earlier task. Free the slot now;
+                # a started task releases its own slot when it finishes.
+                self._release_slot()
+            raise HTTPException(503, WORKER_BUSY) from None
 
     def _refine(self, request):
         try:
@@ -184,7 +245,7 @@ class JobRunner:
             self.store.add_refinement(result)
             return result
         finally:
-            self.capacity.release()
+            self._release_slot()
 
     def _run(self, job, request):
         started = time.perf_counter()
@@ -220,20 +281,22 @@ class JobRunner:
                 report("exporting")
                 export_scene(components, folder / "scene.glb")
             elapsed = (time.perf_counter() - started) * 1000
-            result = Result(
-                job_id=job_id,
-                asset_id=asset["id"],
-                scene_mode=request.scene_mode,
-                components=components,
-                scene_url=f"/api/jobs/{job_id}/scene.glb" if components else None,
-                json_url=f"/api/jobs/{job_id}/result.json",
-                warnings=list(dict.fromkeys([*recognition.get("warnings", []), *geometry_warnings])),
-                model=recognition.get("model", {}),
-                timings={
-                    **recognition.get("timings", {}),
-                    "geometry_ms": (time.perf_counter() - geometry_started) * 1000,
-                    "processing_ms": elapsed,
-                },
+            result = Result.model_validate(
+                {
+                    "job_id": job_id,
+                    "asset_id": asset["id"],
+                    "scene_mode": request.scene_mode,
+                    "components": components,
+                    "scene_url": f"/api/jobs/{job_id}/scene.glb" if components else None,
+                    "json_url": f"/api/jobs/{job_id}/result.json",
+                    "warnings": list(dict.fromkeys([*recognition.get("warnings", []), *geometry_warnings])),
+                    "model": recognition.get("model", {}),
+                    "timings": {
+                        **recognition.get("timings", {}),
+                        "geometry_ms": (time.perf_counter() - geometry_started) * 1000,
+                        "processing_ms": elapsed,
+                    },
+                }
             ).model_dump(mode="json")
             temporary = folder / "result.tmp"
             temporary.write_text(json.dumps(result, ensure_ascii=False, allow_nan=False), encoding="utf-8")
@@ -255,40 +318,64 @@ class JobRunner:
                 error="Processing failed. Check local server logs, retry, or use manual components.",
             )
         finally:
-            self.capacity.release()
+            self._release_slot()
 
     def close(self):
-        self.executor.shutdown(wait=True)
+        """Finish the running task, drop queued ones and record them as interrupted."""
+        self._closed = True
+        self.executor.shutdown(wait=True, cancel_futures=True)
+        self.store.interrupt_unfinished()
 
 
-def create_app(data_dir: Path | None = None, detector=None, reconstructor=None) -> FastAPI:
+def create_app(
+    data_dir: Path | None = None, detector=None, reconstructor=None, settings: Settings | None = None
+) -> FastAPI:
     """Create an isolated service; only the slow model boundary is injectable for tests."""
-    configured_dir = Path(data_dir or os.environ.get("PV3D_DATA_DIR", ROOT / "data" / "runtime")).resolve()
+    settings = Settings.from_env() if settings is None else settings
+    configured_dir = Path(data_dir or settings.data_dir).resolve()
     if reconstructor is None:
         from .reconstruction import VggtReconstructor
 
-        reconstructor = VggtReconstructor()
+        reconstructor = VggtReconstructor(timeout_s=settings.multiview_timeout_s)
     if detector is None:
         from .perception import GroundingDetector
 
-        detector = GroundingDetector(
-            cache_dir=Path(os.environ.get("PV3D_MODEL_DIR", ROOT / "models" / "huggingface")),
-            device=os.environ.get("PV3D_DEVICE", "auto"),
-        )
+        detector = GroundingDetector(cache_dir=Path(settings.model_dir), device=settings.device)
 
     @asynccontextmanager
     async def lifespan(application):
-        store = Store(configured_dir)
-        store.interrupt_unfinished()
-        runner = JobRunner(store, detector, reconstructor)
-        application.state.store = store
-        application.state.runner = runner
-        try:
-            yield
-        finally:
-            runner.close()
+        # One live server per data directory; a second one would rewrite this one's job states.
+        with DataDirectoryLock(configured_dir):
+            store = Store(configured_dir)
+            store.interrupt_unfinished()
+            runner = JobRunner(
+                store,
+                detector,
+                reconstructor,
+                max_pending=settings.max_pending_jobs,
+                refine_timeout_s=settings.refine_timeout_s,
+            )
+            application.state.store = store
+            application.state.runner = runner
+            try:
+                yield
+            finally:
+                runner.close()
 
-    application = FastAPI(title="PV Component Schematic Workbench", version="3.0.0", lifespan=lifespan)
+    application = FastAPI(title="PV Component Schematic Workbench", version=__version__, lifespan=lifespan)
+    application.add_middleware(RequestContextMiddleware)
+    application.add_middleware(
+        BodyLimitMiddleware, limits={"/api/assets": MAX_UPLOAD_BYTES + MULTIPART_OVERHEAD_BYTES}
+    )
+    if settings.cors_origins:
+        application.add_middleware(
+            CORSMiddleware,
+            allow_origins=list(settings.cors_origins),
+            allow_methods=["GET", "POST", "OPTIONS"],
+            allow_headers=["Content-Type", "X-Request-ID"],
+            expose_headers=["X-Request-ID"],
+            max_age=600,
+        )
 
     @application.exception_handler(RequestValidationError)
     async def invalid_request(_request, error):
@@ -344,7 +431,10 @@ def create_app(data_dir: Path | None = None, detector=None, reconstructor=None) 
     @application.get("/api/refinements/{identifier}/mask.png")
     def get_refinement_mask(identifier: str):
         ref = require_refinement(identifier)
-        return FileResponse(configured_dir / "refinements" / ref["id"] / "mask.png", media_type="image/png")
+        path = configured_dir / "refinements" / ref["id"] / "mask.png"
+        if not path.is_file():
+            raise HTTPException(404, "The refinement mask is unavailable.")
+        return FileResponse(path, media_type="image/png")
 
     @application.get("/api/health")
     def health():
@@ -360,7 +450,36 @@ def create_app(data_dir: Path | None = None, detector=None, reconstructor=None) 
                 "device": "unknown",
                 "error": "Model status unavailable.",
             }
-        return {"status": "ok", "model": model_status, "multiview": reconstructor.status()}
+        return {
+            "status": "ok",
+            "version": __version__,
+            "model": model_status,
+            "multiview": reconstructor.status(),
+            "queue": application.state.runner.queue_status(),
+        }
+
+    def _store_asset(content: bytes) -> dict:
+        """CPU and disk work for one upload; runs in a worker thread, never on the event loop."""
+        image = _normalized_image(content)
+        identifier = uuid4().hex
+        asset = {
+            "id": identifier,
+            "width": image.width,
+            "height": image.height,
+            "image_url": f"/api/assets/{identifier}/image",
+            "sha256": hashlib.sha256(content).hexdigest(),
+        }
+        folder = configured_dir / "assets" / identifier
+        folder.mkdir(parents=True)
+        try:
+            (folder / "original.bin").write_bytes(content)
+            image.save(folder / "image.jpg", format="JPEG", quality=94)
+            application.state.store.add_asset(asset)
+        except Exception:
+            # Never leave files that no ledger row references.
+            shutil.rmtree(folder, ignore_errors=True)
+            raise
+        return asset
 
     @application.post("/api/assets", response_model=Asset, status_code=201)
     async def upload_asset(file: Annotated[UploadFile, File()]):
@@ -372,21 +491,7 @@ def create_app(data_dir: Path | None = None, detector=None, reconstructor=None) 
                     raise HTTPException(413, "The upload exceeds 20 MB.")
         finally:
             await file.close()
-        image = _normalized_image(bytes(content))
-        identifier = uuid4().hex
-        asset = {
-            "id": identifier,
-            "width": image.width,
-            "height": image.height,
-            "image_url": f"/api/assets/{identifier}/image",
-            "sha256": hashlib.sha256(content).hexdigest(),
-        }
-        folder = configured_dir / "assets" / identifier
-        folder.mkdir(parents=True)
-        (folder / "original.bin").write_bytes(content)
-        image.save(folder / "image.jpg", format="JPEG", quality=94)
-        application.state.store.add_asset(asset)
-        return asset
+        return await run_in_threadpool(_store_asset, bytes(content))
 
     @application.get("/api/assets/{identifier}/image")
     def get_image(identifier: str):
@@ -442,9 +547,8 @@ def create_app(data_dir: Path | None = None, detector=None, reconstructor=None) 
     register_measurement_routes(application)
     register_capture_routes(application, configured_dir, require_asset, require_refinement)
 
-    @application.api_route(
-        "/api/{unmatched:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
-    )
+    # Only the methods the API uses: a wrong method on a real route then reports 405, not 404.
+    @application.api_route("/api/{unmatched:path}", methods=["GET", "POST"])
     def unknown_api(unmatched: str):
         raise HTTPException(404, "API route not found.")
 

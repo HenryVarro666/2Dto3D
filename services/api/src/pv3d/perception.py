@@ -12,6 +12,7 @@ import time
 from collections import OrderedDict
 from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 MODEL_ID = "IDEA-Research/grounding-dino-tiny"
 MODEL_REVISION = "a2bb814dd30d776dcf7e30523b00659f4f141c71"
@@ -174,7 +175,7 @@ def normalize_predictions(
 
     before_context = len(bounded)
     bounded = [item for item in bounded if item["category"] != "connector" or connector_context(item)]
-    connectors = []
+    connectors: list[dict] = []
     for item in sorted((item for item in bounded if item["category"] == "connector"),
                        key=lambda item: -item["score"]):
         if not any(_iou(item["bbox"], previous["bbox"]) > 0.55 for previous in connectors):
@@ -200,7 +201,7 @@ def normalize_predictions(
     bounded = [item for item in valid if not (item["category"] in overrides and not item["_inverter"]
                and any(part["category"] == overrides[item["category"]] and _iou(item["bbox"], part["bbox"]) > 0.55
                        for part in valid))]
-    kept = []
+    kept: list[dict] = []
     # Reject envelopes before NMS. An unusable small fragment must not suppress
     # a viable overlapping body, even when only the fragment says "inverter".
     for candidate in sorted(
@@ -296,14 +297,14 @@ class GroundingDetector:
             raise ValueError("Unsupported SAM size")
         self.sam_model_id, self.sam_revision = SAM_PRESETS[self.sam_size]
         self._state = "not_loaded"
-        self._error = None
-        self._model = None
-        self._processor = None
-        self._sam = None
-        self._sam_processor = None
+        self._error: str | None = None
+        self._model: Any = None
+        self._processor: Any = None
+        self._sam: Any = None
+        self._sam_processor: Any = None
         self._segmentation_state = "not_loaded"
         self._lock = threading.Lock()
-        self._embedding_cache = OrderedDict()
+        self._embedding_cache: OrderedDict[tuple, Any] = OrderedDict()
 
     def status(self) -> dict:
         return {
@@ -489,8 +490,8 @@ class GroundingDetector:
         with self._lock:
             started = time.perf_counter()
             cold = self._model is None
-            warnings = []
-            binary_masks = {}
+            warnings: list[str] = []
+            binary_masks: dict[int, Any] = {}
             try:
                 if on_progress:
                     on_progress("loading_model" if cold else "detecting")
@@ -530,7 +531,7 @@ class GroundingDetector:
                     # Same query order/threshold as the installed processor's post-processing.
                     selected = probabilities[probabilities.max(dim=-1).values > 0.24]
                     class_scores = prompt_class_scores(selected.cpu().tolist(), tokenized["offset_mapping"])
-                filter_diagnostics = {}
+                filter_diagnostics: dict[str, Any] = {}
                 detections = normalize_predictions(
                     result["boxes"].cpu().tolist(),
                     result["scores"].cpu().tolist(),

@@ -48,7 +48,7 @@ def full_field_camera(params, image_size, samples=257, margin=.002):
     ratio = params[1] / params[0]
     fx = min((width-1)/(high[0]-low[0]), (height-1)/(high[1]-low[1])/ratio) * (1-margin)
     fy = fx*ratio
-    cx, cy = np.array([width, height])/2 - [fx, fy]*(low+high)/2
+    cx, cy = np.array([width, height])/2 - [fx, fy]*(low+high)/2  # type: ignore[operator]
     return np.array([[fx, 0, cx], [0, fy, cy], [0, 0, 1]], dtype=float)
 
 

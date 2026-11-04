@@ -172,6 +172,7 @@ Real-photo evaluations and analytic measurement tests are separate evidence: [ex
 | Intent | Entry point |
 |---|---|
 | Install or troubleshoot on another machine | [Running](docs/running.md) · [Hardware](docs/hardware.md) |
+| Run as a service, container and health checks | [Deployment and operations (Chinese)](docs/operations.md) · [Environment example](.env.example) |
 | Capture views and correct components | [V3 capture guide](docs/v3/capture-guide.md) · [Models and geometry](docs/v3/models.md) |
 | Calibrate, validate and migrate records | [Measurement guide](docs/measurement/README.md) · [This validation](docs/quality/2026-10-31-scale-measurement.md) |
 | Understand scope and contracts | [Project plan](docs/plan.md) · [API](docs/api-contract.md) · [Roadmap](docs/roadmap.md) |
