@@ -12,6 +12,7 @@ outputs
 runs
 checkpoints
 docs
+!docs/measurement
 **/__pycache__
 **/.pytest_cache
 **/.mypy_cache

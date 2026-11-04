@@ -57,4 +57,4 @@ npm --prefix apps/web run build                                        # 构建�
 PV3D_DATA_DIR=/tmp/x .venv/bin/python -m pv3d --check                  # settings ok
 ```
 
-Docker 镜像未在本机构建；CI 作业 `container` 首次成功前，容器路径视为未验证。
+首次推送后 GitHub 运行 [41783231730](https://github.com/HenryVarro666/2Dto3D/actions/runs/41783231730)：前端作业通过；后端作业在 mypy 步失败（`uv.lock` 未随 dev extra 更新，`.venv/bin/mypy` 不存在）；容器作业在网页构建失败（前端从 `docs/measurement/*.json` 导入冻结记录，而 `.dockerignore` 排除了 `docs`）。两处均为本轮引入的交付缺陷，修复：`uv lock` 仅新增 mypy 及其依赖（干净 `uv sync --frozen --extra dev` 后 mypy 通过）；Dockerfile 的 web 阶段复制 `docs/measurement`，`.dockerignore` 例外该目录，并在本机按镜像目录布局模拟 `npm ci && npm run build` 通过。后续运行结果以 Actions 页面为准。

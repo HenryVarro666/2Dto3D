@@ -7,6 +7,8 @@ FROM node:22-bookworm-slim AS web
 WORKDIR /src/apps/web
 COPY apps/web/package.json apps/web/package-lock.json ./
 RUN npm ci --no-audit --no-fund
+# The replay panels import frozen measurement records from the repository's docs tree.
+COPY docs/measurement /src/docs/measurement
 COPY apps/web ./
 RUN npm run build
 
